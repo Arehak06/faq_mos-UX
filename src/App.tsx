@@ -1,5 +1,11 @@
 import { useEffect } from 'react'
 
+declare global {
+  interface Window {
+    Telegram?: any
+  }
+}
+
 function App() {
   useEffect(() => {
     const tg = window.Telegram?.WebApp
@@ -8,12 +14,21 @@ function App() {
   }, [])
 
   const sendToBot = () => {
-    window.Telegram?.WebApp.sendData(
+    const tg = window.Telegram?.WebApp
+
+    if (!tg) {
+      alert('Откройте Mini App через Telegram')
+      return
+    }
+
+    tg.sendData(
       JSON.stringify({
-        section: 'tickets',
-        from: 'miniapp'
+        action: 'open_section',
+        section: 'tickets'
       })
     )
+
+    tg.close()
   }
 
   return (
@@ -21,7 +36,7 @@ function App() {
       <h1>🚇 FAQ транспорта Москвы</h1>
 
       <button onClick={sendToBot}>
-        Отправить данные в бота
+        Перейти к билетам
       </button>
     </div>
   )
