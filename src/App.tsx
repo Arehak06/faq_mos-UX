@@ -5,8 +5,8 @@ import Tickets from './pages/Tickets'
 function App() {
   return (
     <Routes>
-      <Route index element={<Home />} />
-      <Route path="tickets" element={<Tickets />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/tickets" element={<Tickets />} />
     </Routes>
   )
 }
