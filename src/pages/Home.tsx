@@ -21,25 +21,17 @@ export default function Home() {
   }
 
   return (
-    <div
-      style={{
-        background: 'white',
-        color: 'black',
-        minHeight: '100vh',
-        padding: 20
-      }}
-    >
-      <h1>🚇 FAQ транспорта</h1>
+  <div
+    style={{
+      background: 'red',
+      color: 'white',
+      minHeight: '100vh',
+      padding: 20,
+      fontSize: 24
+    }}
+  >
+    HOME VISIBLE
+  </div>
+)
 
-      <button onClick={openTickets}>
-        🎟️ Билеты и проезд
-      </button>
-
-      <br /><br />
-
-      <button onClick={() => tg?.close()}>
-        Закрыть WebApp
-      </button>
-    </div>
-  )
 }
