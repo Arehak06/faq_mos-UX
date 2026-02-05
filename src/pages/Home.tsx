@@ -5,7 +5,8 @@ export default function Home() {
         background: 'white',
         color: 'black',
         minHeight: '100vh',
-        padding: 20
+        padding: 20,
+        fontSize: 24
       }}
     >
       HOME WORKS
