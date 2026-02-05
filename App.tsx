@@ -8,14 +8,14 @@ useEffect(() => {
 }, [])
 
 
-  const sendData = () => {
-    window.Telegram?.WebApp.sendData(
-      JSON.stringify({
-        action: 'open_article',
-        page: 'tickets'
-      })
-    )
-  }
+  function sendData() {
+        window.Telegram?.WebApp.sendData(
+            JSON.stringify({
+                action: 'open_article',
+                page: 'tickets'
+            })
+        )
+    }
 
   return (
     <div style={{ padding: 16 }}>
