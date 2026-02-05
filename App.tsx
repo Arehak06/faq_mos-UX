@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 
 function App() {
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp
-    tg?.ready()
-    tg?.expand()
-  }, [])
+useEffect(() => {
+  const tg = window.Telegram?.WebApp
+  tg?.ready()
+  tg?.expand()
+}, [])
+
 
   const sendData = () => {
     window.Telegram?.WebApp.sendData(
