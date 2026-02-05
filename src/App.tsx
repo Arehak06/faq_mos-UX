@@ -1,23 +1,16 @@
-import { useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home'
-import Tickets from './pages/Tickets'
-import './app.css'
-
 function App() {
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp
-    if (!tg) return
-
-    tg.ready()
-    tg.expand()
-  }, [])
-
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/tickets" element={<Tickets />} />
-    </Routes>
+    <div
+      style={{
+        background: 'white',
+        color: 'black',
+        minHeight: '100vh',
+        padding: 20,
+        fontSize: 24
+      }}
+    >
+      APP WORKS
+    </div>
   )
 }
 
