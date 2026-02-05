@@ -1,16 +1,13 @@
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Tickets from './pages/Tickets'
+
 function App() {
   return (
-    <div
-      style={{
-        background: 'white',
-        color: 'black',
-        minHeight: '100vh',
-        padding: 20,
-        fontSize: 24
-      }}
-    >
-      APP WORKS
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/tickets" element={<Tickets />} />
+    </Routes>
   )
 }
 
