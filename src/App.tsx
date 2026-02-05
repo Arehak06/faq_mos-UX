@@ -4,10 +4,13 @@ import Home from './pages/Home'
 import Tickets from './pages/Tickets'
 
 function App() {
-useEffect(() => {
-  const tg = window.Telegram?.WebApp
-  alert(tg ? 'TELEGRAM WEBAPP' : 'BROWSER')
-}, [])
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp
+    if (!tg) return
+
+    tg.ready()
+    tg.expand()
+  }, [])
 
   return (
     <Routes>

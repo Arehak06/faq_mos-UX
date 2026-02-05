@@ -6,7 +6,10 @@ import Tickets from './pages/Tickets';
 function App() {
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
-        alert(tg ? 'TELEGRAM WEBAPP' : 'BROWSER');
+        if (!tg)
+            return;
+        tg.ready();
+        tg.expand();
     }, []);
     return (_jsxs(Routes, { children: [_jsx(Route, { path: "/", element: _jsx(Home, {}) }), _jsx(Route, { path: "/tickets", element: _jsx(Tickets, {}) })] }));
 }
