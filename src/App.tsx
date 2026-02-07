@@ -24,6 +24,15 @@ function App() {
     tg.close()
   }
 
+  const openLink = (url: string) => {
+    const tg = window.Telegram?.WebApp
+    if (tg) {
+      tg.openLink(url)
+    } else {
+      window.open(url, '_blank')
+    }
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -59,7 +68,7 @@ function App() {
 
       <button
         className="secondary"
-        onClick={() => openSection('feedback')}
+        onClick={() => openLink('https://mosmetro.ru')}
       >
         📝 Сообщить об ошибке
       </button>
