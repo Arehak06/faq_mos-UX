@@ -1,7 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMainButton } from '../hooks/useMainButton';
 export default function Home() {
     const navigate = useNavigate();
     useEffect(() => {
@@ -9,6 +8,5 @@ export default function Home() {
         tg?.ready();
         tg?.expand();
     }, []);
-    useMainButton('', () => { }, false); // скрыть кнопку
     return (_jsxs("div", { style: { padding: 16 }, children: [_jsx("h1", { children: "\uD83C\uDFE0 \u0413\u043B\u0430\u0432\u043D\u0430\u044F" }), _jsx("button", { onClick: () => navigate('/tickets'), children: "\uD83C\uDF9F\uFE0F \u0411\u0438\u043B\u0435\u0442\u044B" })] }));
 }
