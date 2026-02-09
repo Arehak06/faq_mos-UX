@@ -3,6 +3,8 @@ import PageEditor from './PageEditor'
 import PageView from './PageView'
 import { loadPages, savePages } from '../utils/storage'
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton'
+import { importMarkdown } from '../utils/importMarkdown'
+
 
 
 export default function Admin() {
@@ -22,6 +24,19 @@ export default function Admin() {
     savePages(pages)
     setSaved(true)
   }
+
+  const importFile = async (file: File) => {
+  const text = await file.text()
+  const page = importMarkdown(text)
+
+  setPages({
+    ...pages,
+    [current]: page
+  })
+
+  setSaved(false)
+}
+
 
   useTelegramMainButton({
   text: '💾 Сохранить',
@@ -56,6 +71,16 @@ export default function Admin() {
           💾 Сохранить
         </button>
       </div>
+
+      <input
+         type="file"
+         accept=".md,.mdx"
+         onChange={(e) => {
+         const file = e.target.files?.[0]
+         if (file) importFile(file)
+    }}
+    />
+
 
       {mode === 'view' ? (
         <PageView page={page} />
