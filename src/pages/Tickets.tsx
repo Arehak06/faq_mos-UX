@@ -1,4 +1,5 @@
 import data from '../data/tickets.json'
+import { TgCard } from '../components/TgCard'
 
 export default function Tickets() {
   return (
@@ -6,9 +7,9 @@ export default function Tickets() {
       <h1 className="page-title">{data.title}</h1>
 
       {data.blocks.map((b, i) => (
-        <p key={i} className="text">
-          {b.value}
-        </p>
+        <TgCard key={i}>
+          <p>{b.value}</p>
+        </TgCard>
       ))}
     </div>
   )
