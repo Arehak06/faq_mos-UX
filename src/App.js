@@ -1,16 +1,5 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Tickets from './pages/Tickets';
+import { jsx as _jsx } from "react/jsx-runtime";
 function App() {
-    useEffect(() => {
-        const tg = window.Telegram?.WebApp;
-        if (!tg)
-            return;
-        tg.ready();
-        tg.expand();
-    }, []);
-    return (_jsxs(Routes, { children: [_jsx(Route, { path: "/", element: _jsx(Home, {}) }), _jsx(Route, { path: "/tickets", element: _jsx(Tickets, {}) })] }));
+    return (_jsx("div", { style: { padding: 20, fontSize: 24 }, children: "TELEGRAM APP WORKS" }));
 }
 export default App;
