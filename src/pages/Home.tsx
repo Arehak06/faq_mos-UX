@@ -23,17 +23,13 @@ export default function Home() {
 
       {/* Админ-панель */}
       {isAdmin && (
-        <div className="admin-panel">
-          <span>🛠 Администратор</span>
-
-          <button
-            className="admin-btn"
-            onClick={() => setEditMode(!editMode)}
-          >
-            {editMode ? '👁 Просмотр' : '✏️ Редактировать'}
-          </button>
-        </div>
-      )}
+  <div
+    className="card admin-entry"
+    onClick={() => navigate('/admin')}
+  >
+    🛠 Админ-панель
+  </div>
+)}
 
       {/* Контент */}
       {!editMode ? (
