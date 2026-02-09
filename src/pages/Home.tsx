@@ -11,12 +11,34 @@ export default function Home() {
   }, [])
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>🏠 Главная</h1>
+    <div className="page">
+      <h1 className="page-title">🚇 Транспорт Москвы</h1>
+      <p className="page-subtitle">
+        Билеты, расписание и полезная информация
+      </p>
 
-      <button onClick={() => navigate('/tickets')}>
-        🎟️ Билеты
-      </button>
+      <div className="list">
+        <div className="card" onClick={() => navigate('/tickets')}>
+          <div className="card-title">🎟️ Билеты и проезд</div>
+          <div className="card-text">
+            Тройка, тарифы, льготы
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-title">⏱️ Расписание</div>
+          <div className="card-text">
+            Актуальное движение транспорта
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-title">⚖️ Права пассажира</div>
+          <div className="card-text">
+            Проверки, штрафы, контролёры
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
