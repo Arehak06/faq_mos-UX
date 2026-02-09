@@ -4,14 +4,13 @@ export default function Tickets() {
   const navigate = useNavigate()
 
   return (
-    <div className="app">
-      <button className="secondary" onClick={() => navigate('/')}>
+    <div style={{ padding: 16 }}>
+      <h1>🎟️ Билеты</h1>
+      <p>Информация о проезде, тарифах и картах</p>
+
+      <button onClick={() => navigate(-1)}>
         ← Назад
       </button>
-
-      <h1>🎟️ Билеты и проезд</h1>
-
-      <p>Информация о билетах, Тройке и льготах</p>
     </div>
   )
 }
