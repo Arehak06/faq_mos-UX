@@ -5,10 +5,8 @@ export default function Home() {
     const navigate = useNavigate();
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
-        if (!tg)
-            return;
-        tg.ready();
-        tg.expand();
+        tg?.ready();
+        tg?.expand();
     }, []);
-    return (_jsxs("div", { style: { padding: 16 }, children: [_jsx("h1", { children: "\u0413\u043B\u0430\u0432\u043D\u0430\u044F" }), _jsx("button", { onClick: () => navigate('/tickets'), children: "\uD83C\uDF9F\uFE0F \u0411\u0438\u043B\u0435\u0442\u044B" })] }));
+    return (_jsxs("div", { style: { padding: 16 }, children: [_jsx("h1", { children: "\uD83C\uDFE0 \u0413\u043B\u0430\u0432\u043D\u0430\u044F" }), _jsx("button", { onClick: () => navigate('/tickets'), children: "\uD83C\uDF9F\uFE0F \u0411\u0438\u043B\u0435\u0442\u044B" })] }));
 }
