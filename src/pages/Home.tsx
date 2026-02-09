@@ -1,18 +1,23 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp
+    if (!tg) return
+
+    tg.ready()
+    tg.expand()
+  }, [])
+
   return (
     <div style={{ padding: 16 }}>
-      <h1>🚇 FAQ транспорта</h1>
-      <p>Полезная информация для пассажиров</p>
+      <h1>Главная</h1>
 
-      <button
-        style={{ padding: 12, width: '100%' }}
-        onClick={() => navigate('/tickets')}
-      >
-        🎟️ Билеты и проезд
+      <button onClick={() => navigate('/tickets')}>
+        Перейти к билетам
       </button>
     </div>
   )

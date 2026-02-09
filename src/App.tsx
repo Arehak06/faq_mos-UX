@@ -1,8 +1,13 @@
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Tickets from './pages/Tickets'
+
 function App() {
   return (
-    <div style={{ padding: 20, fontSize: 24 }}>
-      TELEGRAM APP WORKS
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/tickets" element={<Tickets />} />
+    </Routes>
   )
 }
 
