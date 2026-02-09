@@ -13,11 +13,11 @@ export default function Home() {
   }, [])
 
   return (
-    <div style={{ padding: 16 }}>
-      <h1>Главная</h1>
+    <div style={{ padding: 20 }}>
+      <h1>🏠 Home</h1>
 
       <button onClick={() => navigate('/tickets')}>
-        Перейти к билетам
+        🎟️ К билетам
       </button>
     </div>
   )
