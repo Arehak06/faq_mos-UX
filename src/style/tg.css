@@ -22,3 +22,33 @@
   line-height: 1.4;
   color: var(--tg-theme-text-color, #000);
 }
+.tg-list {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.tg-list li {
+  margin-bottom: 6px;
+  font-size: 15px;
+}
+
+.tg-warning {
+  background: rgba(255, 186, 0, 0.15);
+  color: #9a6b00;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.tg-button {
+  width: 100%;
+  background: var(--tg-theme-button-color, #2ea6ff);
+  color: var(--tg-theme-button-text-color, #fff);
+  border: none;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
