@@ -1,0 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export default function About() {
+    return (_jsxs("div", { className: "page", children: [_jsx("h1", { className: "page-title", children: "\u2139\uFE0F \u041E \u043F\u0440\u043E\u0435\u043A\u0442\u0435" }), _jsx("div", { className: "card", children: _jsx("div", { className: "card-text", children: "\u042D\u0442\u043E \u043D\u0435\u043E\u0444\u0438\u0446\u0438\u0430\u043B\u044C\u043D\u044B\u0439 \u0441\u043F\u0440\u0430\u0432\u043E\u0447\u043D\u0438\u043A \u043F\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u0430 \u0442\u0440\u0430\u043D\u0441\u043F\u043E\u0440\u0442\u0430 \u041C\u043E\u0441\u043A\u0432\u044B." }) }), _jsx("div", { className: "card", children: _jsx("div", { className: "card-text", children: "\u0418\u0441\u0442\u043E\u0447\u043D\u0438\u043A\u0438: mos.ru, transport.mos.ru" }) })] }));
+}

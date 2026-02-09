@@ -1,0 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export default function Fines() {
+    return (_jsxs("div", { className: "page", children: [_jsx("h1", { className: "page-title", children: "\uD83D\uDCB8 \u0428\u0442\u0440\u0430\u0444\u044B" }), _jsxs("div", { className: "card", children: [_jsx("div", { className: "card-title", children: "\u0411\u0435\u0437 \u0431\u0438\u043B\u0435\u0442\u0430" }), _jsx("div", { className: "card-text", children: "\u0428\u0442\u0440\u0430\u0444 \u2014 2000 \u20BD" })] }), _jsxs("div", { className: "card", children: [_jsx("div", { className: "card-title", children: "\u041F\u0440\u043E\u0445\u043E\u0434 \u0437\u0430 \u0434\u0440\u0443\u0433\u0438\u043C \u043F\u0430\u0441\u0441\u0430\u0436\u0438\u0440\u043E\u043C" }), _jsx("div", { className: "card-text", children: "\u0428\u0442\u0440\u0430\u0444 \u2014 2000 \u20BD" })] })] }));
+}
