@@ -43,12 +43,12 @@
 
 .tg-button {
   width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
   background: var(--tg-theme-button-color, #2ea6ff);
   color: var(--tg-theme-button-text-color, #fff);
-  border: none;
-  border-radius: 12px;
-  padding: 12px;
   font-size: 15px;
   font-weight: 500;
-  cursor: pointer;
+  margin: 8px 0;
 }
