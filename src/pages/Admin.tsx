@@ -2,6 +2,8 @@ import { useState } from 'react'
 import PageEditor from './PageEditor'
 import PageView from './PageView'
 import { loadPages, savePages } from '../utils/storage'
+import { useTelegramMainButton } from '../hooks/useTelegramMainButton'
+
 
 export default function Admin() {
   const [pages, setPages] = useState(loadPages())
@@ -20,6 +22,12 @@ export default function Admin() {
     savePages(pages)
     setSaved(true)
   }
+
+  useTelegramMainButton({
+  text: '💾 Сохранить',
+  onClick: save,
+  visible: mode === 'edit'
+   })
 
   return (
     <div className="page">

@@ -9,6 +9,7 @@ import Fines from './pages/Fines'
 import About from './pages/About'
 import Admin from './pages/Admin'
 import AdminRoute from './components/AdminRoute'
+import { useTelegramMainButton } from './hooks/useTelegramMainButton'
 
 declare global {
   interface Window {
@@ -24,6 +25,8 @@ function App() {
     tg.ready()
     tg.expand()
   }, [])
+
+  useTelegramMainButton()
 
   return (
     <Routes>
