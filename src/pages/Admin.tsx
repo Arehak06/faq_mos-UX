@@ -3,19 +3,17 @@ import PageEditor from './PageEditor'
 import PageView from './PageView'
 import { loadPages, savePages } from '../utils/storage'
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton'
-import { importMarkdown } from '../utils/importMarkdown'
-
-
+import type { PageData } from '../types/page'
 
 export default function Admin() {
-  const [pages, setPages] = useState(loadPages())
-  const [current, setCurrent] = useState('home')
+  const [pages, setPages] = useState<Record<string, PageData>>(loadPages())
+  const [current, setCurrent] = useState<string>(Object.keys(pages)[0])
   const [mode, setMode] = useState<'view' | 'edit'>('edit')
   const [saved, setSaved] = useState(true)
 
   const page = pages[current]
 
-  const updatePage = (p: any) => {
+  const updatePage = (p: PageData) => {
     setPages({ ...pages, [current]: p })
     setSaved(false)
   }
@@ -25,24 +23,11 @@ export default function Admin() {
     setSaved(true)
   }
 
-  const importFile = async (file: File) => {
-  const text = await file.text()
-  const page = importMarkdown(text)
-
-  setPages({
-    ...pages,
-    [current]: page
-  })
-
-  setSaved(false)
-}
-
-
   useTelegramMainButton({
-  text: '💾 Сохранить',
-  onClick: save,
-  visible: mode === 'edit'
-   })
+    text: '💾 Сохранить',
+    onClick: save,
+    visible: mode === 'edit'
+  })
 
   return (
     <div className="page">
@@ -64,29 +49,15 @@ export default function Admin() {
           {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
         </button>
 
-        <button
-          onClick={save}
-          disabled={saved}
-        >
+        <button onClick={save} disabled={saved}>
           💾 Сохранить
         </button>
       </div>
 
-      <input
-         type="file"
-         accept=".md,.mdx"
-         onChange={(e) => {
-         const file = e.target.files?.[0]
-         if (file) importFile(file)
-  }}
-/>
-
-
-      {mode === 'view' ? (
-        <PageView page={page} />
-      ) : (
-        <PageEditor page={page} onChange={updatePage} />
-      )}
+      {mode === 'view'
+        ? <PageView page={page} />
+        : <PageEditor page={page} onChange={updatePage} />
+      }
     </div>
   )
 }

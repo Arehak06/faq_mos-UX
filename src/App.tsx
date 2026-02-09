@@ -26,7 +26,12 @@ function App() {
     tg.expand()
   }, [])
 
-  useTelegramMainButton()
+  useTelegramMainButton({
+  text: '',
+  onClick: () => {},
+  visible: false
+})
+
 
   return (
     <Routes>

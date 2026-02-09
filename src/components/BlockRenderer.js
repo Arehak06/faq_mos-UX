@@ -7,7 +7,7 @@ export function BlockRenderer({ block }) {
         return (_jsx(TgCard, { children: _jsx("p", { children: block.text }) }));
     }
     if (block.type === 'card') {
-        return (_jsxs(TgCard, { children: [_jsx("div", { className: "card-title", children: block.title }), _jsx("div", { className: "card-text", children: block.text })] }));
+        return (_jsxs(TgCard, { children: ["\u043F", _jsx("div", { className: "card-title", children: block.title }), _jsx("div", { className: "card-text", children: block.text })] }));
     }
     if (block.type === 'button') {
         return (_jsx("button", { className: "tg-button", onClick: () => {

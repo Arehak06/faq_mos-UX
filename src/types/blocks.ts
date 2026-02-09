@@ -4,6 +4,7 @@ export type TextBlock = {
   text: string
 }
 
+
 export type CardBlock = {
   id: string
   type: 'card'
