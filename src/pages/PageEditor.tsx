@@ -7,10 +7,8 @@ export default function PageEditor({
 }) {
   return (
     <div className="editor">
-      <h3>✏️ Редактор страницы</h3>
-
-      <label>
-        Заголовок:
+      <label className="editor-field">
+        <span>Заголовок страницы</span>
         <input
           value={page.title}
           onChange={(e) =>
@@ -19,13 +17,18 @@ export default function PageEditor({
         />
       </label>
 
+      <h3>Блоки</h3>
+
       {page.blocks.map((b: any, i: number) => (
         <div key={b.id} className="editor-block">
-          <strong>{b.type}</strong>
+          <div className="editor-block-header">
+            <strong>{b.type}</strong>
+          </div>
 
           {b.type === 'text' && (
             <textarea
               value={b.value}
+              placeholder="Текст блока"
               onChange={(e) => {
                 const copy = structuredClone(page)
                 copy.blocks[i].value = e.target.value
@@ -37,8 +40,8 @@ export default function PageEditor({
           {b.type === 'card' && (
             <>
               <input
-                placeholder="Заголовок"
                 value={b.title}
+                placeholder="Заголовок карточки"
                 onChange={(e) => {
                   const copy = structuredClone(page)
                   copy.blocks[i].title = e.target.value
@@ -46,8 +49,8 @@ export default function PageEditor({
                 }}
               />
               <textarea
-                placeholder="Текст"
                 value={b.text}
+                placeholder="Текст карточки"
                 onChange={(e) => {
                   const copy = structuredClone(page)
                   copy.blocks[i].text = e.target.value

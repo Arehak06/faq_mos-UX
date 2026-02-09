@@ -1,46 +1,55 @@
 import { useState } from 'react'
-import { loadPages, savePages } from '../utils/storage'
 import PageEditor from './PageEditor'
 import PageView from './PageView'
+import { loadPages, savePages } from '../utils/storage'
 
 export default function Admin() {
   const [pages, setPages] = useState(loadPages())
   const [current, setCurrent] = useState('home')
-  const [preview, setPreview] = useState(false)
+  const [mode, setMode] = useState<'view' | 'edit'>('edit')
+  const [saved, setSaved] = useState(true)
 
   const page = pages[current]
 
   const updatePage = (p: any) => {
     setPages({ ...pages, [current]: p })
+    setSaved(false)
   }
 
   const save = () => {
     savePages(pages)
-    alert('Сохранено')
+    setSaved(true)
   }
 
   return (
     <div className="page">
       <h1>🛠 Админка</h1>
 
-      <select
-        value={current}
-        onChange={(e) => setCurrent(e.target.value)}
-      >
-        {Object.keys(pages).map((k) => (
-          <option key={k} value={k}>
-            {k}
-          </option>
-        ))}
-      </select>
+      <div className="admin-toolbar">
+        <select
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+        >
+          {Object.keys(pages).map((k) => (
+            <option key={k} value={k}>
+              {k}
+            </option>
+          ))}
+        </select>
 
-      <button onClick={() => setPreview(!preview)}>
-        {preview ? '✏️ Редактировать' : '👁 Просмотр'}
-      </button>
+        <button onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
+          {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
+        </button>
 
-      <button onClick={save}>💾 Сохранить</button>
+        <button
+          onClick={save}
+          disabled={saved}
+        >
+          💾 Сохранить
+        </button>
+      </div>
 
-      {preview ? (
+      {mode === 'view' ? (
         <PageView page={page} />
       ) : (
         <PageEditor page={page} onChange={updatePage} />

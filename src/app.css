@@ -107,3 +107,37 @@ select {
   border-radius: 8px;
   margin-bottom: 12px;
 }
+
+.admin-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.editor-field span {
+  display: block;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.editor input,
+.editor textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-top: 4px;
+}
+
+.editor-block {
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.editor-block-header {
+  margin-bottom: 8px;
+  opacity: 0.7;
+}
