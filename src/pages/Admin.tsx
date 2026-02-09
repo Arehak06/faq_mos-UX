@@ -78,8 +78,8 @@ export default function Admin() {
          onChange={(e) => {
          const file = e.target.files?.[0]
          if (file) importFile(file)
-    }}
-    />
+  }}
+/>
 
 
       {mode === 'view' ? (
