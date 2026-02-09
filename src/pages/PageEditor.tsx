@@ -1,3 +1,7 @@
+function uid() {
+  return Math.random().toString(36).slice(2)
+}
+
 export default function PageEditor({
   page,
   onChange
@@ -5,6 +9,41 @@ export default function PageEditor({
   page: any
   onChange: (p: any) => void
 }) {
+  const addTextBlock = () => {
+    onChange({
+      ...page,
+      blocks: [
+        ...page.blocks,
+        {
+          id: uid(),
+          type: 'text',
+          value: ''
+        }
+      ]
+    })
+  }
+
+  const addCardBlock = () => {
+    onChange({
+      ...page,
+      blocks: [
+        ...page.blocks,
+        {
+          id: uid(),
+          type: 'card',
+          title: '',
+          text: ''
+        }
+      ]
+    })
+  }
+
+  const removeBlock = (index: number) => {
+    const copy = structuredClone(page)
+    copy.blocks.splice(index, 1)
+    onChange(copy)
+  }
+
   return (
     <div className="editor">
       <label className="editor-field">
@@ -23,6 +62,13 @@ export default function PageEditor({
         <div key={b.id} className="editor-block">
           <div className="editor-block-header">
             <strong>{b.type}</strong>
+
+            <button
+              className="danger"
+              onClick={() => removeBlock(i)}
+            >
+              🗑
+            </button>
           </div>
 
           {b.type === 'text' && (
@@ -61,6 +107,11 @@ export default function PageEditor({
           )}
         </div>
       ))}
+
+      <div className="editor-actions">
+        <button onClick={addTextBlock}>➕ Текст</button>
+        <button onClick={addCardBlock}>➕ Карточка</button>
+      </div>
     </div>
   )
 }
