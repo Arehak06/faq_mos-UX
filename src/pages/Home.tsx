@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { isAdmin } from '../utils/isAdmin'
 
 const ADMINS = [
   8530682852
@@ -22,15 +23,10 @@ export default function Home() {
 
       {/* Админ-панель */}
       {isAdmin && (
-        <div className="admin-panel">
-          <span>🛠 Администратор</span>
-
-          <button
-            className="admin-btn"
-            onClick={() => setEditMode(!editMode)}
-          >
-            {editMode ? '👁 Просмотр' : '✏️ Редактировать'}
-          </button>
+     <div
+    className="card admin-entry"
+    onClick={() => navigate('/admin')}
+     >
         </div>
       )}
 
