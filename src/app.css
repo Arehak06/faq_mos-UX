@@ -1,3 +1,6 @@
+/* ================================
+   Telegram UI variables
+================================ */
 :root {
   --tg-bg: #f5f5f7;
   --tg-card: #ffffff;
@@ -7,7 +10,13 @@
   --tg-accent: #2aabee;
 }
 
-/* ===== Base ===== */
+/* ================================
+   Base
+================================ */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   background: var(--tg-bg);
@@ -22,7 +31,9 @@ body {
     sans-serif;
 }
 
-/* ===== Page ===== */
+/* ================================
+   Page
+================================ */
 .page {
   padding: 12px;
 }
@@ -33,7 +44,9 @@ body {
   margin: 8px 4px 16px;
 }
 
-/* ===== Cards ===== */
+/* ================================
+   Telegram Cards
+================================ */
 .tg-card {
   background: var(--tg-card);
   border-radius: 14px;
@@ -48,7 +61,9 @@ body {
   line-height: 1.45;
 }
 
-/* ===== Card content ===== */
+/* ================================
+   Card content blocks
+================================ */
 .card-title {
   font-weight: 600;
   margin-bottom: 6px;
@@ -59,14 +74,16 @@ body {
   color: var(--tg-hint);
 }
 
-/* ===== Buttons ===== */
+/* ================================
+   Buttons (Telegram style)
+================================ */
 .tg-button {
   width: 100%;
   padding: 14px;
   border-radius: 12px;
   border: none;
   background: var(--tg-accent);
-  color: white;
+  color: #fff;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -76,7 +93,9 @@ body {
   opacity: 0.85;
 }
 
-/* ===== Lists ===== */
+/* ================================
+   Lists
+================================ */
 .tg-list {
   padding-left: 18px;
   margin: 0;
@@ -87,7 +106,9 @@ body {
   font-size: 14px;
 }
 
-/* ===== Warning ===== */
+/* ================================
+   Warning block
+================================ */
 .tg-warning {
   background: #fff4d6;
   color: #8a5b00;
@@ -97,7 +118,9 @@ body {
   margin-bottom: 12px;
 }
 
-/* ===== Editor ===== */
+/* ================================
+   Editor (Admin)
+================================ */
 .editor {
   padding: 12px;
 }
@@ -117,6 +140,7 @@ body {
   border: 1px solid var(--tg-border);
   font-size: 14px;
   margin-bottom: 10px;
+  background: #fff;
 }
 
 .editor textarea {
@@ -149,8 +173,26 @@ body {
   border-radius: 10px;
   border: none;
   background: var(--tg-accent);
-  color: white;
+  color: #fff;
   font-size: 14px;
+}
+
+/* ================================
+   Admin / Toolbar
+================================ */
+.admin-toolbar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.admin-toolbar select,
+.admin-toolbar button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  background: #fff;
+  font-size: 13px;
 }
 
 button.danger {
