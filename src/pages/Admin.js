@@ -1,7 +1,7 @@
 import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from 'react';
-import PageEditor from '../components/PageEditor';
-import PageView from '../components/PageView';
+import PageEditor from './PageEditor';
+import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 export default function Admin() {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import PageEditor from '../components/PageEditor'
-import PageView from '../components/PageView'
+import PageEditor from './PageEditor'
+import PageView from './PageView'
 import { loadPages, savePages } from '../utils/storage'
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton'
 

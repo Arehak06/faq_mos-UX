@@ -1,5 +1,5 @@
 import { PageData } from '../types/page'
-import { BlockRenderer } from './BlockRenderer'
+import { BlockRenderer } from '../components/BlockRenderer'
 
 type Props = {
   page: PageData
