@@ -1,11 +1,7 @@
 import { PageData } from '../types/page'
 import { BlockRenderer } from '../components/BlockRenderer'
 
-type Props = {
-  page: PageData
-}
-
-export default function PageView({ page }: Props) {
+export default function PageView({ page }: { page: PageData }) {
   return (
     <div className="page">
       <h1 className="page-title">{page.title}</h1>

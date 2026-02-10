@@ -1,7 +1,5 @@
-type Props = {
-  children: React.ReactNode
-}
+import { ReactNode } from 'react'
 
-export function TgCard({ children }: Props) {
+export function TgCard({ children }: { children: ReactNode }) {
   return <div className="tg-card">{children}</div>
 }

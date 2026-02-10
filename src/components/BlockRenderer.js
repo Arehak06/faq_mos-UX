@@ -1,17 +1,21 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useNavigate } from 'react-router-dom';
+import { TgCard } from './TgCard';
 export function BlockRenderer({ block }) {
-    const navigate = useNavigate();
-    if (block.type === 'text') {
-        return _jsx("p", { children: block.text });
+    switch (block.type) {
+        case 'text':
+            return (_jsx(TgCard, { children: _jsx("p", { children: block.text }) }));
+        case 'card':
+            return (_jsxs(TgCard, { children: [_jsx("div", { className: "card-title", children: block.title }), _jsx("div", { className: "card-text", children: block.text })] }));
+        case 'button':
+            return (_jsx("button", { className: "tg-button", onClick: () => {
+                    if (block.url.startsWith('http')) {
+                        window.open(block.url, '_blank');
+                    }
+                    else {
+                        window.location.hash = block.url;
+                    }
+                }, children: block.text }));
+        default:
+            return null;
     }
-    if (block.type === 'card') {
-        return (_jsxs("div", { className: "card", children: [_jsx("div", { className: "card-title", children: block.title }), _jsx("div", { className: "card-text", children: block.text })] }));
-    }
-    if (block.type === 'button') {
-        return (_jsx("button", { className: "tg-button", onClick: () => block.url.startsWith('http')
-                ? window.open(block.url, '_blank')
-                : navigate(block.url), children: block.text }));
-    }
-    return null;
 }
