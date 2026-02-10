@@ -201,3 +201,61 @@ button.danger {
   font-size: 16px;
   cursor: pointer;
 }
+/* ================================
+   Home cards (Telegram settings)
+================================ */
+.home-card {
+  background: var(--tg-card);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.home-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.home-item:not(:last-child) {
+  border-bottom: 1px solid var(--tg-border);
+}
+
+.home-item:active {
+  background: #f0f0f0;
+}
+
+.home-item-icon {
+  font-size: 18px;
+}
+
+.home-item-text {
+  flex: 1;
+}
+
+.home-item-title {
+  font-weight: 500;
+}
+
+.home-item-subtitle {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+/* ================================
+   Admin cards
+================================ */
+.admin-card {
+  background: var(--tg-card);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}

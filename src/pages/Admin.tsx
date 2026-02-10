@@ -11,10 +11,12 @@ export default function Admin() {
 
   const page = pages[current]
 
+  /* автосохранение */
   useEffect(() => {
     savePages(pages)
   }, [pages])
 
+  /* Telegram MainButton */
   useTelegramMainButton({
     text: '💾 Сохранить',
     visible: mode === 'edit',
@@ -22,17 +24,40 @@ export default function Admin() {
   })
 
   return (
-    <>
-      <select value={current} onChange={(e) => setCurrent(e.target.value)}>
-        {Object.keys(pages).map((k) => (
-          <option key={k}>{k}</option>
-        ))}
-      </select>
+    <div className="page">
+      <h1 className="page-title">🛠 Админка</h1>
 
-      <button onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
-        {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
-      </button>
+      {/* ===== Page selector ===== */}
+      <div className="admin-card">
+        <div className="admin-card-title">Страница</div>
 
+        <select
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+        >
+          {Object.keys(pages).map((k) => (
+            <option key={k} value={k}>
+              {k}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* ===== Mode switch ===== */}
+      <div className="admin-card">
+        <div className="admin-card-title">Режим</div>
+
+        <button
+          className="tg-button"
+          onClick={() =>
+            setMode(mode === 'edit' ? 'view' : 'edit')
+          }
+        >
+          {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
+        </button>
+      </div>
+
+      {/* ===== Content ===== */}
       {mode === 'edit' ? (
         <PageEditor
           page={page}
@@ -43,6 +68,6 @@ export default function Admin() {
       ) : (
         <PageView page={page} />
       )}
-    </>
+    </div>
   )
 }
