@@ -1,10 +1,14 @@
 import { PageData } from '../types/page'
 import { BlockRenderer } from '../components/BlockRenderer'
 
-export default function PageView({ page }: { page: PageData }) {
+type Props = {
+  page: PageData
+}
+
+export default function PageView({ page }: Props) {
   return (
     <div className="page">
-      <h1>{page.title}</h1>
+      <h1 className="page-title">{page.title}</h1>
 
       {page.blocks.map((b) => (
         <BlockRenderer key={b.id} block={b} />

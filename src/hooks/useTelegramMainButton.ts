@@ -1,4 +1,6 @@
-type TelegramMainButtonOptions = {
+import { useEffect } from 'react'
+
+type Options = {
   text: string
   onClick: () => void
   visible?: boolean
@@ -8,19 +10,25 @@ export function useTelegramMainButton({
   text,
   onClick,
   visible = true
-}: TelegramMainButtonOptions) {
-  const tg = window.Telegram?.WebApp
+}: Options) {
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp
+    if (!tg) return
 
-  if (!tg) return
+    const btn = tg.MainButton
 
-  tg.MainButton.setText(text)
+    if (!visible) {
+      btn.hide()
+      return
+    }
 
-  if (visible) {
-    tg.MainButton.show()
-  } else {
-    tg.MainButton.hide()
-  }
+    btn.setText(text)
+    btn.show()
 
-  tg.MainButton.offClick(onClick)
-  tg.MainButton.onClick(onClick)
+    btn.onClick(onClick)
+
+    return () => {
+      btn.offClick(onClick)
+    }
+  }, [text, onClick, visible])
 }

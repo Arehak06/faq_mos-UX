@@ -1,14 +1,19 @@
+import { useEffect } from 'react';
 export function useTelegramMainButton({ text, onClick, visible = true }) {
-    const tg = window.Telegram?.WebApp;
-    if (!tg)
-        return;
-    tg.MainButton.setText(text);
-    if (visible) {
-        tg.MainButton.show();
-    }
-    else {
-        tg.MainButton.hide();
-    }
-    tg.MainButton.offClick(onClick);
-    tg.MainButton.onClick(onClick);
+    useEffect(() => {
+        const tg = window.Telegram?.WebApp;
+        if (!tg)
+            return;
+        const btn = tg.MainButton;
+        if (!visible) {
+            btn.hide();
+            return;
+        }
+        btn.setText(text);
+        btn.show();
+        btn.onClick(onClick);
+        return () => {
+            btn.offClick(onClick);
+        };
+    }, [text, onClick, visible]);
 }
