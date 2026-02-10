@@ -1,11 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { PageMainButton } from '../types/page'
 
 export function usePageMainButton(mainButton?: PageMainButton) {
+  const handlerRef = useRef<(() => void) | null>(null)
+
   useEffect(() => {
     const tg = window.Telegram?.WebApp
-    if (!tg) return
+    if (!tg || !tg.MainButton) return
 
+    // если кнопки нет — просто скрываем
     if (!mainButton) {
       tg.MainButton.hide()
       return
@@ -13,6 +16,11 @@ export function usePageMainButton(mainButton?: PageMainButton) {
 
     tg.MainButton.setText(mainButton.text)
     tg.MainButton.show()
+
+    // удаляем старый handler
+    if (handlerRef.current) {
+      tg.MainButton.offClick(handlerRef.current)
+    }
 
     const handler = () => {
       if (mainButton.action.type === 'link') {
@@ -24,11 +32,14 @@ export function usePageMainButton(mainButton?: PageMainButton) {
       }
     }
 
-    tg.MainButton.offClick(handler)
+    handlerRef.current = handler
     tg.MainButton.onClick(handler)
 
     return () => {
-      tg.MainButton.offClick(handler)
+      if (handlerRef.current) {
+        tg.MainButton.offClick(handlerRef.current)
+        handlerRef.current = null
+      }
     }
   }, [mainButton])
 }

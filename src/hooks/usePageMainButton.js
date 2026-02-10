@@ -1,15 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 export function usePageMainButton(mainButton) {
+    const handlerRef = useRef(null);
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
-        if (!tg)
+        if (!tg || !tg.MainButton)
             return;
+        // если кнопки нет — просто скрываем
         if (!mainButton) {
             tg.MainButton.hide();
             return;
         }
         tg.MainButton.setText(mainButton.text);
         tg.MainButton.show();
+        // удаляем старый handler
+        if (handlerRef.current) {
+            tg.MainButton.offClick(handlerRef.current);
+        }
         const handler = () => {
             if (mainButton.action.type === 'link') {
                 window.open(mainButton.action.value, '_blank');
@@ -18,10 +24,13 @@ export function usePageMainButton(mainButton) {
                 window.location.hash = mainButton.action.value;
             }
         };
-        tg.MainButton.offClick(handler);
+        handlerRef.current = handler;
         tg.MainButton.onClick(handler);
         return () => {
-            tg.MainButton.offClick(handler);
+            if (handlerRef.current) {
+                tg.MainButton.offClick(handlerRef.current);
+                handlerRef.current = null;
+            }
         };
     }, [mainButton]);
 }

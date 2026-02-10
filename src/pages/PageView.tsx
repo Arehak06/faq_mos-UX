@@ -7,7 +7,12 @@ type Props = {
 }
 
 export default function PageView({ page }: Props) {
-  // usePageMainButton(page.mainButton)
+  usePageMainButton(
+  page.mainButton && page.mainButton.action
+    ? page.mainButton
+    : undefined
+)
+
 
   return (
     <div className="page">
