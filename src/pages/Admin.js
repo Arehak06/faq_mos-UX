@@ -1,29 +1,21 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
-import PageEditor from './PageEditor';
-import PageView from './PageView';
+import { jsx as _jsx, Fragment as _Fragment, jsxs as _jsxs } from "react/jsx-runtime";
+import { useEffect, useState } from 'react';
+import PageEditor from '../components/PageEditor';
+import PageView from '../components/PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 export default function Admin() {
     const [pages, setPages] = useState(loadPages());
-    const [current, setCurrent] = useState(Object.keys(pages)[0]);
+    const [current, setCurrent] = useState('home');
     const [mode, setMode] = useState('edit');
-    const [saved, setSaved] = useState(true);
     const page = pages[current];
-    const updatePage = (p) => {
-        setPages({ ...pages, [current]: p });
-        setSaved(false);
-    };
-    const save = () => {
+    useEffect(() => {
         savePages(pages);
-        setSaved(true);
-    };
+    }, [pages]);
     useTelegramMainButton({
         text: '💾 Сохранить',
-        onClick: save,
-        visible: mode === 'edit'
+        visible: mode === 'edit',
+        onClick: () => savePages(pages)
     });
-    return (_jsxs("div", { className: "page", children: [_jsx("h1", { children: "\uD83D\uDEE0 \u0410\u0434\u043C\u0438\u043D\u043A\u0430" }), _jsxs("div", { className: "admin-toolbar", children: [_jsx("select", { value: current, onChange: (e) => setCurrent(e.target.value), children: Object.keys(pages).map((k) => (_jsx("option", { value: k, children: k }, k))) }), _jsx("button", { onClick: () => setMode(mode === 'edit' ? 'view' : 'edit'), children: mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор' }), _jsx("button", { onClick: save, disabled: saved, children: "\uD83D\uDCBE \u0421\u043E\u0445\u0440\u0430\u043D\u0438\u0442\u044C" })] }), mode === 'view'
-                ? _jsx(PageView, { page: page })
-                : _jsx(PageEditor, { page: page, onChange: updatePage })] }));
+    return (_jsxs(_Fragment, { children: [_jsx("select", { value: current, onChange: (e) => setCurrent(e.target.value), children: Object.keys(pages).map((k) => (_jsx("option", { children: k }, k))) }), _jsx("button", { onClick: () => setMode(mode === 'edit' ? 'view' : 'edit'), children: mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор' }), mode === 'edit' ? (_jsx(PageEditor, { page: page, onChange: (p) => setPages({ ...pages, [current]: p }) })) : (_jsx(PageView, { page: page }))] }));
 }

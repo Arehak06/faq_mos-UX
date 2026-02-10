@@ -1,63 +1,48 @@
-import { useState } from 'react'
-import PageEditor from './PageEditor'
-import PageView from './PageView'
+import { useEffect, useState } from 'react'
+import PageEditor from '../components/PageEditor'
+import PageView from '../components/PageView'
 import { loadPages, savePages } from '../utils/storage'
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton'
-import type { PageData } from '../types/page'
 
 export default function Admin() {
-  const [pages, setPages] = useState<Record<string, PageData>>(loadPages())
-  const [current, setCurrent] = useState<string>(Object.keys(pages)[0])
-  const [mode, setMode] = useState<'view' | 'edit'>('edit')
-  const [saved, setSaved] = useState(true)
+  const [pages, setPages] = useState(loadPages())
+  const [current, setCurrent] = useState('home')
+  const [mode, setMode] = useState<'edit' | 'view'>('edit')
 
   const page = pages[current]
 
-  const updatePage = (p: PageData) => {
-    setPages({ ...pages, [current]: p })
-    setSaved(false)
-  }
-
-  const save = () => {
+  useEffect(() => {
     savePages(pages)
-    setSaved(true)
-  }
+  }, [pages])
 
   useTelegramMainButton({
     text: '💾 Сохранить',
-    onClick: save,
-    visible: mode === 'edit'
+    visible: mode === 'edit',
+    onClick: () => savePages(pages)
   })
 
   return (
-    <div className="page">
-      <h1>🛠 Админка</h1>
+    <>
+      <select value={current} onChange={(e) => setCurrent(e.target.value)}>
+        {Object.keys(pages).map((k) => (
+          <option key={k}>{k}</option>
+        ))}
+      </select>
 
-      <div className="admin-toolbar">
-        <select
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-        >
-          {Object.keys(pages).map((k) => (
-            <option key={k} value={k}>
-              {k}
-            </option>
-          ))}
-        </select>
+      <button onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
+        {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
+      </button>
 
-        <button onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
-          {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
-        </button>
-
-        <button onClick={save} disabled={saved}>
-          💾 Сохранить
-        </button>
-      </div>
-
-      {mode === 'view'
-        ? <PageView page={page} />
-        : <PageEditor page={page} onChange={updatePage} />
-      }
-    </div>
+      {mode === 'edit' ? (
+        <PageEditor
+          page={page}
+          onChange={(p) =>
+            setPages({ ...pages, [current]: p })
+          }
+        />
+      ) : (
+        <PageView page={page} />
+      )}
+    </>
   )
 }
