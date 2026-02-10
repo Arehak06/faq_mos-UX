@@ -1,37 +1,36 @@
 import { Block } from '../types/blocks'
-import { TgCard } from './TgCard'
+import { useNavigate } from 'react-router-dom'
 
 export function BlockRenderer({ block }: { block: Block }) {
-  switch (block.type) {
-    case 'text':
-      return (
-        <TgCard>
-          <p>{block.text}</p>
-        </TgCard>
-      )
+  const navigate = useNavigate()
 
-    case 'card':
-      return (
-        <TgCard>
-          <h3>{block.title}</h3>
-          <p>{block.text}</p>
-        </TgCard>
-      )
-
-    case 'button':
-      return (
-        <button
-          className="tg-button"
-          onClick={() => {
-            if (block.url.startsWith('http')) {
-              window.open(block.url, '_blank')
-            } else {
-              window.location.hash = block.url
-            }
-          }}
-        >
-          {block.text}
-        </button>
-      )
+  if (block.type === 'text') {
+    return <p>{block.text}</p>
   }
+
+  if (block.type === 'card') {
+    return (
+      <div className="card">
+        <div className="card-title">{block.title}</div>
+        <div className="card-text">{block.text}</div>
+      </div>
+    )
+  }
+
+  if (block.type === 'button') {
+    return (
+      <button
+        className="tg-button"
+        onClick={() =>
+          block.url.startsWith('http')
+            ? window.open(block.url, '_blank')
+            : navigate(block.url)
+        }
+      >
+        {block.text}
+      </button>
+    )
+  }
+
+  return null
 }
