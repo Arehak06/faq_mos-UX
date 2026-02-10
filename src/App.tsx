@@ -26,13 +26,6 @@ function App() {
     tg.expand()
   }, [])
 
-  useTelegramMainButton({
-  text: '',
-  onClick: () => {},
-  visible: false
-})
-
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
