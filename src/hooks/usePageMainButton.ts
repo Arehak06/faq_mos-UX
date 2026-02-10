@@ -8,7 +8,13 @@ export function usePageMainButton(mainButton?: PageMainButton) {
     const tg = window.Telegram?.WebApp
     if (!tg || !tg.MainButton) return
 
-    // если кнопки нет — просто скрываем
+    // ВСЕГДА сначала очищаем
+    if (handlerRef.current) {
+      tg.MainButton.offClick(handlerRef.current)
+      handlerRef.current = null
+    }
+
+    // если кнопки нет — скрываем и выходим
     if (!mainButton) {
       tg.MainButton.hide()
       return
@@ -17,17 +23,10 @@ export function usePageMainButton(mainButton?: PageMainButton) {
     tg.MainButton.setText(mainButton.text)
     tg.MainButton.show()
 
-    // удаляем старый handler
-    if (handlerRef.current) {
-      tg.MainButton.offClick(handlerRef.current)
-    }
-
     const handler = () => {
       if (mainButton.action.type === 'link') {
         window.open(mainButton.action.value, '_blank')
-      }
-
-      if (mainButton.action.type === 'route') {
+      } else {
         window.location.hash = mainButton.action.value
       }
     }
