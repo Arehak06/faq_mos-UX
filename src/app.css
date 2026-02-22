@@ -177,6 +177,40 @@ body {
   font-size: 14px;
 }
 
+/* --------------------------------
+   Editor additions
+-------------------------------- */
+
+/* Чекбокс в одну строку с текстом */
+.editor-field.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.editor-field.checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+.editor-field.checkbox span {
+  display: inline;
+  margin-bottom: 0;
+}
+
+/* Блок настроек MainButton */
+.editor-mainbutton {
+  background: var(--tg-card);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--tg-border);
+}
+
+/* Улучшение для кнопки удаления */
+button.danger:hover {
+  opacity: 0.7;
+}
+
 /* ================================
    Admin / Toolbar
 ================================ */
