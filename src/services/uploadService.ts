@@ -19,11 +19,28 @@ export async function uploadImage(file: File): Promise<string> {
     body: formData,
   });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.error || 'Ошибка загрузки изображения');
+  let errorMsg = `HTTP error ${response.status}`;
+  let responseData: any = null;
+
+  try {
+    // Пытаемся распарсить JSON, даже если статус не 200
+    responseData = await response.json();
+  } catch {
+    // Если не удалось, значит ответ не JSON – используем текст ошибки
+    const text = await response.text().catch(() => '');
+    errorMsg = text || errorMsg;
+    throw new Error(errorMsg);
   }
 
-  const data = await response.json();
-  return data.url;
+  if (!response.ok) {
+    // Если статус не 200, но JSON распарсился, берём сообщение из поля error
+    throw new Error(responseData?.error || errorMsg);
+  }
+
+  // Успешный ответ должен содержать url
+  if (!responseData?.url) {
+    throw new Error('Сервер не вернул URL изображения');
+  }
+
+  return responseData.url;
 }

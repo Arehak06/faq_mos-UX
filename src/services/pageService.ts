@@ -5,17 +5,26 @@ const API_URL = 'https://d5dfre3k7o8lq2478qsp.4b4k4pg5.apigw.yandexcloud.net/pag
 
 export async function fetchPages(): Promise<Record<string, PageData>> {
   const res = await fetch(API_URL);
-  if (!res.ok) throw new Error(`Failed to fetch pages: ${res.statusText}`);
+  if (!res.ok) {
+    let errorMsg = `Failed to fetch pages: ${res.status}`;
+    try {
+      const errorData = await res.json();
+      errorMsg = errorData?.error || errorMsg;
+    } catch {
+      // игнорируем
+    }
+    throw new Error(errorMsg);
+  }
   return res.json();
 }
 
 export async function savePagesToServer(pages: Record<string, PageData>): Promise<void> {
   const userId = getTelegramUserId();
   if (!userId) {
-    throw new Error('Не удалось определить пользователя Telegram. Админка доступна только в Telegram.');
+    throw new Error('Не удалось определить пользователя Telegram');
   }
 
-  const res = await fetch(API_URL, {
+  const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -24,8 +33,18 @@ export async function savePagesToServer(pages: Record<string, PageData>): Promis
     body: JSON.stringify(pages),
   });
 
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => null);
-    throw new Error(errorData?.error || `Failed to save pages: ${res.statusText}`);
+  let errorMsg = `HTTP error ${response.status}`;
+  let responseData: any = null;
+
+  try {
+    responseData = await response.json();
+  } catch {
+    const text = await response.text().catch(() => '');
+    errorMsg = text || errorMsg;
+    throw new Error(errorMsg);
+  }
+
+  if (!response.ok) {
+    throw new Error(responseData?.error || errorMsg);
   }
 }
