@@ -1,25 +1,37 @@
-import pages from '../data/pages.json';
 import { PageData } from '../types/page';
+import { fetchPages, savePagesToServer } from '../services/pageService';
 
 const KEY = 'pages';
 
-export function loadPages(): Record<string, PageData> {
+export async function loadPages(): Promise<Record<string, PageData>> {
   try {
-    const saved = localStorage.getItem(KEY);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
-        return parsed;
-      }
-    }
+    // Пробуем загрузить с сервера
+    const serverPages = await fetchPages();
+    // Сохраняем в localStorage как кэш
+    localStorage.setItem(KEY, JSON.stringify(serverPages));
+    return serverPages;
   } catch (e) {
-    console.warn('Ошибка загрузки из localStorage, используем pages.json', e);
-    localStorage.removeItem(KEY);
+    console.warn('Ошибка загрузки с сервера, используем кэш или локальный файл', e);
+    // Пробуем взять из localStorage
+    const cached = localStorage.getItem(KEY);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+    // Если нет кэша, грузим из pages.json
+    const pages = (await import('../data/pages.json')).default;
+    return pages as Record<string, PageData>;
   }
-  return pages as Record<string, PageData>;
 }
 
-// ✨ Добавьте эту функцию
-export function savePages(data: Record<string, PageData>) {
-  localStorage.setItem(KEY, JSON.stringify(data));
+export async function savePages(data: Record<string, PageData>): Promise<void> {
+  try {
+    // Сохраняем на сервер
+    await savePagesToServer(data);
+    // Обновляем localStorage
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error('Ошибка сохранения на сервер', e);
+    // Можно пробросить ошибку дальше, чтобы показать пользователю
+    throw new Error('Не удалось сохранить изменения на сервере');
+  }
 }

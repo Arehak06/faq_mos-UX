@@ -1,4 +1,4 @@
-import { PageData } from '../src/types/page';
+import { PageData } from '../types/page';
 
 // Укажите ваш URL от API Gateway
 const API_URL = 'https://d5dfre3k7o8lq2478qsp.4b4k4pg5.apigw.yandexcloud.net/pages';

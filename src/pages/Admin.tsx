@@ -8,21 +8,42 @@ import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 export default function Admin() {
   useTelegramBackButton(true);
 
-  const [pages, setPages] = useState(loadPages());
+  const [pages, setPages] = useState<Record<string, any> | null>(null);
   const [current, setCurrent] = useState('home');
   const [mode, setMode] = useState<'edit' | 'view'>('edit');
-
-  const page = pages[current];
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    savePages(pages);
-  }, [pages]);
+    loadPages()
+      .then(setPages)
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    if (!pages) return;
+    setSaving(true);
+    try {
+      await savePages(pages);
+      // Можно показать уведомление об успехе
+    } catch (err) {
+      alert((err as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useTelegramMainButton({
-    text: '💾 Сохранить',
-    visible: mode === 'edit',
-    onClick: () => savePages(pages),
+    text: saving ? '💾 Сохранение...' : '💾 Сохранить',
+    visible: mode === 'edit' && !saving,
+    onClick: handleSave,
   });
+
+  if (loading) return <div className="page">Загрузка...</div>;
+  if (!pages) return <div className="page">Ошибка загрузки</div>;
+
+  const page = pages[current];
 
   return (
     <div className="page">
