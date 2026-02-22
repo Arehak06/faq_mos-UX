@@ -1,7 +1,14 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { isAdmin } from '../utils/isAdmin';
 
 export default function Home() {
   const navigate = useNavigate();
+  const [admin, setAdmin] = useState(false);
+
+  useEffect(() => {
+    setAdmin(isAdmin());
+  }, []);
 
   return (
     <div className="page">
@@ -47,6 +54,17 @@ export default function Home() {
             <div className="home-item-subtitle">Контакты и источники</div>
           </div>
         </div>
+
+        {/* Кнопка админки — видна только администраторам */}
+        {admin && (
+          <div className="home-item" onClick={() => navigate('/admin')}>
+            <div className="home-item-icon">🛠️</div>
+            <div className="home-item-text">
+              <div className="home-item-title">Админка</div>
+              <div className="home-item-subtitle">Управление страницами</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
