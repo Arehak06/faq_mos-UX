@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Block, TextBlock, CardBlock, ButtonBlock } from '../types/blocks';
-import { PageData } from '../types/page';
+import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
 
@@ -9,48 +9,230 @@ type Props = {
   onChange: (p: PageData) => void;
 };
 
+// Компонент редактора MainButton
+type MainButtonEditorProps = {
+  mainButton: PageMainButton;
+  onChange: (mb: PageMainButton) => void;
+};
+
+function MainButtonEditor({ mainButton, onChange }: MainButtonEditorProps) {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...mainButton, text: e.target.value });
+  };
+
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange({
+      ...mainButton,
+      action: {
+        ...mainButton.action,
+        type: e.target.value as 'route' | 'link',
+      },
+    });
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({
+      ...mainButton,
+      action: { ...mainButton.action, value: e.target.value },
+    });
+  };
+
+  return (
+    <div className="editor-mainbutton">
+      <label className="editor-field">
+        <span>Текст кнопки</span>
+        <input value={mainButton.text} onChange={handleTextChange} />
+      </label>
+
+      <label className="editor-field">
+        <span>Тип действия</span>
+        <select value={mainButton.action.type} onChange={handleTypeChange}>
+          <option value="route">Переход внутри</option>
+          <option value="link">Внешняя ссылка</option>
+        </select>
+      </label>
+
+      <label className="editor-field">
+        <span>Значение</span>
+        <input
+          placeholder={mainButton.action.type === 'route' ? '/tickets' : 'https://...'}
+          value={mainButton.action.value}
+          onChange={handleValueChange}
+        />
+      </label>
+    </div>
+  );
+}
+
+// Компонент редактора отдельного блока
+type BlockEditorProps = {
+  block: Block;
+  index: number;
+  onUpdate: (index: number, block: Block) => void;
+  onRemove: (index: number) => void;
+};
+
+function BlockEditor({ block, index, onUpdate, onRemove }: BlockEditorProps) {
+  const handleRemove = () => {
+    if (window.confirm('Удалить блок?')) {
+      onRemove(index);
+    }
+  };
+
+  if (block.type === 'text') {
+    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onUpdate(index, { ...block, text: e.target.value });
+    };
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Текст</strong>
+          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
+            🗑
+          </button>
+        </div>
+        <textarea value={block.text} placeholder="Текст блока" onChange={handleTextChange} />
+      </div>
+    );
+  }
+
+  if (block.type === 'card') {
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, title: e.target.value });
+    };
+    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onUpdate(index, { ...block, text: e.target.value });
+    };
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Карточка</strong>
+          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
+            🗑
+          </button>
+        </div>
+        <input value={block.title} placeholder="Заголовок карточки" onChange={handleTitleChange} />
+        <textarea value={block.text} placeholder="Текст карточки" onChange={handleTextChange} />
+      </div>
+    );
+  }
+
+  if (block.type === 'button') {
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, text: e.target.value });
+    };
+    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, url: e.target.value });
+    };
+    const url = block.url;
+    const isUrlValid = url === '' || url.startsWith('http') || url.startsWith('/');
+
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Кнопка</strong>
+          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
+            🗑
+          </button>
+        </div>
+        <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
+        <input
+          value={block.url}
+          placeholder="Ссылка (https:// или /page)"
+          onChange={handleUrlChange}
+          style={!isUrlValid ? { borderColor: 'red' } : {}}
+        />
+        {!isUrlValid && (
+          <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+// Основной компонент
 export default function PageEditor({ page, onChange }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
 
-  const addTextBlock = () => {
+  const blocksList = useMemo(() => page.blocks, [page.blocks]);
+
+  const handleAddTextBlock = useCallback(() => {
     const block: TextBlock = { id: uid(), type: 'text', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
-  };
+  }, [page, onChange]);
 
-  const addCardBlock = () => {
+  const handleAddCardBlock = useCallback(() => {
     const block: CardBlock = { id: uid(), type: 'card', title: '', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
-  };
+  }, [page, onChange]);
 
-  const addButtonBlock = () => {
+  const handleAddButtonBlock = useCallback(() => {
     const block: ButtonBlock = { id: uid(), type: 'button', text: '', url: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
-  };
+  }, [page, onChange]);
 
-  const removeBlock = (index: number) => {
-    onChange({ ...page, blocks: page.blocks.filter((_, i) => i !== index) });
-  };
+  const handleRemoveBlock = useCallback(
+    (index: number) => {
+      onChange({ ...page, blocks: page.blocks.filter((_, i) => i !== index) });
+    },
+    [page, onChange]
+  );
 
-  const updateBlock = (index: number, block: Block) => {
-    const blocks = [...page.blocks];
-    blocks[index] = block;
-    onChange({ ...page, blocks });
-  };
+  const handleUpdateBlock = useCallback(
+    (index: number, updatedBlock: Block) => {
+      const blocks = [...page.blocks];
+      blocks[index] = updatedBlock;
+      onChange({ ...page, blocks });
+    },
+    [page, onChange]
+  );
 
-  const toggleMainButton = (enabled: boolean) => {
-    if (enabled) {
-      onChange({
-        ...page,
-        mainButton: {
-          text: 'Далее',
-          action: { type: 'route', value: '/' },
-        },
-      });
-    } else {
-      const { mainButton, ...rest } = page;
-      onChange(rest);
-    }
-  };
+  const handleToggleMainButton = useCallback(
+    (enabled: boolean) => {
+      if (enabled) {
+        onChange({
+          ...page,
+          mainButton: {
+            text: 'Далее',
+            action: { type: 'route', value: '/' },
+          },
+        });
+      } else {
+        const { mainButton, ...rest } = page;
+        onChange(rest);
+      }
+    },
+    [page, onChange]
+  );
+
+  const handleMainButtonChange = useCallback(
+    (newMainButton: PageMainButton) => {
+      onChange({ ...page, mainButton: newMainButton });
+    },
+    [page, onChange]
+  );
+
+  const handleDragStart = useCallback((e: React.DragEvent, index: number) => {
+    setDragIndex(index);
+    e.dataTransfer.setData('text/plain', '');
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+  }, []);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent, targetIndex: number) => {
+      e.preventDefault();
+      if (dragIndex === null || dragIndex === targetIndex) return;
+      const newBlocks = reorder(page.blocks, dragIndex, targetIndex);
+      onChange({ ...page, blocks: newBlocks });
+      setDragIndex(null);
+    },
+    [dragIndex, page, onChange]
+  );
 
   return (
     <div className="editor">
@@ -61,108 +243,40 @@ export default function PageEditor({ page, onChange }: Props) {
 
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">
-        <input type="checkbox" checked={!!page.mainButton} onChange={(e) => toggleMainButton(e.target.checked)} />
+        <input
+          type="checkbox"
+          checked={!!page.mainButton}
+          onChange={(e) => handleToggleMainButton(e.target.checked)}
+        />
         <span>Показывать кнопку</span>
       </label>
 
       {page.mainButton && (
-        <div className="editor-mainbutton">
-          <label className="editor-field">
-            <span>Текст кнопки</span>
-            <input
-              value={page.mainButton.text}
-              onChange={(e) =>
-                onChange({
-                  ...page,
-                  mainButton: { ...page.mainButton!, text: e.target.value },
-                })
-              }
-            />
-          </label>
-          <label className="editor-field">
-            <span>Тип действия</span>
-            <select
-              value={page.mainButton.action.type}
-              onChange={(e) =>
-                onChange({
-                  ...page,
-                  mainButton: {
-                    ...page.mainButton!,
-                    action: { ...page.mainButton!.action, type: e.target.value as 'route' | 'link' },
-                  },
-                })
-              }
-            >
-              <option value="route">Переход внутри</option>
-              <option value="link">Внешняя ссылка</option>
-            </select>
-          </label>
-          <label className="editor-field">
-            <span>Значение</span>
-            <input
-              placeholder={page.mainButton.action.type === 'route' ? '/tickets' : 'https://...'}
-              value={page.mainButton.action.value}
-              onChange={(e) =>
-                onChange({
-                  ...page,
-                  mainButton: {
-                    ...page.mainButton!,
-                    action: { ...page.mainButton!.action, value: e.target.value },
-                  },
-                })
-              }
-            />
-          </label>
-        </div>
+        <MainButtonEditor mainButton={page.mainButton} onChange={handleMainButtonChange} />
       )}
 
       <h3>Блоки</h3>
-      {page.blocks.map((b, i) => (
+      {blocksList.map((b, i) => (
         <div
           key={b.id}
-          className="editor-block"
           draggable
-          onDragStart={(e) => {
-            setDragIndex(i);
-            e.dataTransfer.setData('text/plain', '');
-          }}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={() => {
-            if (dragIndex === null || dragIndex === i) return;
-            const blocks = reorder(page.blocks, dragIndex, i);
-            onChange({ ...page, blocks });
-            setDragIndex(null);
-          }}
+          onDragStart={(e) => handleDragStart(e, i)}
+          onDragOver={handleDragOver}
+          onDrop={(e) => handleDrop(e, i)}
         >
-          <div className="editor-block-header">
-            <strong>{b.type}</strong>
-            <button className="danger" onClick={() => removeBlock(i)}>
-              🗑
-            </button>
-          </div>
-
-          {b.type === 'text' && (
-            <textarea value={b.text} placeholder="Текст блока" onChange={(e) => updateBlock(i, { ...b, text: e.target.value })} />
-          )}
-          {b.type === 'card' && (
-            <>
-              <input value={b.title} placeholder="Заголовок карточки" onChange={(e) => updateBlock(i, { ...b, title: e.target.value })} />
-              <textarea value={b.text} placeholder="Текст карточки" onChange={(e) => updateBlock(i, { ...b, text: e.target.value })} />
-            </>
-          )}
-          {b.type === 'button' && (
-            <>
-              <input value={b.text} placeholder="Текст кнопки" onChange={(e) => updateBlock(i, { ...b, text: e.target.value })} />
-              <input value={b.url} placeholder="Ссылка (https:// или /page)" onChange={(e) => updateBlock(i, { ...b, url: e.target.value })} />
-            </>
-          )}
+          <BlockEditor
+            block={b}
+            index={i}
+            onUpdate={handleUpdateBlock}
+            onRemove={handleRemoveBlock}
+          />
         </div>
       ))}
 
       <div className="editor-actions">
-        <button onClick={addTextBlock}>➕ Текст</button>
-        <button onClick={addCardBlock}>➕ Карточка</button>
-        <button onClick={addButtonBlock}>➕ Кнопка</button>
+        <button onClick={handleAddTextBlock}>➕ Текст</button>
+        <button onClick={handleAddCardBlock}>➕ Карточка</button>
+        <button onClick={handleAddButtonBlock}>➕ Кнопка</button>
       </div>
     </div>
   );
