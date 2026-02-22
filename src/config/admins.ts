@@ -1,3 +1,1 @@
-export const ADMINS = [
-  8530682852
-]
+export const ADMINS = [8530682852];

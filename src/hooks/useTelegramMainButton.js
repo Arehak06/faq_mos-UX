@@ -1,19 +1,30 @@
-import { useEffect } from 'react';
-export function useTelegramMainButton({ text, onClick, visible = true }) {
+import { useEffect, useRef } from 'react';
+export function useTelegramMainButton({ text, onClick, visible = true, color, textColor, active = true, progress = false, }) {
+    const onClickRef = useRef(onClick);
+    useEffect(() => {
+        onClickRef.current = onClick;
+    }, [onClick]);
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
         if (!tg)
             return;
         const btn = tg.MainButton;
-        if (!visible) {
-            btn.hide();
-            return;
+        if (color)
+            btn.setParams({ color });
+        if (textColor)
+            btn.setParams({ text_color: textColor });
+        btn.setParams({ is_active: active, is_progress_visible: progress });
+        if (visible) {
+            btn.setText(text);
+            btn.show();
         }
-        btn.setText(text);
-        btn.show();
-        btn.onClick(onClick);
+        else {
+            btn.hide();
+        }
+        const handler = () => onClickRef.current();
+        btn.onClick(handler);
         return () => {
-            btn.offClick(onClick);
+            btn.offClick(handler);
         };
-    }, [text, onClick, visible]);
+    }, [text, visible, color, textColor, active, progress]);
 }

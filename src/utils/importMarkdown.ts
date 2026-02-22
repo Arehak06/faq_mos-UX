@@ -1,53 +1,51 @@
-import matter from 'gray-matter'
-
-function uid() {
-  return Math.random().toString(36).slice(2)
-}
+import matter from 'gray-matter';
+import { Block, TextBlock } from '../types/blocks';
+import { uid } from './uid';
 
 export function importMarkdown(md: string) {
-  const { data, content } = matter(md)
+  const { data, content } = matter(md);
 
-  const lines = content.split('\n')
-  const blocks: any[] = []
+  const lines = content.split('\n');
+  const blocks: Block[] = [];
 
-  let buffer: string[] = []
+  let buffer: string[] = [];
 
   const flushText = () => {
     if (buffer.length) {
-      blocks.push({
+      const textBlock: TextBlock = {
         id: uid(),
         type: 'text',
-        value: buffer.join('\n').trim()
-      })
-      buffer = []
+        text: buffer.join('\n').trim(),
+      };
+      blocks.push(textBlock);
+      buffer = [];
     }
-  }
+  };
 
   for (const line of lines) {
-    // Заголовки
     if (line.startsWith('## ')) {
-      flushText()
-      blocks.push({
+      flushText();
+      const headingBlock: TextBlock = {
         id: uid(),
         type: 'text',
-        value: line.replace('## ', '')
-      })
-      continue
+        text: line.replace('## ', ''),
+      };
+      blocks.push(headingBlock);
+      continue;
     }
 
-    // Пустая строка = новый блок
     if (line.trim() === '') {
-      flushText()
-      continue
+      flushText();
+      continue;
     }
 
-    buffer.push(line)
+    buffer.push(line);
   }
 
-  flushText()
+  flushText();
 
   return {
     title: data.title || 'Без названия',
-    blocks
-  }
+    blocks,
+  };
 }

@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 export function usePageMainButton(page) {
+    const navigate = useNavigate();
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
         if (!tg || !page?.mainButton) {
@@ -8,15 +10,16 @@ export function usePageMainButton(page) {
         }
         tg.MainButton.setText(page.mainButton.text);
         tg.MainButton.show();
-        tg.MainButton.onClick(() => {
+        const handler = () => {
             const action = page.mainButton.action;
             if (action.type === 'link') {
                 window.open(action.value, '_blank');
             }
             else {
-                window.location.hash = action.value;
+                navigate(action.value);
             }
-        });
-        return () => tg.MainButton.offClick();
-    }, [page]);
+        };
+        tg.MainButton.onClick(handler);
+        return () => tg.MainButton.offClick(handler);
+    }, [page, navigate]);
 }

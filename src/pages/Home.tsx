@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div className="page">
@@ -12,9 +12,7 @@ export default function Home() {
           <div className="home-item-icon">🎟️</div>
           <div className="home-item-text">
             <div className="home-item-title">Билеты</div>
-            <div className="home-item-subtitle">
-              Тройка, тарифы, льготы
-            </div>
+            <div className="home-item-subtitle">Тройка, тарифы, льготы</div>
           </div>
         </div>
 
@@ -22,9 +20,7 @@ export default function Home() {
           <div className="home-item-icon">⏱️</div>
           <div className="home-item-text">
             <div className="home-item-title">Расписание</div>
-            <div className="home-item-subtitle">
-              Метро, МЦД, МЦК
-            </div>
+            <div className="home-item-subtitle">Метро, МЦД, МЦК</div>
           </div>
         </div>
 
@@ -32,9 +28,7 @@ export default function Home() {
           <div className="home-item-icon">⚖️</div>
           <div className="home-item-text">
             <div className="home-item-title">Права пассажира</div>
-            <div className="home-item-subtitle">
-              Контролёры и проверки
-            </div>
+            <div className="home-item-subtitle">Контролёры и проверки</div>
           </div>
         </div>
 
@@ -42,9 +36,7 @@ export default function Home() {
           <div className="home-item-icon">💸</div>
           <div className="home-item-text">
             <div className="home-item-title">Штрафы</div>
-            <div className="home-item-subtitle">
-              За что и сколько
-            </div>
+            <div className="home-item-subtitle">За что и сколько</div>
           </div>
         </div>
 
@@ -52,12 +44,10 @@ export default function Home() {
           <div className="home-item-icon">ℹ️</div>
           <div className="home-item-text">
             <div className="home-item-title">О проекте</div>
-            <div className="home-item-subtitle">
-              Контакты и источники
-            </div>
+            <div className="home-item-subtitle">Контакты и источники</div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

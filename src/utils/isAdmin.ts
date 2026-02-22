@@ -1,10 +1,7 @@
-import { ADMINS } from '../config/admins'
-
-export function getTelegramUser() {
-  return window.Telegram?.WebApp?.initDataUnsafe?.user
-}
+import { ADMINS } from '../config/admins';
+import { getTelegramUser } from './telegram';
 
 export function isAdmin() {
-  const user = getTelegramUser()
-  return !!user?.id && ADMINS.includes(user.id)
+  const user = getTelegramUser();
+  return !!user?.id && ADMINS.includes(user.id);
 }

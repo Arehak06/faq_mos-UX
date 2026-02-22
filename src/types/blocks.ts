@@ -1,25 +1,21 @@
 export type TextBlock = {
-  id: string
-  type: 'text'
-  text: string
-}
-
+  id: string;
+  type: 'text';
+  text: string;
+};
 
 export type CardBlock = {
-  id: string
-  type: 'card'
-  title: string
-  text: string
-}
+  id: string;
+  type: 'card';
+  title: string;
+  text: string;
+};
 
 export type ButtonBlock = {
-  id: string
-  type: 'button'
-  text: string
-  url: string
-}
+  id: string;
+  type: 'button';
+  text: string;
+  url: string;
+};
 
-export type Block =
-  | TextBlock
-  | CardBlock
-  | ButtonBlock
+export type Block = TextBlock | CardBlock | ButtonBlock;

@@ -1,6 +1,8 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useNavigate } from 'react-router-dom';
 import { TgCard } from './TgCard';
 export function BlockRenderer({ block }) {
+    const navigate = useNavigate();
     switch (block.type) {
         case 'text':
             return (_jsx(TgCard, { children: _jsx("p", { children: block.text }) }));
@@ -12,7 +14,7 @@ export function BlockRenderer({ block }) {
                         window.open(block.url, '_blank');
                     }
                     else {
-                        window.location.hash = block.url;
+                        navigate(block.url);
                     }
                 }, children: block.text }));
         default:

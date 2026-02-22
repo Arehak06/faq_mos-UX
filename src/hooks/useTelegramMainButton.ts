@@ -1,34 +1,51 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react';
 
 type Options = {
-  text: string
-  onClick: () => void
-  visible?: boolean
-}
+  text: string;
+  onClick: () => void;
+  visible?: boolean;
+  color?: string;
+  textColor?: string;
+  active?: boolean;
+  progress?: boolean;
+};
 
 export function useTelegramMainButton({
   text,
   onClick,
-  visible = true
+  visible = true,
+  color,
+  textColor,
+  active = true,
+  progress = false,
 }: Options) {
+  const onClickRef = useRef(onClick);
   useEffect(() => {
-    const tg = window.Telegram?.WebApp
-    if (!tg) return
+    onClickRef.current = onClick;
+  }, [onClick]);
 
-    const btn = tg.MainButton
+  useEffect(() => {
+    const tg = window.Telegram?.WebApp;
+    if (!tg) return;
 
-    if (!visible) {
-      btn.hide()
-      return
+    const btn = tg.MainButton;
+
+    if (color) btn.setParams({ color });
+    if (textColor) btn.setParams({ text_color: textColor });
+    btn.setParams({ is_active: active, is_progress_visible: progress });
+
+    if (visible) {
+      btn.setText(text);
+      btn.show();
+    } else {
+      btn.hide();
     }
 
-    btn.setText(text)
-    btn.show()
-
-    btn.onClick(onClick)
+    const handler = () => onClickRef.current();
+    btn.onClick(handler);
 
     return () => {
-      btn.offClick(onClick)
-    }
-  }, [text, onClick, visible])
+      btn.offClick(handler);
+    };
+  }, [text, visible, color, textColor, active, progress]);
 }

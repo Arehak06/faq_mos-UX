@@ -1,16 +1,16 @@
-import type { Block } from './blocks'
+import type { Block } from './blocks';
 
 export type PageMainButton = {
-  text: string
+  text: string;
   action: {
-    type: 'link' | 'route'
-    value: string
-  }
-}
+    type: 'link' | 'route';
+    value: string;
+  };
+};
 
 export type PageData = {
-  id: string
-  title: string
-  blocks: Block[]
-  mainButton?: PageMainButton
-}
+  id: string;
+  title: string;
+  blocks: Block[];
+  mainButton?: PageMainButton;
+};
