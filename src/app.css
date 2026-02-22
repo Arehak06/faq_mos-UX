@@ -293,3 +293,12 @@ button.danger {
   font-weight: 600;
   margin-bottom: 8px;
 }
+
+/* ================================
+   Image block
+================================ */
+.tg-image {
+  max-width: 100%;
+  border-radius: 12px;
+  display: block;
+}

@@ -18,4 +18,12 @@ export type ButtonBlock = {
   url: string;
 };
 
-export type Block = TextBlock | CardBlock | ButtonBlock;
+export type ImageBlock = {
+  id: string;
+  type: 'image';
+  url: string;
+  alt?: string;
+  caption?: string;
+};
+
+export type Block = TextBlock | CardBlock | ButtonBlock | ImageBlock;

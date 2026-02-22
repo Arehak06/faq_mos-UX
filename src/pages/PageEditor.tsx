@@ -1,21 +1,17 @@
-import { useState, useCallback, useMemo } from 'react';
-import { Block, TextBlock, CardBlock, ButtonBlock } from '../types/blocks';
+import { useState, useCallback, useMemo, useRef } from 'react';
+import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
+import { uploadImage } from '../services/uploadService';
 
 type Props = {
   page: PageData;
   onChange: (p: PageData) => void;
 };
 
-// Компонент редактора MainButton
-type MainButtonEditorProps = {
-  mainButton: PageMainButton;
-  onChange: (mb: PageMainButton) => void;
-};
-
-function MainButtonEditor({ mainButton, onChange }: MainButtonEditorProps) {
+// Компонент редактора MainButton (полная реализация)
+function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
   };
@@ -65,14 +61,12 @@ function MainButtonEditor({ mainButton, onChange }: MainButtonEditorProps) {
 }
 
 // Компонент редактора отдельного блока
-type BlockEditorProps = {
+function BlockEditor({ block, index, onUpdate, onRemove }: {
   block: Block;
   index: number;
   onUpdate: (index: number, block: Block) => void;
   onRemove: (index: number) => void;
-};
-
-function BlockEditor({ block, index, onUpdate, onRemove }: BlockEditorProps) {
+}) {
   const handleRemove = () => {
     if (window.confirm('Удалить блок?')) {
       onRemove(index);
@@ -124,8 +118,7 @@ function BlockEditor({ block, index, onUpdate, onRemove }: BlockEditorProps) {
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       onUpdate(index, { ...block, url: e.target.value });
     };
-    const url = block.url;
-    const isUrlValid = url === '' || url.startsWith('http') || url.startsWith('/');
+    const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
 
     return (
       <div className="editor-block">
@@ -149,12 +142,39 @@ function BlockEditor({ block, index, onUpdate, onRemove }: BlockEditorProps) {
     );
   }
 
+  if (block.type === 'image') {
+    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, url: e.target.value });
+    };
+    const handleAltChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, alt: e.target.value });
+    };
+    const handleCaptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, caption: e.target.value });
+    };
+
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Изображение</strong>
+          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
+            🗑
+          </button>
+        </div>
+        <input value={block.url} placeholder="URL изображения" onChange={handleUrlChange} />
+        <input value={block.alt || ''} placeholder="Alt текст (для доступности)" onChange={handleAltChange} />
+        <input value={block.caption || ''} placeholder="Подпись под изображением" onChange={handleCaptionChange} />
+      </div>
+    );
+  }
+
   return null;
 }
 
-// Основной компонент
 export default function PageEditor({ page, onChange }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const blocksList = useMemo(() => page.blocks, [page.blocks]);
 
@@ -172,6 +192,35 @@ export default function PageEditor({ page, onChange }: Props) {
     const block: ButtonBlock = { id: uid(), type: 'button', text: '', url: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
   }, [page, onChange]);
+
+  // Обработка загрузки изображения
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const url = await uploadImage(file);
+      const block: ImageBlock = {
+        id: uid(),
+        type: 'image',
+        url,
+        alt: '',
+        caption: '',
+      };
+      onChange({ ...page, blocks: [...page.blocks, block] });
+    } catch (err) {
+      alert((err as Error).message);
+    } finally {
+      setUploading(false);
+      // Очистить input, чтобы можно было выбрать тот же файл снова
+      e.target.value = '';
+    }
+  };
+
+  const handleAddImageClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleRemoveBlock = useCallback(
     (index: number) => {
@@ -236,6 +285,15 @@ export default function PageEditor({ page, onChange }: Props) {
 
   return (
     <div className="editor">
+      {/* Скрытый input для загрузки файлов */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        accept="image/*"
+        onChange={handleFileSelect}
+      />
+
       <label className="editor-field">
         <span>Заголовок страницы</span>
         <input value={page.title} onChange={(e) => onChange({ ...page, title: e.target.value })} />
@@ -277,6 +335,9 @@ export default function PageEditor({ page, onChange }: Props) {
         <button onClick={handleAddTextBlock}>➕ Текст</button>
         <button onClick={handleAddCardBlock}>➕ Карточка</button>
         <button onClick={handleAddButtonBlock}>➕ Кнопка</button>
+        <button onClick={handleAddImageClick} disabled={uploading}>
+          {uploading ? '⏳ Загрузка...' : '➕ Изображение'}
+        </button>
       </div>
     </div>
   );

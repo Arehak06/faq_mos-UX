@@ -12,6 +12,7 @@ export function BlockRenderer({ block }: { block: Block }) {
           <p>{block.text}</p>
         </TgCard>
       );
+
     case 'card':
       return (
         <TgCard>
@@ -19,6 +20,7 @@ export function BlockRenderer({ block }: { block: Block }) {
           <div className="card-text">{block.text}</div>
         </TgCard>
       );
+
     case 'button':
       return (
         <button
@@ -34,6 +36,23 @@ export function BlockRenderer({ block }: { block: Block }) {
           {block.text}
         </button>
       );
+
+    case 'image':
+      return (
+        <TgCard>
+          <img
+            src={block.url}
+            alt={block.alt || ''}
+            className="tg-image"
+          />
+          {block.caption && (
+            <p className="card-text" style={{ marginTop: '8px' }}>
+              {block.caption}
+            </p>
+          )}
+        </TgCard>
+      );
+
     default:
       return null;
   }
