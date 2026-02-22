@@ -8,6 +8,10 @@ export default function DynamicPage() {
   const pageKey = page || '';
   const pageData = pages[pageKey];
 
+  console.log('DynamicPage: page param =', page);
+  console.log('Pages keys:', Object.keys(pages));
+  console.log('pageData =', pageData);
+
   if (!pageData) {
     return (
       <div className="page">

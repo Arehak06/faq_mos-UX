@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import DynamicPage from './pages/DynamicPage';
 import Admin from './pages/Admin';
 import AdminRoute from './components/AdminRoute';
+import { TelegramBackButton } from './hooks/TelegramBackButton';
 
 function App() {
   useEffect(() => {
@@ -13,18 +14,21 @@ function App() {
   }, []);
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/:page" element={<DynamicPage />} />
-      <Route
-        path="/admin"
-        element={
-          <AdminRoute>
-            <Admin />
-          </AdminRoute>
-        }
-      />
-    </Routes>
+    <>
+      <TelegramBackButton />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/:page" element={<DynamicPage />} />
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        />
+      </Routes>
+    </>
   );
 }
 
