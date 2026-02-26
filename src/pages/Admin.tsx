@@ -4,6 +4,7 @@ import PageEditor from './PageEditor';
 import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
+import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple'; // новый импорт
 import { addLog } from '../services/logService';
 
 export default function Admin() {
@@ -40,16 +41,18 @@ export default function Admin() {
     return JSON.stringify(pages) !== JSON.stringify(originalPages);
   }, [pages, originalPages]);
 
+  // Упрощённый хук подтверждения (только закрытие вкладки)
+  useConfirmExitSimple(hasUnsavedChanges, 'У вас есть несохранённые изменения. Выйти без сохранения?');
+
   // Сохранение страниц
   const handleSave = async () => {
     if (!pages) return;
     setSaving(true);
     try {
       await savePages(pages);
-      // Обновляем оригинал после успешного сохранения
       setOriginalPages(pages);
       await addLog('pages_saved', undefined, { pages: Object.keys(pages) });
-      // TODO: показать уведомление (позже добавим toast)
+      // TODO: уведомление
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -64,7 +67,7 @@ export default function Admin() {
     onClick: handleSave,
   });
 
-  // Фильтрация страниц для выпадающего списка
+  // Фильтрация страниц
   const filteredPages = useMemo(() => {
     if (!pages) return [];
     const entries = Object.entries(pages);
