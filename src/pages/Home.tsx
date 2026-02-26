@@ -55,15 +55,23 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Кнопка админки — видна только администраторам */}
         {admin && (
-          <div className="home-item" onClick={() => navigate('/admin')}>
-            <div className="home-item-icon">🛠️</div>
-            <div className="home-item-text">
-              <div className="home-item-title">Админка</div>
-              <div className="home-item-subtitle">Управление страницами</div>
+          <>
+            <div className="home-item" onClick={() => navigate('/admin')}>
+              <div className="home-item-icon">🛠️</div>
+              <div className="home-item-text">
+                <div className="home-item-title">Админка</div>
+                <div className="home-item-subtitle">Управление страницами</div>
+              </div>
             </div>
-          </div>
+            <div className="home-item" onClick={() => navigate('/logs')}>
+              <div className="home-item-icon">📋</div>
+              <div className="home-item-text">
+                <div className="home-item-title">Журнал</div>
+                <div className="home-item-subtitle">Действия администраторов</div>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -1,4 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
@@ -10,7 +12,7 @@ type Props = {
   onChange: (p: PageData) => void;
 };
 
-// Компонент редактора MainButton (полная реализация)
+// Компонент редактора MainButton
 function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
@@ -74,8 +76,8 @@ function BlockEditor({ block, index, onUpdate, onRemove }: {
   };
 
   if (block.type === 'text') {
-    const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      onUpdate(index, { ...block, text: e.target.value });
+    const handleTextChange = (value: string) => {
+      onUpdate(index, { ...block, text: value });
     };
     return (
       <div className="editor-block">
@@ -85,7 +87,18 @@ function BlockEditor({ block, index, onUpdate, onRemove }: {
             🗑
           </button>
         </div>
-        <textarea value={block.text} placeholder="Текст блока" onChange={handleTextChange} />
+        <ReactQuill
+          theme="snow"
+          value={block.text}
+          onChange={handleTextChange}
+          modules={{
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['link', 'clean'],
+            ],
+          }}
+        />
       </div>
     );
   }
@@ -193,7 +206,6 @@ export default function PageEditor({ page, onChange }: Props) {
     onChange({ ...page, blocks: [...page.blocks, block] });
   }, [page, onChange]);
 
-  // Обработка загрузки изображения
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -213,7 +225,6 @@ export default function PageEditor({ page, onChange }: Props) {
       alert((err as Error).message);
     } finally {
       setUploading(false);
-      // Очистить input, чтобы можно было выбрать тот же файл снова
       e.target.value = '';
     }
   };
@@ -285,7 +296,6 @@ export default function PageEditor({ page, onChange }: Props) {
 
   return (
     <div className="editor">
-      {/* Скрытый input для загрузки файлов */}
       <input
         type="file"
         ref={fileInputRef}
@@ -313,7 +323,17 @@ export default function PageEditor({ page, onChange }: Props) {
         <MainButtonEditor mainButton={page.mainButton} onChange={handleMainButtonChange} />
       )}
 
-      <h3>Блоки</h3>
+      {/* Чекбокс скрытия страницы */}
+      <label className="editor-field checkbox" style={{ marginTop: '16px' }}>
+        <input
+          type="checkbox"
+          checked={!!page.hidden}
+          onChange={(e) => onChange({ ...page, hidden: e.target.checked })}
+        />
+        <span>Скрыть страницу (не показывать в публичном доступе)</span>
+      </label>
+
+      <h3 style={{ marginTop: '24px' }}>Блоки</h3>
       {blocksList.map((b, i) => (
         <div
           key={b.id}

@@ -13,4 +13,5 @@ export type PageData = {
   title: string;
   blocks: Block[];
   mainButton?: PageMainButton;
+  hidden?: boolean; // новое поле
 };
