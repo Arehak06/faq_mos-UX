@@ -4,7 +4,6 @@ import PageEditor from './PageEditor';
 import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
-import { useConfirmExit } from '../hooks/useConfirmExit';
 import { addLog } from '../services/logService';
 
 export default function Admin() {
@@ -40,9 +39,6 @@ export default function Admin() {
     if (!pages || !originalPages) return false;
     return JSON.stringify(pages) !== JSON.stringify(originalPages);
   }, [pages, originalPages]);
-
-  // Хук подтверждения выхода
-  useConfirmExit(hasUnsavedChanges, 'У вас есть несохранённые изменения. Выйти без сохранения?');
 
   // Сохранение страниц
   const handleSave = async () => {
