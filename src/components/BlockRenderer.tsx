@@ -9,7 +9,7 @@ export function BlockRenderer({ block }: { block: Block }) {
     case 'text':
       return (
         <TgCard>
-          <p>{block.text}</p>
+          <div dangerouslySetInnerHTML={{ __html: block.text }} />
         </TgCard>
       );
 
@@ -44,6 +44,7 @@ export function BlockRenderer({ block }: { block: Block }) {
             src={block.url}
             alt={block.alt || ''}
             className="tg-image"
+            loading="lazy"
           />
           {block.caption && (
             <p className="card-text" style={{ marginTop: '8px' }}>

@@ -7,13 +7,14 @@ import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
 import { uploadImage } from '../services/uploadService';
+import { addLog } from '../services/logService';
 
 type Props = {
   page: PageData;
   onChange: (p: PageData) => void;
 };
 
-// Компонент редактора MainButton (без изменений)
+// Компонент редактора MainButton
 function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
@@ -64,14 +65,16 @@ function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton
 }
 
 // Компонент редактора отдельного блока
-function BlockEditor({ block, index, onUpdate, onRemove }: {
+function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   block: Block;
   index: number;
   onUpdate: (index: number, block: Block) => void;
   onRemove: (index: number) => void;
+  pageId: string;
 }) {
   const handleRemove = () => {
     if (window.confirm('Удалить блок?')) {
+      addLog('block_removed', pageId, { type: block.type });
       onRemove(index);
     }
   };
@@ -100,7 +103,7 @@ function BlockEditor({ block, index, onUpdate, onRemove }: {
         <div className="tiptap-editor">
           <EditorContent editor={editor} />
         </div>
-        {/* Панель инструментов (опционально) */}
+        {/* Панель инструментов */}
         <div className="tiptap-toolbar">
           <button
             onClick={() => editor?.chain().focus().toggleBold().run()}
@@ -237,16 +240,19 @@ export default function PageEditor({ page, onChange }: Props) {
   const handleAddTextBlock = useCallback(() => {
     const block: TextBlock = { id: uid(), type: 'text', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'text' });
   }, [page, onChange]);
 
   const handleAddCardBlock = useCallback(() => {
     const block: CardBlock = { id: uid(), type: 'card', title: '', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'card' });
   }, [page, onChange]);
 
   const handleAddButtonBlock = useCallback(() => {
     const block: ButtonBlock = { id: uid(), type: 'button', text: '', url: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'button' });
   }, [page, onChange]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -264,6 +270,7 @@ export default function PageEditor({ page, onChange }: Props) {
         caption: '',
       };
       onChange({ ...page, blocks: [...page.blocks, block] });
+      addLog('image_uploaded', page.id, { filename: file.name, url });
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -389,6 +396,7 @@ export default function PageEditor({ page, onChange }: Props) {
             index={i}
             onUpdate={handleUpdateBlock}
             onRemove={handleRemoveBlock}
+            pageId={page.id}
           />
         </div>
       ))}

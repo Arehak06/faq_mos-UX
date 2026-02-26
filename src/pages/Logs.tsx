@@ -30,12 +30,15 @@ export default function Logs() {
           </thead>
           <tbody>
             {logs.map((log, i) => (
-              <tr key={i}>
-                <td>{new Date(log.timestamp).toLocaleString()}</td>
-                <td>{log.userId}</td>
-                <td>{log.action}</td>
-                <td>{log.pageId || '-'}</td>
-                <td>{JSON.stringify(log.details)}</td>
+              <tr key={i} style={{ borderBottom: '1px solid var(--tg-border)' }}>
+                <td style={{ padding: '8px' }}>{new Date(log.timestamp).toLocaleString()}</td>
+                <td style={{ padding: '8px' }}>
+                  <div>{log.userName || log.userId}</div>
+                  {log.username && <div style={{ fontSize: '0.8em', color: 'gray' }}>@{log.username}</div>}
+                </td>
+                <td style={{ padding: '8px' }}>{log.action}</td>
+                <td style={{ padding: '8px' }}>{log.pageId || '-'}</td>
+                <td style={{ padding: '8px' }}>{JSON.stringify(log.details)}</td>
               </tr>
             ))}
           </tbody>
