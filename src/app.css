@@ -302,3 +302,50 @@ button.danger {
   border-radius: 12px;
   display: block;
 }
+
+/* TipTap editor styles */
+.tiptap-editor {
+  border: 1px solid var(--tg-border);
+  border-radius: 10px;
+  padding: 8px;
+  background: #fff;
+  margin-bottom: 10px;
+}
+
+.tiptap-editor .ProseMirror {
+  min-height: 100px;
+  outline: none;
+}
+
+.tiptap-editor .ProseMirror p {
+  margin: 0;
+}
+
+.tiptap-toolbar {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  padding: 5px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.tiptap-toolbar button {
+  padding: 5px 10px;
+  border: 1px solid var(--tg-border);
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tiptap-toolbar button.is-active {
+  background: var(--tg-accent);
+  color: white;
+  border-color: var(--tg-accent);
+}
+
+.tiptap-toolbar button:hover {
+  background: #e0e0e0;
+}

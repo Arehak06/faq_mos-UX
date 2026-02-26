@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
 import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
@@ -12,7 +13,7 @@ type Props = {
   onChange: (p: PageData) => void;
 };
 
-// Компонент редактора MainButton
+// Компонент редактора MainButton (без изменений)
 function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
@@ -76,9 +77,18 @@ function BlockEditor({ block, index, onUpdate, onRemove }: {
   };
 
   if (block.type === 'text') {
-    const handleTextChange = (value: string) => {
-      onUpdate(index, { ...block, text: value });
-    };
+    // TipTap редактор для текстового блока
+    const editor = useEditor({
+      extensions: [
+        StarterKit,
+        Link.configure({ openOnClick: false }),
+      ],
+      content: block.text,
+      onUpdate: ({ editor }) => {
+        onUpdate(index, { ...block, text: editor.getHTML() });
+      },
+    });
+
     return (
       <div className="editor-block">
         <div className="editor-block-header">
@@ -87,18 +97,51 @@ function BlockEditor({ block, index, onUpdate, onRemove }: {
             🗑
           </button>
         </div>
-        <ReactQuill
-          theme="snow"
-          value={block.text}
-          onChange={handleTextChange}
-          modules={{
-            toolbar: [
-              ['bold', 'italic', 'underline', 'strike'],
-              [{ list: 'ordered' }, { list: 'bullet' }],
-              ['link', 'clean'],
-            ],
-          }}
-        />
+        <div className="tiptap-editor">
+          <EditorContent editor={editor} />
+        </div>
+        {/* Панель инструментов (опционально) */}
+        <div className="tiptap-toolbar">
+          <button
+            onClick={() => editor?.chain().focus().toggleBold().run()}
+            className={editor?.isActive('bold') ? 'is-active' : ''}
+          >
+            <strong>B</strong>
+          </button>
+          <button
+            onClick={() => editor?.chain().focus().toggleItalic().run()}
+            className={editor?.isActive('italic') ? 'is-active' : ''}
+          >
+            <em>I</em>
+          </button>
+          <button
+            onClick={() => editor?.chain().focus().toggleStrike().run()}
+            className={editor?.isActive('strike') ? 'is-active' : ''}
+          >
+            <s>S</s>
+          </button>
+          <button
+            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+            className={editor?.isActive('bulletList') ? 'is-active' : ''}
+          >
+            • список
+          </button>
+          <button
+            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+            className={editor?.isActive('orderedList') ? 'is-active' : ''}
+          >
+            1. список
+          </button>
+          <button
+            onClick={() => {
+              const url = window.prompt('Введите URL:');
+              if (url) editor?.chain().focus().setLink({ href: url }).run();
+            }}
+            className={editor?.isActive('link') ? 'is-active' : ''}
+          >
+            🔗
+          </button>
+        </div>
       </div>
     );
   }
@@ -323,7 +366,6 @@ export default function PageEditor({ page, onChange }: Props) {
         <MainButtonEditor mainButton={page.mainButton} onChange={handleMainButtonChange} />
       )}
 
-      {/* Чекбокс скрытия страницы */}
       <label className="editor-field checkbox" style={{ marginTop: '16px' }}>
         <input
           type="checkbox"
