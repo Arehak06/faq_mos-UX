@@ -10,70 +10,62 @@ export default function Home() {
     setAdmin(isAdmin());
   }, []);
 
+  const mainSections = [
+    { path: '/tickets', icon: '🎟️', title: 'Билеты', subtitle: 'Тройка, тарифы, льготы' },
+    { path: '/schedule', icon: '⏱️', title: 'Расписание', subtitle: 'Метро, МЦД, МЦК' },
+    { path: '/rights', icon: '⚖️', title: 'Права пассажира', subtitle: 'Контролёры и проверки' },
+    { path: '/fines', icon: '💸', title: 'Штрафы', subtitle: 'За что и сколько' },
+    { path: '/about', icon: 'ℹ️', title: 'О проекте', subtitle: 'Контакты и источники' },
+  ];
+
+  const adminSections = [
+    { path: '/admin', icon: '🛠️', title: 'Админка', subtitle: 'Управление страницами' },
+    { path: '/logs', icon: '📋', title: 'Журнал', subtitle: 'Действия администраторов' },
+  ];
+
   return (
     <div className="page">
       <h1 className="page-title">🚇 Транспорт Москвы</h1>
 
+      {/* Основные разделы */}
+      <div className="home-section-title">Справочник</div>
       <div className="home-card">
-        <div className="home-item" onClick={() => navigate('/tickets')}>
-          <div className="home-item-icon">🎟️</div>
-          <div className="home-item-text">
-            <div className="home-item-title">Билеты</div>
-            <div className="home-item-subtitle">Тройка, тарифы, льготы</div>
-          </div>
-        </div>
-
-        <div className="home-item" onClick={() => navigate('/schedule')}>
-          <div className="home-item-icon">⏱️</div>
-          <div className="home-item-text">
-            <div className="home-item-title">Расписание</div>
-            <div className="home-item-subtitle">Метро, МЦД, МЦК</div>
-          </div>
-        </div>
-
-        <div className="home-item" onClick={() => navigate('/rights')}>
-          <div className="home-item-icon">⚖️</div>
-          <div className="home-item-text">
-            <div className="home-item-title">Права пассажира</div>
-            <div className="home-item-subtitle">Контролёры и проверки</div>
-          </div>
-        </div>
-
-        <div className="home-item" onClick={() => navigate('/fines')}>
-          <div className="home-item-icon">💸</div>
-          <div className="home-item-text">
-            <div className="home-item-title">Штрафы</div>
-            <div className="home-item-subtitle">За что и сколько</div>
-          </div>
-        </div>
-
-        <div className="home-item" onClick={() => navigate('/about')}>
-          <div className="home-item-icon">ℹ️</div>
-          <div className="home-item-text">
-            <div className="home-item-title">О проекте</div>
-            <div className="home-item-subtitle">Контакты и источники</div>
-          </div>
-        </div>
-
-        {admin && (
-          <>
-            <div className="home-item" onClick={() => navigate('/admin')}>
-              <div className="home-item-icon">🛠️</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Админка</div>
-                <div className="home-item-subtitle">Управление страницами</div>
-              </div>
+        {mainSections.map((section) => (
+          <div
+            key={section.path}
+            className="home-item"
+            onClick={() => navigate(section.path)}
+          >
+            <div className="home-item-icon">{section.icon}</div>
+            <div className="home-item-text">
+              <div className="home-item-title">{section.title}</div>
+              <div className="home-item-subtitle">{section.subtitle}</div>
             </div>
-            <div className="home-item" onClick={() => navigate('/logs')}>
-              <div className="home-item-icon">📋</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Журнал</div>
-                <div className="home-item-subtitle">Действия администраторов</div>
-              </div>
-            </div>
-          </>
-        )}
+          </div>
+        ))}
       </div>
+
+      {/* Административные разделы (только для админов) */}
+      {admin && (
+        <>
+          <div className="home-section-title home-admin-section">Управление</div>
+          <div className="home-card">
+            {adminSections.map((section) => (
+              <div
+                key={section.path}
+                className="home-item"
+                onClick={() => navigate(section.path)}
+              >
+                <div className="home-item-icon">{section.icon}</div>
+                <div className="home-item-text">
+                  <div className="home-item-title">{section.title}</div>
+                  <div className="home-item-subtitle">{section.subtitle}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

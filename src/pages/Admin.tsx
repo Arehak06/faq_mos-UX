@@ -4,7 +4,7 @@ import PageEditor from './PageEditor';
 import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
-import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple'; // новый импорт
+import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple';
 import { addLog } from '../services/logService';
 
 export default function Admin() {
@@ -41,7 +41,7 @@ export default function Admin() {
     return JSON.stringify(pages) !== JSON.stringify(originalPages);
   }, [pages, originalPages]);
 
-  // Упрощённый хук подтверждения (только закрытие вкладки)
+  // Хук подтверждения выхода (упрощённый)
   useConfirmExitSimple(hasUnsavedChanges, 'У вас есть несохранённые изменения. Выйти без сохранения?');
 
   // Сохранение страниц
@@ -52,7 +52,7 @@ export default function Admin() {
       await savePages(pages);
       setOriginalPages(pages);
       await addLog('pages_saved', undefined, { pages: Object.keys(pages) });
-      // TODO: уведомление
+      // В будущем здесь можно добавить уведомление
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -86,35 +86,35 @@ export default function Admin() {
 
   return (
     <div className="page">
-      <h1 className="page-title">🛠 Админка</h1>
+      <h1 className="page-title">🛠 Админ-панель</h1>
 
       {/* Поиск и фильтр */}
       <div className="admin-card">
-        <div className="admin-card-title">Фильтр страниц</div>
+        <div className="admin-card-title">🔍 Фильтр страниц</div>
         <input
           type="text"
-          placeholder="Поиск..."
+          placeholder="Поиск по названию или ключу..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: '100%', padding: '8px', marginBottom: '8px' }}
+          style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '8px', border: '1px solid var(--tg-border)' }}
         />
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
           <input
             type="checkbox"
             checked={showHidden}
             onChange={(e) => setShowHidden(e.target.checked)}
           />
-          Показать скрытые
+          Показать скрытые страницы
         </label>
       </div>
 
       {/* Выбор страницы */}
       <div className="admin-card">
-        <div className="admin-card-title">Страница</div>
+        <div className="admin-card-title">📄 Страница</div>
         <select
           value={current}
           onChange={(e) => setCurrent(e.target.value)}
-          style={{ width: '100%' }}
+          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--tg-border)' }}
         >
           {filteredPages.map(([key, page]) => (
             <option key={key} value={key}>
@@ -126,7 +126,7 @@ export default function Admin() {
 
       {/* Переключение режима */}
       <div className="admin-card">
-        <div className="admin-card-title">Режим</div>
+        <div className="admin-card-title">👁 Режим</div>
         <button className="tg-button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
           {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
         </button>
