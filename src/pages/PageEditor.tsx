@@ -359,6 +359,26 @@ export default function PageEditor({ page, onChange }: Props) {
         <input value={page.title} onChange={(e) => onChange({ ...page, title: e.target.value })} />
       </label>
 
+      {/* Новые поля */}
+      <label className="editor-field">
+        <span>Описание для главного меню</span>
+        <input
+          value={page.description || ''}
+          onChange={(e) => onChange({ ...page, description: e.target.value })}
+          placeholder="Краткое описание страницы"
+        />
+      </label>
+
+      <label className="editor-field">
+        <span>Эмодзи (один символ или смайлик)</span>
+        <input
+          value={page.emoji || ''}
+          onChange={(e) => onChange({ ...page, emoji: e.target.value })}
+          placeholder="Например: 🚇"
+          maxLength={2}
+        />
+      </label>
+
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">
         <input

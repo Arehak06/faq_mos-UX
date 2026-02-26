@@ -10,11 +10,10 @@ export default function Home() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Список основных страниц, которые всегда показываются (если не скрыты)
   const mainKeys = ['tickets', 'schedule', 'rights', 'fines', 'about'];
 
-  // Иконки для основных страниц (можно вынести в конфиг)
-  const mainIcons: Record<string, string> = {
+  // Иконки и подписи по умолчанию для основных страниц (на случай, если в данных нет)
+  const defaultIcons: Record<string, string> = {
     tickets: '🎟️',
     schedule: '⏱️',
     rights: '⚖️',
@@ -22,7 +21,7 @@ export default function Home() {
     about: 'ℹ️',
   };
 
-  const mainSubtitles: Record<string, string> = {
+  const defaultSubtitles: Record<string, string> = {
     tickets: 'Тройка, тарифы, льготы',
     schedule: 'Метро, МЦД, МЦК',
     rights: 'Контролёры и проверки',
@@ -43,50 +42,36 @@ export default function Home() {
       });
   }, []);
 
-  if (loading) {
-    return (
-      <div className="page">
-        <p>Загрузка...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="page">Загрузка...</div>;
+  if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
-  if (!pages) {
-    return (
-      <div className="page">
-        <p>Ошибка загрузки данных</p>
-      </div>
-    );
-  }
-
-  // Фильтруем основные страницы (только те, что есть в pages и не скрыты)
+  // Основные страницы (не скрытые)
   const mainPages = mainKeys
     .filter(key => pages[key] && !pages[key].hidden)
     .map(key => ({
       key,
       title: pages[key].title,
-      icon: mainIcons[key] || '📄',
-      subtitle: mainSubtitles[key] || '',
+      icon: pages[key].emoji || defaultIcons[key] || '📄',
+      subtitle: pages[key].description || defaultSubtitles[key] || '',
     }));
 
-  // Дополнительные страницы – все остальные, кроме скрытых и кроме основных
+  // Дополнительные страницы (все остальные, не скрытые)
   const additionalPages = Object.entries(pages)
     .filter(([key, page]) => !mainKeys.includes(key) && !page.hidden)
     .map(([key, page]) => ({
       key,
       title: page.title,
-      icon: '📄', // можно добавить возможность выбора иконки позже
-      subtitle: 'Дополнительная страница',
+      icon: page.emoji || '📄',
+      subtitle: page.description || 'Дополнительная страница',
     }));
 
   return (
     <div className="page">
       <h1 className="page-title">🚇 Транспорт Москвы</h1>
 
-      {/* Основные разделы */}
       <div className="home-section-title">Справочник</div>
       <div className="home-card">
-        {mainPages.map((item) => (
+        {mainPages.map(item => (
           <div
             key={item.key}
             className="home-item"
@@ -106,12 +91,11 @@ export default function Home() {
         )}
       </div>
 
-      {/* Дополнительные страницы (если есть) */}
       {additionalPages.length > 0 && (
         <>
           <div className="home-section-title">Дополнительно</div>
           <div className="home-card">
-            {additionalPages.map((item) => (
+            {additionalPages.map(item => (
               <div
                 key={item.key}
                 className="home-item"
@@ -128,25 +112,18 @@ export default function Home() {
         </>
       )}
 
-      {/* Административные разделы (только для админов) */}
       {admin && (
         <>
           <div className="home-section-title home-admin-section">Управление</div>
           <div className="home-card">
-            <div
-              className="home-item"
-              onClick={() => navigate('/admin')}
-            >
+            <div className="home-item" onClick={() => navigate('/admin')}>
               <div className="home-item-icon">🛠️</div>
               <div className="home-item-text">
                 <div className="home-item-title">Админка</div>
                 <div className="home-item-subtitle">Управление страницами</div>
               </div>
             </div>
-            <div
-              className="home-item"
-              onClick={() => navigate('/logs')}
-            >
+            <div className="home-item" onClick={() => navigate('/logs')}>
               <div className="home-item-icon">📋</div>
               <div className="home-item-text">
                 <div className="home-item-title">Журнал</div>

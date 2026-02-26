@@ -7,6 +7,7 @@ import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple';
 import { addLog } from '../services/logService';
 import { PageData } from '../types/page';
+import { getTelegramUser, getTelegramUserName } from '../utils/telegram';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -18,11 +19,9 @@ export default function Admin() {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Для поиска и фильтрации
   const [searchTerm, setSearchTerm] = useState('');
   const [showHidden, setShowHidden] = useState(false);
 
-  // Загрузка страниц
   useEffect(() => {
     loadPages()
       .then(data => {
@@ -36,24 +35,41 @@ export default function Admin() {
       });
   }, []);
 
-  // Проверка на несохранённые изменения
   const hasUnsavedChanges = useMemo(() => {
     if (!pages || !originalPages) return false;
     return JSON.stringify(pages) !== JSON.stringify(originalPages);
   }, [pages, originalPages]);
 
-  // Хук подтверждения выхода (упрощённый)
   useConfirmExitSimple(hasUnsavedChanges, 'У вас есть несохранённые изменения. Выйти без сохранения?');
 
-  // Сохранение страниц
   const handleSave = async () => {
     if (!pages) return;
     setSaving(true);
     try {
-      await savePages(pages);
-      setOriginalPages(pages);
-      await addLog('pages_saved', undefined, { pages: Object.keys(pages) });
-      // В будущем здесь можно добавить уведомление
+      const now = new Date().toISOString();
+      const userName = getTelegramUserName() || String(getTelegramUser()?.id) || 'unknown';
+
+      // Обновляем метаданные для всех страниц
+      const pagesToSave = Object.fromEntries(
+        Object.entries(pages).map(([key, page]) => {
+          const newPage = { ...page };
+          if (!newPage.createdAt) {
+            newPage.createdAt = now;
+            newPage.createdBy = userName;
+          }
+          newPage.updatedAt = now;
+          newPage.updatedBy = userName;
+          // Убедимся, что description и emoji есть (хотя бы пустые)
+          newPage.description = newPage.description ?? '';
+          newPage.emoji = newPage.emoji ?? '📄';
+          return [key, newPage];
+        })
+      );
+
+      await savePages(pagesToSave);
+      setPages(pagesToSave);
+      setOriginalPages(pagesToSave);
+      await addLog('pages_saved', undefined, { pages: Object.keys(pagesToSave) });
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -61,32 +77,39 @@ export default function Admin() {
     }
   };
 
-  // Добавление новой страницы
   const handleAddPage = () => {
-  if (!pages) return;
-  let key = prompt('Введите уникальный ключ страницы (например, "newpage"):');
-  if (!key) return;
-  key = key.trim().toLowerCase().replace(/\s+/g, '-');
-  if (pages[key]) {
-    alert('Страница с таким ключом уже существует');
-    return;
-  }
-  const title = prompt('Введите название страницы:', 'Новая страница');
-  if (!title) return;
+    if (!pages) return;
+    let key = prompt('Введите уникальный ключ страницы (например, "newpage"):');
+    if (!key) return;
+    key = key.trim().toLowerCase().replace(/\s+/g, '-');
+    if (pages[key]) {
+      alert('Страница с таким ключом уже существует');
+      return;
+    }
+    const title = prompt('Введите название страницы:', 'Новая страница');
+    if (!title) return;
 
-  const newPage: PageData = {
-    id: key,
-    title,
-    blocks: [],
-    hidden: false, // теперь страница сразу видима
+    const now = new Date().toISOString();
+    const userName = getTelegramUserName() || String(getTelegramUser()?.id) || 'unknown';
+
+    const newPage: PageData = {
+      id: key,
+      title,
+      blocks: [],
+      hidden: false,
+      createdAt: now,
+      createdBy: userName,
+      updatedAt: now,
+      updatedBy: userName,
+      description: '',
+      emoji: '📄',
+    };
+    const updatedPages = { ...pages, [key]: newPage };
+    setPages(updatedPages);
+    setCurrent(key);
+    addLog('page_created', key, { title });
   };
-  const updatedPages = { ...pages, [key]: newPage };
-  setPages(updatedPages);
-  setCurrent(key);
-  addLog('page_created', key, { title });
-};
 
-  // Удаление страницы
   const handleDeletePage = (key: string) => {
     if (!pages) return;
     if (key === 'home') {
@@ -105,14 +128,12 @@ export default function Admin() {
     }
   };
 
-  // Кнопка Telegram
   useTelegramMainButton({
     text: saving ? '💾 Сохранение...' : '💾 Сохранить',
     visible: mode === 'edit' && !saving,
     onClick: handleSave,
   });
 
-  // Фильтрация страниц
   const filteredPages = useMemo(() => {
     if (!pages) return [];
     const entries = Object.entries(pages);
@@ -133,7 +154,6 @@ export default function Admin() {
     <div className="page">
       <h1 className="page-title">🛠 Админ-панель</h1>
 
-      {/* Поиск и фильтр */}
       <div className="admin-card">
         <div className="admin-card-title">🔍 Фильтр страниц</div>
         <input
@@ -153,7 +173,6 @@ export default function Admin() {
         </label>
       </div>
 
-      {/* Выбор страницы */}
       <div className="admin-card">
         <div className="admin-card-title">📄 Страница</div>
         <select
@@ -168,13 +187,8 @@ export default function Admin() {
           ))}
         </select>
 
-        {/* Кнопки управления страницами */}
         <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-          <button
-            className="tg-button"
-            onClick={handleAddPage}
-            style={{ flex: 1 }}
-          >
+          <button className="tg-button" onClick={handleAddPage} style={{ flex: 1 }}>
             ➕ Новая страница
           </button>
           {current !== 'home' && (
@@ -189,7 +203,6 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* Переключение режима */}
       <div className="admin-card">
         <div className="admin-card-title">👁 Режим</div>
         <button className="tg-button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
@@ -197,7 +210,6 @@ export default function Admin() {
         </button>
       </div>
 
-      {/* Контент */}
       {mode === 'edit' ? (
         <PageEditor
           page={page}
