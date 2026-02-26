@@ -430,3 +430,14 @@ button.danger {
 .home-admin-section .home-item:last-child {
   border-bottom: none;
 }
+button.danger {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+}
+button.danger:hover {
+  background: #ff7875;
+}
+button.danger:active {
+  background: #d9363e;
+}
