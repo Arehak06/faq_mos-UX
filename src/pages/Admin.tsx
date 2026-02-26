@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import PageEditor from './PageEditor';
 import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
-import { useTelegramBackButton } from '../hooks/useTelegramBackButton';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 
 export default function Admin() {
-  useTelegramBackButton(true);
-
   const [pages, setPages] = useState<Record<string, any> | null>(null);
   const [current, setCurrent] = useState('home');
   const [mode, setMode] = useState<'edit' | 'view'>('edit');
