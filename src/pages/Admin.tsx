@@ -63,28 +63,28 @@ export default function Admin() {
 
   // Добавление новой страницы
   const handleAddPage = () => {
-    if (!pages) return;
-    const key = prompt('Введите уникальный ключ страницы (например, "newpage"):');
-    if (!key) return;
-    // Проверяем, что ключ не занят
-    if (pages[key]) {
-      alert('Страница с таким ключом уже существует');
-      return;
-    }
-    const title = prompt('Введите название страницы:', 'Новая страница');
-    if (!title) return;
+  if (!pages) return;
+  let key = prompt('Введите уникальный ключ страницы (например, "newpage"):');
+  if (!key) return;
+  key = key.trim().toLowerCase().replace(/\s+/g, '-');
+  if (pages[key]) {
+    alert('Страница с таким ключом уже существует');
+    return;
+  }
+  const title = prompt('Введите название страницы:', 'Новая страница');
+  if (!title) return;
 
-    const newPage: PageData = {
-      id: key,
-      title,
-      blocks: [],
-      hidden: false, // по умолчанию скрыта, чтобы не появлялась сразу в публичном доступе
-    };
-    const updatedPages = { ...pages, [key]: newPage };
-    setPages(updatedPages);
-    setCurrent(key);
-    addLog('page_created', key, { title });
+  const newPage: PageData = {
+    id: key,
+    title,
+    blocks: [],
+    hidden: false, // теперь страница сразу видима
   };
+  const updatedPages = { ...pages, [key]: newPage };
+  setPages(updatedPages);
+  setCurrent(key);
+  addLog('page_created', key, { title });
+};
 
   // Удаление страницы
   const handleDeletePage = (key: string) => {
