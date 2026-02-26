@@ -78,7 +78,7 @@ export default function Admin() {
       id: key,
       title,
       blocks: [],
-      hidden: true, // по умолчанию скрыта, чтобы не появлялась сразу в публичном доступе
+      hidden: false, // по умолчанию скрыта, чтобы не появлялась сразу в публичном доступе
     };
     const updatedPages = { ...pages, [key]: newPage };
     setPages(updatedPages);
