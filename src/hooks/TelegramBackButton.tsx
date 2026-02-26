@@ -7,7 +7,6 @@ export function TelegramBackButton() {
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
-    // Проверяем, поддерживается ли BackButton (версия Telegram >= 6.1)
     if (!tg?.BackButton) return;
 
     const isRoot = location.pathname === '/';
