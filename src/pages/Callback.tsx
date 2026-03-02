@@ -1,29 +1,62 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signInCallback } from '../services/authService';
 import { setTelegramUser } from '../utils/telegram';
+
+// URL вашего API Gateway (замените на актуальный)
+const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net';
 
 export default function Callback() {
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    signInCallback()
-      .then((user) => {
-        if (user) {
-          // Сохраняем данные пользователя в localStorage (для нашего приложения)
-          setTelegramUser(user.profile);
-          // Редирект на главную или на страницу, с которой пришли
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state'); // можно проверить
+
+    if (!code) {
+      setError('No authorization code received');
+      setLoading(false);
+      return;
+    }
+
+    // Отправляем код на наш сервер
+    fetch(API_GATEWAY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, state })
+    })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(data => {
+            throw new Error(data.error || 'Authentication failed');
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.user) {
+          setTelegramUser(data.user);
           navigate('/');
         } else {
-          setError('Не удалось получить данные пользователя');
+          setError('Authentication failed');
         }
       })
-      .catch((err) => {
-        console.error('OIDC callback error:', err);
-        setError('Ошибка входа. Попробуйте ещё раз.');
-      });
+      .catch(err => {
+        console.error(err);
+        setError(err.message || 'Network error');
+      })
+      .finally(() => setLoading(false));
   }, [navigate]);
+
+  if (loading) {
+    return (
+      <div className="page">
+        <p>Вход выполняется, пожалуйста, подождите...</p>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -35,9 +68,5 @@ export default function Callback() {
     );
   }
 
-  return (
-    <div className="page">
-      <p>Вход выполняется, пожалуйста, подождите...</p>
-    </div>
-  );
+  return null;
 }
