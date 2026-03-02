@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
+import { getTelegramUser } from '../utils/telegram';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -10,9 +11,11 @@ export default function Home() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Определяем, авторизован ли пользователь
+  const [user, setUser] = useState(getTelegramUser());
+
   const mainKeys = ['tickets', 'schedule', 'rights', 'fines', 'about'];
 
-  // Иконки и подписи по умолчанию для основных страниц (на случай, если в данных нет)
   const defaultIcons: Record<string, string> = {
     tickets: '🎟️',
     schedule: '⏱️',
@@ -31,6 +34,7 @@ export default function Home() {
 
   useEffect(() => {
     setAdmin(isAdmin());
+    setUser(getTelegramUser()); // обновляем при монтировании
     loadPages()
       .then(data => {
         setPages(data);
@@ -45,7 +49,6 @@ export default function Home() {
   if (loading) return <div className="page">Загрузка...</div>;
   if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
-  // Основные страницы (не скрытые)
   const mainPages = mainKeys
     .filter(key => pages[key] && !pages[key].hidden)
     .map(key => ({
@@ -55,7 +58,6 @@ export default function Home() {
       subtitle: pages[key].description || defaultSubtitles[key] || '',
     }));
 
-  // Дополнительные страницы (все остальные, не скрытые)
   const additionalPages = Object.entries(pages)
     .filter(([key, page]) => !mainKeys.includes(key) && !page.hidden)
     .map(([key, page]) => ({
@@ -68,6 +70,19 @@ export default function Home() {
   return (
     <div className="page">
       <h1 className="page-title">🚇 Транспорт Москвы</h1>
+
+      {/* Кнопка входа для администраторов (если не авторизован) */}
+      {!user && !admin && (
+        <div className="home-card" style={{ marginBottom: '20px', border: '2px solid var(--tg-accent)' }}>
+          <div className="home-item" onClick={() => navigate('/login')}>
+            <div className="home-item-icon">🔐</div>
+            <div className="home-item-text">
+              <div className="home-item-title">Вход для администраторов</div>
+              <div className="home-item-subtitle">Авторизуйтесь через Telegram</div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="home-section-title">Справочник</div>
       <div className="home-card">

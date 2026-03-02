@@ -441,3 +441,60 @@ button.danger:hover {
 button.danger:active {
   background: #d9363e;
 }
+
+/* ================================
+   Responsive styles
+================================ */
+
+/* Для планшетов и небольших десктопов */
+@media (min-width: 768px) {
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .admin-card {
+    padding: 20px;
+  }
+
+  .home-item {
+    padding: 18px 20px;
+    font-size: 18px;
+  }
+
+  .home-item-icon {
+    font-size: 28px;
+    width: 40px;
+  }
+
+  .editor-actions {
+    flex-wrap: wrap;
+  }
+  
+  .editor-actions button {
+    flex: 0 1 auto;
+    min-width: 120px;
+  }
+}
+
+/* Для больших десктопов */
+@media (min-width: 1024px) {
+  .page {
+    max-width: 900px;
+  }
+
+  .admin-card select,
+  .admin-card input[type="text"] {
+    font-size: 16px;
+  }
+
+  .tiptap-editor .ProseMirror {
+    min-height: 150px;
+  }
+}
