@@ -7,7 +7,7 @@ import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple';
 import { addLog } from '../services/logService';
 import { PageData } from '../types/page';
-import { getTelegramUser, getTelegramUserName } from '../utils/telegram';
+import { getTelegramUser, getTelegramUserName, clearTelegramUser } from '../utils/telegram';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -49,7 +49,6 @@ export default function Admin() {
       const now = new Date().toISOString();
       const userName = getTelegramUserName() || String(getTelegramUser()?.id) || 'unknown';
 
-      // Обновляем метаданные для всех страниц
       const pagesToSave = Object.fromEntries(
         Object.entries(pages).map(([key, page]) => {
           const newPage = { ...page };
@@ -59,7 +58,6 @@ export default function Admin() {
           }
           newPage.updatedAt = now;
           newPage.updatedBy = userName;
-          // Убедимся, что description и emoji есть (хотя бы пустые)
           newPage.description = newPage.description ?? '';
           newPage.emoji = newPage.emoji ?? '📄';
           return [key, newPage];
@@ -126,6 +124,11 @@ export default function Admin() {
       }
       addLog('page_deleted', key);
     }
+  };
+
+  const handleLogout = () => {
+    clearTelegramUser();
+    navigate('/');
   };
 
   useTelegramMainButton({
@@ -208,6 +211,11 @@ export default function Admin() {
         <button className="tg-button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
           {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
         </button>
+      </div>
+
+      {/* Кнопка выхода (для обычного браузера) */}
+      <div className="admin-card">
+        <button className="tg-button danger" onClick={handleLogout}>🚪 Выйти</button>
       </div>
 
       {mode === 'edit' ? (
