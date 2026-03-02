@@ -6,6 +6,7 @@ import Logs from './pages/Logs';
 import Login from './pages/Login';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
+import Callback from './pages/Callback';
 
 function App() {
   // ... (код инициализации Telegram, если нужно)
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/:page" element={<DynamicPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/callback" element={<Callback />} />
         <Route
           path="/admin"
           element={

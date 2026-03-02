@@ -1,21 +1,20 @@
-import { TelegramLoginButton, TelegramLoginWidgetData } from '@advanceddev/telegram-login-react';
-import { LoadingSpinner } from './LoadingSpinner';
+import { signIn } from '../services/authService';
 
 interface Props {
-  onAuth: (user: TelegramLoginWidgetData) => void;
   className?: string;
 }
 
+export function TelegramLogin({ className }: Props) {
+  const handleLogin = () => {
+    signIn().catch((err) => {
+      console.error('Login error:', err);
+      alert('Не удалось инициировать вход. Попробуйте позже.');
+    });
+  };
 
-export function TelegramLogin({ onAuth, className }: Props) {
   return (
-    <TelegramLoginButton
-      botUsername="faq_mos_beta_bot"
-      onAuthCallback={onAuth}
-      size="large"
-      lang="ru"
-      radius={8}
-      loadingComponent={<LoadingSpinner />} // 👈 добавили
-    />
+    <button onClick={handleLogin} className={`tg-button ${className || ''}`}>
+      🔐 Войти через Telegram
+    </button>
   );
 }
