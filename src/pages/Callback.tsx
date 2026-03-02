@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
 
-// URL вашего API Gateway (замените на актуальный)
+// ⚠️ ЗАМЕНИТЕ НА АКТУАЛЬНЫЙ URL ВАШЕГО API GATEWAY
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net';
 
 export default function Callback() {
@@ -13,7 +13,7 @@ export default function Callback() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    const state = params.get('state'); // можно проверить
+    const state = params.get('state'); // можно проверить (опционально)
 
     if (!code) {
       setError('No authorization code received');
@@ -21,21 +21,19 @@ export default function Callback() {
       return;
     }
 
-    // Отправляем код на наш сервер
     fetch(API_GATEWAY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, state })
+      body: JSON.stringify({ code, state }),
     })
-      .then(res => {
+      .then(async (res) => {
         if (!res.ok) {
-          return res.json().then(data => {
-            throw new Error(data.error || 'Authentication failed');
-          });
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || `HTTP error ${res.status}`);
         }
         return res.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data.user) {
           setTelegramUser(data.user);
           navigate('/');
@@ -43,8 +41,8 @@ export default function Callback() {
           setError('Authentication failed');
         }
       })
-      .catch(err => {
-        console.error(err);
+      .catch((err) => {
+        console.error('Callback error:', err);
         setError(err.message || 'Network error');
       })
       .finally(() => setLoading(false));

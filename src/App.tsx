@@ -4,12 +4,11 @@ import DynamicPage from './pages/DynamicPage';
 import Admin from './pages/Admin';
 import Logs from './pages/Logs';
 import Login from './pages/Login';
+import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
-import Callback from './pages/Callback';
 
 function App() {
-  // ... (код инициализации Telegram, если нужно)
   return (
     <>
       <TelegramBackButton />
