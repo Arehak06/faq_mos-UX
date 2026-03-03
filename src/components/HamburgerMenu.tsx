@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
-import { getTelegramUser } from '../utils/telegram';
 
 export function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +33,15 @@ export function HamburgerMenu() {
 
   if (!pages) return null;
 
+  // Функция для рендеринга иконки (эмодзи или картинка)
+  const renderIcon = (icon: string | undefined, className: string) => {
+    if (!icon) return <span className={className}>📄</span>;
+    if (icon.startsWith('http')) {
+      return <img src={icon} alt="" className={`${className} custom-icon`} />;
+    }
+    return <span className={className}>{icon}</span>;
+  };
+
   const mainKeys = ['tickets', 'schedule', 'rights', 'fines', 'about'];
   const mainPages = mainKeys
     .filter(key => pages[key] && !pages[key].hidden)
@@ -52,9 +60,14 @@ export function HamburgerMenu() {
         <div className="menu-dropdown">
           <div className="menu-section">
             <div className="menu-section-title">Основные</div>
+            {/* Кнопка на главную */}
+            <div className="menu-item" onClick={() => handleNavigate('/')}>
+              {renderIcon('🏠', 'menu-item-emoji')}
+              <span className="menu-item-title">Главная</span>
+            </div>
             {mainPages.map(item => (
               <div key={item.key} className="menu-item" onClick={() => handleNavigate(`/${item.key}`)}>
-                <span className="menu-item-emoji">{item.emoji}</span>
+                {renderIcon(item.emoji, 'menu-item-emoji')}
                 <span className="menu-item-title">{item.title}</span>
               </div>
             ))}
@@ -64,7 +77,7 @@ export function HamburgerMenu() {
               <div className="menu-section-title">Дополнительно</div>
               {additionalPages.map(item => (
                 <div key={item.key} className="menu-item" onClick={() => handleNavigate(`/${item.key}`)}>
-                  <span className="menu-item-emoji">{item.emoji}</span>
+                  {renderIcon(item.emoji, 'menu-item-emoji')}
                   <span className="menu-item-title">{item.title}</span>
                 </div>
               ))}

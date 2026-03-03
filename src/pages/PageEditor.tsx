@@ -444,14 +444,13 @@ export default function PageEditor({ page, onChange }: Props) {
       </label>
 
       <label className="editor-field">
-        <span>Эмодзи (один символ или смайлик)</span>
-        <input
-          value={page.emoji || ''}
-          onChange={(e) => onChange({ ...page, emoji: e.target.value })}
-          placeholder="Например: 🚇"
-          maxLength={2}
-        />
-      </label>
+  <span>Эмодзи или URL иконки</span>
+  <input
+    value={page.emoji || ''}
+    onChange={(e) => onChange({ ...page, emoji: e.target.value })}
+    placeholder="Например: 🚇 или https://example.com/icon.png"
+  />
+</label>
 
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">

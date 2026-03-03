@@ -583,3 +583,17 @@ button.danger:active {
   font-size: 24px;
   flex-shrink: 0;
 }
+
+/* Кастомные иконки-картинки */
+.menu-item .custom-icon,
+.home-item .custom-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.home-item-icon.custom-icon {
+  width: 28px;
+  height: 28px;
+}

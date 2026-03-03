@@ -12,6 +12,14 @@ export default function Home() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const renderIcon = (icon: string | undefined) => {
+  if (!icon) return <span className="home-item-icon">📄</span>;
+  if (icon.startsWith('http')) {
+    return <img src={icon} alt="" className="home-item-icon custom-icon" />;
+  }
+  return <span className="home-item-icon">{icon}</span>;
+};
+
   const user = getTelegramUser();
 
   useEffect(() => {
@@ -52,7 +60,7 @@ export default function Home() {
 
   return (
     <div className="page">
-      <h1 className="page-title">🚇 Транспорт Москвы</h1>
+      <h1 className="page-title">🎫 Билетик - справочник по транспорту Москвы и области</h1>
 
       {/* Блоки, добавленные через админку */}
       {homeBlocks.map((block) => (
@@ -91,18 +99,18 @@ export default function Home() {
 
       {/* Дополнительные страницы (динамические) */}
       {Object.entries(pages)
-        .filter(([key, page]) => !['home', ...mainSections.map(s => s.path.slice(1))].includes(key) && !page.hidden)
-        .map(([key, page]) => (
-          <div key={key} className="home-card">
-            <div className="home-item" onClick={() => navigate(`/${key}`)}>
-              <div className="home-item-icon">{page.emoji || '📄'}</div>
-              <div className="home-item-text">
-                <div className="home-item-title">{page.title}</div>
-                <div className="home-item-subtitle">{page.description || 'Дополнительная страница'}</div>
-              </div>
-            </div>
-          </div>
-        ))}
+  .filter(([key, page]) => !['home', ...mainSections.map(s => s.path.slice(1))].includes(key) && !page.hidden)
+  .map(([key, page]) => (
+    <div key={key} className="home-card">
+      <div className="home-item" onClick={() => navigate(`/${key}`)}>
+        {renderIcon(page.emoji)}
+        <div className="home-item-text">
+          <div className="home-item-title">{page.title}</div>
+          <div className="home-item-subtitle">{page.description || 'Дополнительная страница'}</div>
+        </div>
+      </div>
+    </div>
+  ))}
 
       {admin && (
         <>
