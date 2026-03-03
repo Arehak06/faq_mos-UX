@@ -59,7 +59,7 @@ export default function Home() {
         <BlockRenderer key={block.id} block={block} />
       ))}
 
-      {/* Кнопка входа для администраторов (если не авторизован) */}
+      {/* Кнопка входа для администраторов (если не авторизован)
       {!user && !admin && (
         <div className="home-card" style={{ marginBottom: '20px', border: '2px solid var(--tg-accent)' }}>
           <div className="home-item" onClick={() => navigate('/login')}>
@@ -70,7 +70,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       <div className="home-section-title">Справочник</div>
       <div className="home-card">
