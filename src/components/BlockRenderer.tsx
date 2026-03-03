@@ -22,7 +22,6 @@ export function BlockRenderer({ block }: { block: Block }) {
       );
 
     case 'button': {
-      const isUrlValid = block.url.startsWith('http') || block.url.startsWith('/');
       const buttonStyle: React.CSSProperties = {
         backgroundImage: block.backgroundImage ? `url(${block.backgroundImage})` : undefined,
         backgroundSize: 'cover',
@@ -65,13 +64,28 @@ export function BlockRenderer({ block }: { block: Block }) {
         </TgCard>
       );
 
-    case 'warning':
+    case 'alert': {
+      // Цвета по умолчанию в зависимости от severity
+      let defaultIcon = 'ℹ️';
+      let defaultBg = '#e3f2fd';   // светло-синий
+      let defaultColor = '#0d47a1'; // тёмно-синий
+
+      if (block.severity === 'warning') {
+        defaultIcon = '⚠️';
+        defaultBg = '#fff9c4';      // светло-жёлтый
+        defaultColor = '#f57f17';    // тёмно-жёлтый
+      } else if (block.severity === 'important') {
+        defaultIcon = '🔴';
+        defaultBg = '#ffebee';      // светло-красный
+        defaultColor = '#b71c1c';    // тёмно-красный
+      }
+
       return (
         <div
-          className="warning-block"
+          className="alert-block"
           style={{
-            backgroundColor: block.backgroundColor || '#ffebee',
-            color: block.textColor || '#b71c1c',
+            backgroundColor: block.backgroundColor || defaultBg,
+            color: block.textColor || defaultColor,
             padding: '12px 16px',
             borderRadius: '12px',
             marginBottom: '12px',
@@ -80,10 +94,11 @@ export function BlockRenderer({ block }: { block: Block }) {
             gap: '12px',
           }}
         >
-          {block.icon && <span className="warning-icon">{block.icon}</span>}
-          <span className="warning-text">{block.text}</span>
+          <span className="alert-icon">{block.icon || defaultIcon}</span>
+          <span className="alert-text">{block.text}</span>
         </div>
       );
+    }
 
     default:
       return null;

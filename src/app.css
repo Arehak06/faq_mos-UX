@@ -574,3 +574,12 @@ button.danger:active {
   font-size: 15px;
   font-weight: 500;
 }
+.alert-block {
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.alert-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}

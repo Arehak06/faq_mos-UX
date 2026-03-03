@@ -16,9 +16,9 @@ export type ButtonBlock = {
   type: 'button';
   text: string;
   url: string;
-  icon?: string;         // эмодзи или URL иконки
-  backgroundImage?: string; // URL фонового изображения
-  description?: string;  // дополнительный текст под кнопкой
+  icon?: string;
+  backgroundImage?: string;
+  description?: string;
 };
 
 export type ImageBlock = {
@@ -29,13 +29,14 @@ export type ImageBlock = {
   caption?: string;
 };
 
-export type WarningBlock = {
+export type AlertBlock = {
   id: string;
-  type: 'warning';
+  type: 'alert';
   text: string;
-  icon?: string;         // эмодзи или URL иконки (по умолчанию ⚠️)
-  backgroundColor?: string; // цвет фона (по умолчанию #ffebee)
-  textColor?: string;    // цвет текста (по умолчанию #b71c1c)
+  severity: 'info' | 'warning' | 'important'; // тип уведомления
+  icon?: string;
+  backgroundColor?: string;
+  textColor?: string;
 };
 
-export type Block = TextBlock | CardBlock | ButtonBlock | ImageBlock | WarningBlock;
+export type Block = TextBlock | CardBlock | ButtonBlock | ImageBlock | AlertBlock;

@@ -2,13 +2,12 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, WarningBlock } from '../types/blocks';
+import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, AlertBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
 import { uploadImage } from '../services/uploadService';
 import { addLog } from '../services/logService';
-
 
 type Props = {
   page: PageData;
@@ -81,12 +80,8 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   };
 
   if (block.type === 'text') {
-    // TipTap редактор для текстового блока
     const editor = useEditor({
-      extensions: [
-        StarterKit,
-        Link.configure({ openOnClick: false }),
-      ],
+      extensions: [StarterKit, Link.configure({ openOnClick: false })],
       content: block.text,
       onUpdate: ({ editor }) => {
         onUpdate(index, { ...block, text: editor.getHTML() });
@@ -104,7 +99,6 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
         <div className="tiptap-editor">
           <EditorContent editor={editor} />
         </div>
-        {/* Панель инструментов */}
         <div className="tiptap-toolbar">
           <button
             onClick={() => editor?.chain().focus().toggleBold().run()}
@@ -172,71 +166,79 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   }
 
   if (block.type === 'button') {
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, text: e.target.value });
-  };
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, url: e.target.value });
-  };
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, icon: e.target.value });
-  };
-  const handleBgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, backgroundImage: e.target.value });
-  };
-  const handleDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, description: e.target.value });
-  };
-  const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, text: e.target.value });
+    };
+    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, url: e.target.value });
+    };
+    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, icon: e.target.value });
+    };
+    const handleBgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, backgroundImage: e.target.value });
+    };
+    const handleDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, description: e.target.value });
+    };
+    const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
 
-  return (
-    <div className="editor-block">
-      <div className="editor-block-header">
-        <strong>Кнопка</strong>
-        <button className="danger" onClick={handleRemove}>🗑</button>
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Кнопка</strong>
+          <button className="danger" onClick={handleRemove}>🗑</button>
+        </div>
+        <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
+        <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
+        <input value={block.description || ''} placeholder="Описание (необязательно)" onChange={handleDescChange} />
+        <input value={block.backgroundImage || ''} placeholder="URL фонового изображения" onChange={handleBgImageChange} />
+        <input
+          value={block.url}
+          placeholder="Ссылка (https:// или /page)"
+          onChange={handleUrlChange}
+          style={!isUrlValid ? { borderColor: 'red' } : {}}
+        />
+        {!isUrlValid && <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>}
       </div>
-      <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
-      <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
-      <input value={block.description || ''} placeholder="Описание (необязательно)" onChange={handleDescChange} />
-      <input value={block.backgroundImage || ''} placeholder="URL фонового изображения" onChange={handleBgImageChange} />
-      <input
-        value={block.url}
-        placeholder="Ссылка (https:// или /page)"
-        onChange={handleUrlChange}
-        style={!isUrlValid ? { borderColor: 'red' } : {}}
-      />
-      {!isUrlValid && <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>}
-    </div>
-  );
-}
+    );
+  }
 
-if (block.type === 'warning') {
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, text: e.target.value });
-  };
-  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, icon: e.target.value });
-  };
-  const handleBgColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, backgroundColor: e.target.value });
-  };
-  const handleTextColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onUpdate(index, { ...block, textColor: e.target.value });
-  };
+  if (block.type === 'alert') {
+    const handleSeverityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+      onUpdate(index, { ...block, severity: e.target.value as 'info' | 'warning' | 'important' });
+    };
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, text: e.target.value });
+    };
+    const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, icon: e.target.value });
+    };
+    const handleBgColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, backgroundColor: e.target.value });
+    };
+    const handleTextColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      onUpdate(index, { ...block, textColor: e.target.value });
+    };
 
-  return (
-    <div className="editor-block">
-      <div className="editor-block-header">
-        <strong>Предупреждение</strong>
-        <button className="danger" onClick={handleRemove}>🗑</button>
+    return (
+      <div className="editor-block">
+        <div className="editor-block-header">
+          <strong>Уведомление</strong>
+          <button className="danger" onClick={handleRemove}>🗑</button>
+        </div>
+        <select value={block.severity} onChange={handleSeverityChange}>
+          <option value="info">Информация (синий)</option>
+          <option value="warning">Внимание (жёлтый)</option>
+          <option value="important">Важно (красный)</option>
+        </select>
+        <input value={block.text} placeholder="Текст уведомления" onChange={handleTextChange} />
+        <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
+        <input value={block.backgroundColor || ''} placeholder="Цвет фона (например, #e3f2fd)" onChange={handleBgColorChange} />
+        <input value={block.textColor || ''} placeholder="Цвет текста (например, #0d47a1)" onChange={handleTextColorChange} />
       </div>
-      <input value={block.icon || '⚠️'} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
-      <input value={block.text} placeholder="Текст предупреждения" onChange={handleTextChange} />
-      <input value={block.backgroundColor || '#ffebee'} placeholder="Цвет фона (например, #ffebee)" onChange={handleBgColorChange} />
-      <input value={block.textColor || '#b71c1c'} placeholder="Цвет текста (например, #b71c1c)" onChange={handleTextColorChange} />
-    </div>
-  );
-}
+    );
+  }
 
   if (block.type === 'image') {
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -290,6 +292,42 @@ export default function PageEditor({ page, onChange }: Props) {
     const block: ButtonBlock = { id: uid(), type: 'button', text: '', url: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'button' });
+  }, [page, onChange]);
+
+  const handleAddInfoBlock = useCallback(() => {
+    const block: AlertBlock = {
+      id: uid(),
+      type: 'alert',
+      severity: 'info',
+      text: 'Информация',
+      icon: 'ℹ️',
+    };
+    onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'alert', severity: 'info' });
+  }, [page, onChange]);
+
+  const handleAddWarningBlock = useCallback(() => {
+    const block: AlertBlock = {
+      id: uid(),
+      type: 'alert',
+      severity: 'warning',
+      text: 'Внимание',
+      icon: '⚠️',
+    };
+    onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'alert', severity: 'warning' });
+  }, [page, onChange]);
+
+  const handleAddImportantBlock = useCallback(() => {
+    const block: AlertBlock = {
+      id: uid(),
+      type: 'alert',
+      severity: 'important',
+      text: 'Важно',
+      icon: '🔴',
+    };
+    onChange({ ...page, blocks: [...page.blocks, block] });
+    addLog('block_added', page.id, { type: 'alert', severity: 'important' });
   }, [page, onChange]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -366,19 +404,6 @@ export default function PageEditor({ page, onChange }: Props) {
     e.dataTransfer.setData('text/plain', '');
   }, []);
 
-  const handleAddWarningBlock = useCallback(() => {
-  const block: WarningBlock = {
-    id: uid(),
-    type: 'warning',
-    text: 'Внимание!',
-    icon: '⚠️',
-    backgroundColor: '#ffebee',
-    textColor: '#b71c1c',
-  };
-  onChange({ ...page, blocks: [...page.blocks, block] });
-  addLog('block_added', page.id, { type: 'warning' });
-}, [page, onChange]);
-
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
   }, []);
@@ -409,7 +434,6 @@ export default function PageEditor({ page, onChange }: Props) {
         <input value={page.title} onChange={(e) => onChange({ ...page, title: e.target.value })} />
       </label>
 
-      {/* Новые поля */}
       <label className="editor-field">
         <span>Описание для главного меню</span>
         <input
@@ -475,9 +499,11 @@ export default function PageEditor({ page, onChange }: Props) {
         <button onClick={handleAddTextBlock}>➕ Текст</button>
         <button onClick={handleAddCardBlock}>➕ Карточка</button>
         <button onClick={handleAddButtonBlock}>➕ Кнопка</button>
+        <button onClick={handleAddInfoBlock}>ℹ️ Инфо</button>
+        <button onClick={handleAddWarningBlock}>⚠️ Внимание</button>
+        <button onClick={handleAddImportantBlock}>🔴 Важно</button>
         <button onClick={handleAddImageClick} disabled={uploading}>
           {uploading ? '⏳ Загрузка...' : '➕ Изображение'}
-        <button onClick={handleAddWarningBlock}>⚠️ Предупреждение</button>
         </button>
       </div>
     </div>
