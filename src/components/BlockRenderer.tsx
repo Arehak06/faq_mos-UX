@@ -21,10 +21,18 @@ export function BlockRenderer({ block }: { block: Block }) {
         </TgCard>
       );
 
-    case 'button':
+    case 'button': {
+      const isUrlValid = block.url.startsWith('http') || block.url.startsWith('/');
+      const buttonStyle: React.CSSProperties = {
+        backgroundImage: block.backgroundImage ? `url(${block.backgroundImage})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
+
       return (
         <button
           className="tg-button"
+          style={buttonStyle}
           onClick={() => {
             if (block.url.startsWith('http')) {
               window.open(block.url, '_blank');
@@ -33,9 +41,12 @@ export function BlockRenderer({ block }: { block: Block }) {
             }
           }}
         >
-          {block.text}
+          {block.icon && <span className="button-icon">{block.icon}</span>}
+          <span className="button-text">{block.text}</span>
+          {block.description && <span className="button-description">{block.description}</span>}
         </button>
       );
+    }
 
     case 'image':
       return (
@@ -52,6 +63,26 @@ export function BlockRenderer({ block }: { block: Block }) {
             </p>
           )}
         </TgCard>
+      );
+
+    case 'warning':
+      return (
+        <div
+          className="warning-block"
+          style={{
+            backgroundColor: block.backgroundColor || '#ffebee',
+            color: block.textColor || '#b71c1c',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            marginBottom: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+          }}
+        >
+          {block.icon && <span className="warning-icon">{block.icon}</span>}
+          <span className="warning-text">{block.text}</span>
+        </div>
       );
 
     default:

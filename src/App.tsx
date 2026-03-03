@@ -7,11 +7,13 @@ import Login from './pages/Login';
 import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
+import { HamburgerMenu } from './components/HamburgerMenu';
 
 function App() {
   return (
     <>
       <TelegramBackButton />
+      <HamburgerMenu />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/:page" element={<DynamicPage />} />

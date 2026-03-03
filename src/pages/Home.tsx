@@ -4,6 +4,7 @@ import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
+import { BlockRenderer } from '../components/BlockRenderer';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -11,30 +12,13 @@ export default function Home() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Определяем, авторизован ли пользователь
-  const [user, setUser] = useState(getTelegramUser());
-
-  const mainKeys = ['tickets', 'schedule', 'rights', 'fines', 'about'];
-
-  const defaultIcons: Record<string, string> = {
-    tickets: '🎟️',
-    schedule: '⏱️',
-    rights: '⚖️',
-    fines: '💸',
-    about: 'ℹ️',
-  };
-
-  const defaultSubtitles: Record<string, string> = {
-    tickets: 'Тройка, тарифы, льготы',
-    schedule: 'Метро, МЦД, МЦК',
-    rights: 'Контролёры и проверки',
-    fines: 'За что и сколько',
-    about: 'Контакты и источники',
-  };
+  const user = getTelegramUser();
 
   useEffect(() => {
     setAdmin(isAdmin());
-    setUser(getTelegramUser()); // обновляем при монтировании
+  }, [user]);
+
+  useEffect(() => {
     loadPages()
       .then(data => {
         setPages(data);
@@ -49,27 +33,31 @@ export default function Home() {
   if (loading) return <div className="page">Загрузка...</div>;
   if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
-  const mainPages = mainKeys
-    .filter(key => pages[key] && !pages[key].hidden)
-    .map(key => ({
-      key,
-      title: pages[key].title,
-      icon: pages[key].emoji || defaultIcons[key] || '📄',
-      subtitle: pages[key].description || defaultSubtitles[key] || '',
-    }));
+  const homePage = pages['home'];
+  const homeBlocks = homePage?.blocks || [];
 
-  const additionalPages = Object.entries(pages)
-    .filter(([key, page]) => !mainKeys.includes(key) && !page.hidden)
-    .map(([key, page]) => ({
-      key,
-      title: page.title,
-      icon: page.emoji || '📄',
-      subtitle: page.description || 'Дополнительная страница',
-    }));
+  // Основные разделы (статические)
+  const mainSections = [
+    { path: '/tickets', icon: '🎟️', title: 'Билеты', subtitle: 'Тройка, тарифы, льготы' },
+    { path: '/schedule', icon: '⏱️', title: 'Расписание', subtitle: 'Метро, МЦД, МЦК' },
+    { path: '/rights', icon: '⚖️', title: 'Права пассажира', subtitle: 'Контролёры и проверки' },
+    { path: '/fines', icon: '💸', title: 'Штрафы', subtitle: 'За что и сколько' },
+    { path: '/about', icon: 'ℹ️', title: 'О проекте', subtitle: 'Контакты и источники' },
+  ];
+
+  const adminSections = [
+    { path: '/admin', icon: '🛠️', title: 'Админка', subtitle: 'Управление страницами' },
+    { path: '/logs', icon: '📋', title: 'Журнал', subtitle: 'Действия администраторов' },
+  ];
 
   return (
     <div className="page">
       <h1 className="page-title">🚇 Транспорт Москвы</h1>
+
+      {/* Блоки, добавленные через админку */}
+      {homeBlocks.map((block) => (
+        <BlockRenderer key={block.id} block={block} />
+      ))}
 
       {/* Кнопка входа для администраторов (если не авторизован) */}
       {!user && !admin && (
@@ -86,35 +74,45 @@ export default function Home() {
 
       <div className="home-section-title">Справочник</div>
       <div className="home-card">
-        {mainPages.map(item => (
+        {mainSections.map((item) => (
           <div
-            key={item.key}
+            key={item.path}
             className="home-item"
-            onClick={() => navigate(`/${item.key}`)}
+            onClick={() => navigate(item.path)}
           >
             <div className="home-item-icon">{item.icon}</div>
             <div className="home-item-text">
               <div className="home-item-title">{item.title}</div>
-              {item.subtitle && <div className="home-item-subtitle">{item.subtitle}</div>}
+              <div className="home-item-subtitle">{item.subtitle}</div>
             </div>
           </div>
         ))}
-        {mainPages.length === 0 && (
-          <div className="home-item" style={{ color: 'var(--tg-hint)' }}>
-            Нет доступных страниц
-          </div>
-        )}
       </div>
 
-      {additionalPages.length > 0 && (
+      {/* Дополнительные страницы (динамические) */}
+      {Object.entries(pages)
+        .filter(([key, page]) => !['home', ...mainSections.map(s => s.path.slice(1))].includes(key) && !page.hidden)
+        .map(([key, page]) => (
+          <div key={key} className="home-card">
+            <div className="home-item" onClick={() => navigate(`/${key}`)}>
+              <div className="home-item-icon">{page.emoji || '📄'}</div>
+              <div className="home-item-text">
+                <div className="home-item-title">{page.title}</div>
+                <div className="home-item-subtitle">{page.description || 'Дополнительная страница'}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+      {admin && (
         <>
-          <div className="home-section-title">Дополнительно</div>
+          <div className="home-section-title home-admin-section">Управление</div>
           <div className="home-card">
-            {additionalPages.map(item => (
+            {adminSections.map((item) => (
               <div
-                key={item.key}
+                key={item.path}
                 className="home-item"
-                onClick={() => navigate(`/${item.key}`)}
+                onClick={() => navigate(item.path)}
               >
                 <div className="home-item-icon">{item.icon}</div>
                 <div className="home-item-text">
@@ -123,28 +121,6 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
-        </>
-      )}
-
-      {admin && (
-        <>
-          <div className="home-section-title home-admin-section">Управление</div>
-          <div className="home-card">
-            <div className="home-item" onClick={() => navigate('/admin')}>
-              <div className="home-item-icon">🛠️</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Админка</div>
-                <div className="home-item-subtitle">Управление страницами</div>
-              </div>
-            </div>
-            <div className="home-item" onClick={() => navigate('/logs')}>
-              <div className="home-item-icon">📋</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Журнал</div>
-                <div className="home-item-subtitle">Действия администраторов</div>
-              </div>
-            </div>
           </div>
         </>
       )}

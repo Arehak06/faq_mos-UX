@@ -2,12 +2,13 @@ import { useState, useCallback, useMemo, useRef } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock } from '../types/blocks';
+import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, WarningBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
 import { uploadImage } from '../services/uploadService';
 import { addLog } from '../services/logService';
+
 
 type Props = {
   page: PageData;
@@ -171,35 +172,71 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   }
 
   if (block.type === 'button') {
-    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onUpdate(index, { ...block, text: e.target.value });
-    };
-    const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onUpdate(index, { ...block, url: e.target.value });
-    };
-    const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, text: e.target.value });
+  };
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, url: e.target.value });
+  };
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, icon: e.target.value });
+  };
+  const handleBgImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, backgroundImage: e.target.value });
+  };
+  const handleDescChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, description: e.target.value });
+  };
+  const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
 
-    return (
-      <div className="editor-block">
-        <div className="editor-block-header">
-          <strong>Кнопка</strong>
-          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
-            🗑
-          </button>
-        </div>
-        <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
-        <input
-          value={block.url}
-          placeholder="Ссылка (https:// или /page)"
-          onChange={handleUrlChange}
-          style={!isUrlValid ? { borderColor: 'red' } : {}}
-        />
-        {!isUrlValid && (
-          <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>
-        )}
+  return (
+    <div className="editor-block">
+      <div className="editor-block-header">
+        <strong>Кнопка</strong>
+        <button className="danger" onClick={handleRemove}>🗑</button>
       </div>
-    );
-  }
+      <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
+      <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
+      <input value={block.description || ''} placeholder="Описание (необязательно)" onChange={handleDescChange} />
+      <input value={block.backgroundImage || ''} placeholder="URL фонового изображения" onChange={handleBgImageChange} />
+      <input
+        value={block.url}
+        placeholder="Ссылка (https:// или /page)"
+        onChange={handleUrlChange}
+        style={!isUrlValid ? { borderColor: 'red' } : {}}
+      />
+      {!isUrlValid && <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>}
+    </div>
+  );
+}
+
+if (block.type === 'warning') {
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, text: e.target.value });
+  };
+  const handleIconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, icon: e.target.value });
+  };
+  const handleBgColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, backgroundColor: e.target.value });
+  };
+  const handleTextColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdate(index, { ...block, textColor: e.target.value });
+  };
+
+  return (
+    <div className="editor-block">
+      <div className="editor-block-header">
+        <strong>Предупреждение</strong>
+        <button className="danger" onClick={handleRemove}>🗑</button>
+      </div>
+      <input value={block.icon || '⚠️'} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
+      <input value={block.text} placeholder="Текст предупреждения" onChange={handleTextChange} />
+      <input value={block.backgroundColor || '#ffebee'} placeholder="Цвет фона (например, #ffebee)" onChange={handleBgColorChange} />
+      <input value={block.textColor || '#b71c1c'} placeholder="Цвет текста (например, #b71c1c)" onChange={handleTextColorChange} />
+    </div>
+  );
+}
 
   if (block.type === 'image') {
     const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -329,6 +366,19 @@ export default function PageEditor({ page, onChange }: Props) {
     e.dataTransfer.setData('text/plain', '');
   }, []);
 
+  const handleAddWarningBlock = useCallback(() => {
+  const block: WarningBlock = {
+    id: uid(),
+    type: 'warning',
+    text: 'Внимание!',
+    icon: '⚠️',
+    backgroundColor: '#ffebee',
+    textColor: '#b71c1c',
+  };
+  onChange({ ...page, blocks: [...page.blocks, block] });
+  addLog('block_added', page.id, { type: 'warning' });
+}, [page, onChange]);
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
   }, []);
@@ -427,6 +477,7 @@ export default function PageEditor({ page, onChange }: Props) {
         <button onClick={handleAddButtonBlock}>➕ Кнопка</button>
         <button onClick={handleAddImageClick} disabled={uploading}>
           {uploading ? '⏳ Загрузка...' : '➕ Изображение'}
+        <button onClick={handleAddWarningBlock}>⚠️ Предупреждение</button>
         </button>
       </div>
     </div>
