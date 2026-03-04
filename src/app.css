@@ -955,3 +955,16 @@ button.danger:active {
 .back-to-admin:hover {
   background: rgba(0,0,0,0.04);
 }
+
+/* Отступ для контента, чтобы не перекрывался гамбургером */
+.page {
+  padding: 12px;
+  padding-left: 60px; /* Ширина гамбургера (~40px) + небольшой запас */
+}
+
+/* На мобильных устройствах можно уменьшить отступ */
+@media (max-width: 480px) {
+  .page {
+    padding-left: 52px;
+  }
+}
