@@ -870,3 +870,88 @@ button.danger:active {
   font-size: 14px;
   cursor: pointer;
 }
+
+/* Подстраницы */
+.page-children {
+  margin-top: 24px;
+  border-top: 1px solid var(--tg-border);
+  padding-top: 16px;
+}
+
+.page-children h3 {
+  font-size: 16px;
+  color: var(--tg-hint);
+  margin-bottom: 12px;
+}
+
+.children-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.child-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--tg-card);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.child-item:active {
+  background: var(--tg-border);
+}
+
+.child-emoji {
+  font-size: 24px;
+  width: 32px;
+  text-align: center;
+}
+
+.child-title {
+  font-weight: 500;
+  flex: 1;
+}
+
+.child-description {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+/* Иерархия в меню */
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.menu-item-emoji {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+/* Кнопка назад */
+.back-to-admin {
+  background: transparent;
+  border: 1px solid var(--tg-border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.back-to-admin:hover {
+  background: rgba(0,0,0,0.04);
+}

@@ -14,10 +14,11 @@ export type PageData = {
   blocks: Block[];
   mainButton?: PageMainButton;
   hidden?: boolean;
-  createdAt?: string;      // ISO дата создания
-  updatedAt?: string;      // ISO дата последнего изменения
-  createdBy?: string;      // имя пользователя (или id) создателя
-  updatedBy?: string;      // имя пользователя (или id) последнего редактора
-  description?: string;    // подзаголовок для главного меню
-  emoji?: string;          // эмодзи для отображения в меню
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  description?: string;
+  emoji?: string;
+  parentId?: string; // ключ родительской страницы (опционально)
 };

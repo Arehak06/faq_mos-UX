@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageEditor from './PageEditor';
 import PageView from './PageView';
@@ -114,6 +114,12 @@ export default function PageManagement() {
       alert('Нельзя удалить главную страницу');
       return;
     }
+    // Проверяем, есть ли дочерние страницы
+    const children = Object.values(pages).filter(p => p.parentId === key);
+    if (children.length > 0) {
+      const confirm = window.confirm(`У страницы есть дочерние подразделы (${children.length}). Они также будут удалены. Продолжить?`);
+      if (!confirm) return;
+    }
     const pageTitle = pages[key]?.title || key;
     if (window.confirm(`Удалить страницу "${pageTitle}" (${key})? Это действие необратимо.`)) {
       const updatedPages = { ...pages };
@@ -143,6 +149,20 @@ export default function PageManagement() {
     });
   }, [pages, searchTerm, showHidden]);
 
+  // Функция для рендеринга опций с отступами (иерархия)
+  const renderPageOptions = (parentId: string | null = null, level = 0): JSX.Element[] => {
+    if (!pages) return [];
+    const children = Object.entries(pages)
+      .filter(([_, page]) => (page.parentId || null) === parentId)
+      .sort((a, b) => a[1].title.localeCompare(b[1].title));
+    return children.flatMap(([key, page]) => [
+      <option key={key} value={key}>
+        {'\u00A0'.repeat(level * 2)}{level > 0 ? '↳ ' : ''}{page.title} ({key})
+      </option>,
+      ...renderPageOptions(key, level + 1)
+    ]);
+  };
+
   if (loading) return <div className="page">Загрузка...</div>;
   if (!pages) return <div className="page">Ошибка загрузки</div>;
 
@@ -152,7 +172,6 @@ export default function PageManagement() {
     <div className="page">
       <h1 className="page-title">📄 Управление страницами</h1>
 
-      {/* Кнопка возврата в админку */}
       <button className="back-to-admin" onClick={() => navigate('/admin')}>
         ← Назад в кабинет
       </button>
@@ -183,11 +202,7 @@ export default function PageManagement() {
           onChange={(e) => setCurrent(e.target.value)}
           style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--tg-border)', marginBottom: '12px' }}
         >
-          {filteredPages.map(([key, page]) => (
-            <option key={key} value={key}>
-              {key} {page.hidden ? '(скрыта)' : ''}
-            </option>
-          ))}
+          {renderPageOptions(null)}
         </select>
 
         <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
@@ -217,6 +232,7 @@ export default function PageManagement() {
         <PageEditor
           page={page}
           onChange={(updatedPage) => setPages({ ...pages, [current]: updatedPage })}
+          allPages={pages}
         />
       ) : (
         <PageView page={page} />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
@@ -31,9 +31,6 @@ export function HamburgerMenu() {
     setIsOpen(false);
   };
 
-  if (!pages) return null;
-
-  // Функция для рендеринга иконки (эмодзи или картинка)
   const renderIcon = (icon: string | undefined, className: string) => {
     if (!icon) return <span className={className}>📄</span>;
     if (icon.startsWith('http')) {
@@ -42,14 +39,32 @@ export function HamburgerMenu() {
     return <span className={className}>{icon}</span>;
   };
 
-  const mainKeys = ['tickets', 'schedule', 'rights', 'fines', 'about'];
-  const mainPages = mainKeys
-    .filter(key => pages[key] && !pages[key].hidden)
-    .map(key => ({ key, title: pages[key].title, emoji: pages[key].emoji || '📄' }));
+  const renderMenuItems = (parentId: string | null = null): JSX.Element[] => {
+    if (!pages) return [];
+    const children = Object.values(pages)
+      .filter(page => !page.hidden && (page.parentId || null) === parentId)
+      .sort((a, b) => a.title.localeCompare(b.title));
 
-  const additionalPages = Object.entries(pages)
-    .filter(([key, page]) => !mainKeys.includes(key) && !page.hidden && key !== 'home')
-    .map(([key, page]) => ({ key, title: page.title, emoji: page.emoji || '📄' }));
+    return children.flatMap(page => [
+      <div
+        key={page.id}
+        className="menu-item"
+        onClick={() => handleNavigate(`/${page.id}`)}
+        style={{ paddingLeft: parentId ? 32 : 12 }}
+      >
+        {renderIcon(page.emoji, 'menu-item-emoji')}
+        <span className="menu-item-title">{page.title}</span>
+      </div>,
+      ...renderMenuItems(page.id)
+    ]);
+  };
+
+  if (!pages) return null;
+
+  const adminSections = [
+    { path: '/admin', icon: '🛠️', title: 'Админка', desc: 'Управление' },
+    { path: '/logs', icon: '📋', title: 'Журнал', desc: 'Действия' },
+  ];
 
   return (
     <div className="hamburger-menu" ref={menuRef}>
@@ -59,41 +74,22 @@ export function HamburgerMenu() {
       {isOpen && (
         <div className="menu-dropdown">
           <div className="menu-section">
-            <div className="menu-section-title">Основные</div>
-            {/* Кнопка на главную */}
+            <div className="menu-section-title">Навигация</div>
             <div className="menu-item" onClick={() => handleNavigate('/')}>
               {renderIcon('🏠', 'menu-item-emoji')}
               <span className="menu-item-title">Главная</span>
             </div>
-            {mainPages.map(item => (
-              <div key={item.key} className="menu-item" onClick={() => handleNavigate(`/${item.key}`)}>
-                {renderIcon(item.emoji, 'menu-item-emoji')}
-                <span className="menu-item-title">{item.title}</span>
-              </div>
-            ))}
+            {renderMenuItems(null)}
           </div>
-          {additionalPages.length > 0 && (
-            <div className="menu-section">
-              <div className="menu-section-title">Дополнительно</div>
-              {additionalPages.map(item => (
-                <div key={item.key} className="menu-item" onClick={() => handleNavigate(`/${item.key}`)}>
-                  {renderIcon(item.emoji, 'menu-item-emoji')}
-                  <span className="menu-item-title">{item.title}</span>
-                </div>
-              ))}
-            </div>
-          )}
           {admin && (
             <div className="menu-section">
               <div className="menu-section-title">Управление</div>
-              <div className="menu-item" onClick={() => handleNavigate('/admin')}>
-                <span className="menu-item-emoji">🛠️</span>
-                <span>Админка</span>
-              </div>
-              <div className="menu-item" onClick={() => handleNavigate('/logs')}>
-                <span className="menu-item-emoji">📋</span>
-                <span>Журнал</span>
-              </div>
+              {adminSections.map(item => (
+                <div key={item.path} className="menu-item" onClick={() => handleNavigate(item.path)}>
+                  <span className="menu-item-emoji">{item.icon}</span>
+                  <span>{item.title}</span>
+                </div>
+              ))}
             </div>
           )}
         </div>

@@ -11,8 +11,10 @@ import { addLog } from '../services/logService';
 type Props = {
   page: PageData;
   onChange: (p: PageData) => void;
+  allPages?: Record<string, PageData>; // для выбора родительской страницы
 };
 
+// Компонент редактора MainButton
 function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
@@ -60,6 +62,7 @@ function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton
   );
 }
 
+// Компонент редактора отдельного блока
 function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   block: Block;
   index: number;
@@ -232,7 +235,7 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   return null;
 }
 
-export default function PageEditor({ page, onChange }: Props) {
+export default function PageEditor({ page, onChange, allPages }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -414,6 +417,26 @@ export default function PageEditor({ page, onChange }: Props) {
           placeholder="Например: 🚇 или https://example.com/icon.png"
         />
       </label>
+
+      {/* Выбор родительской страницы */}
+      {allPages && (
+        <label className="editor-field">
+          <span>Родительская страница</span>
+          <select
+            value={page.parentId || ''}
+            onChange={(e) => onChange({ ...page, parentId: e.target.value || undefined })}
+          >
+            <option value="">— Корневая страница —</option>
+            {Object.entries(allPages)
+              .filter(([key, p]) => key !== page.id)
+              .map(([key, p]) => (
+                <option key={key} value={key}>
+                  {p.title} ({key})
+                </option>
+              ))}
+          </select>
+        </label>
+      )}
 
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">
