@@ -23,7 +23,7 @@ body {
   color: var(--tg-text);
   font-family:
     -apple-system,
-    BlinkMacSystemFont,
+    BlinkMacSystemFont,п
     'Segoe UI',
     Roboto,
     Helvetica,
@@ -815,4 +815,33 @@ body {
   .admin-card input[type="text"] {
     font-size: 16px;
   }
+}
+
+/* Upload page */
+.upload-preview {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 12px;
+  margin-top: 8px;
+}
+
+.upload-url-container {
+  display: flex;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.upload-url-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  font-size: 14px;
+  background: #f5f5f5;
+  cursor: text;
+}
+
+.upload-url-input:focus {
+  outline: none;
+  border-color: var(--tg-accent);
 }

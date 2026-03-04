@@ -62,9 +62,10 @@ export function HamburgerMenu() {
   if (!pages) return null;
 
   const adminSections = [
-    { path: '/admin', icon: '🛠️', title: 'Админка', desc: 'Управление' },
-    { path: '/logs', icon: '📋', title: 'Журнал', desc: 'Действия' },
-  ];
+  { path: '/admin', icon: '🛠️', title: 'Админка', desc: 'Управление' },
+  { path: '/admin/upload', icon: '📤', title: 'Загрузка', desc: 'Изображения' },
+  { path: '/logs', icon: '📋', title: 'Журнал', desc: 'Действия' },
+];
 
   return (
     <div className="hamburger-menu" ref={menuRef}>

@@ -53,7 +53,12 @@ export default function Admin() {
           <div className="card-title">Журнал действий</div>
           <div className="card-desc">Просмотр логов</div>
         </div>
-      </div>
+          <div className="dashboard-card" onClick={() => navigate('/admin/upload')}>
+            <div className="card-icon">📤</div>
+            <div className="card-title">Загрузка изображений</div>
+            <div className="card-desc">Загрузите картинку и получите ссылку</div>
+         </div>
+       </div>
     </div>
   );
 }

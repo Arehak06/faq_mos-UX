@@ -9,6 +9,7 @@ import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
 import { HamburgerMenu } from './components/HamburgerMenu';
+import UploadPage from './pages/UploadPage';
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/admin/upload"
+          element={
+            <AdminRoute>
+              <UploadPage />
+            </AdminRoute>
+         }
+/>
         <Route path="*" element={<DynamicPage />} />
       </Routes>
     </>
