@@ -968,3 +968,7 @@ button.danger:active {
     padding-left: 52px;
   }
 }
+/* Закреплённые разделы */
+.home-section-title:has(+ .home-card) .home-item {
+  border-left: 3px solid var(--tg-accent);
+}

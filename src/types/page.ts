@@ -20,5 +20,8 @@ export type PageData = {
   updatedBy?: string;
   description?: string;
   emoji?: string;
-  parentId?: string; // ключ родительской страницы (опционально)
+  parentId?: string;
+  featured?: boolean;            // закреплена ли страница на главной
+  mainTitle?: string;            // заголовок главной страницы (только для home)
+  sectionTitle?: string;         // заголовок раздела со страницами (только для home)
 };

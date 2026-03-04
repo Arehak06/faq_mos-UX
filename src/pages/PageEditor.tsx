@@ -438,6 +438,41 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         </label>
       )}
 
+      {/* Закрепление на главной (для всех страниц, кроме home) */}
+      {page.id !== 'home' && (
+        <label className="editor-field checkbox" style={{ marginTop: '8px' }}>
+          <input
+            type="checkbox"
+            checked={!!page.featured}
+            onChange={(e) => onChange({ ...page, featured: e.target.checked })}
+          />
+          <span>Закрепить на главной странице (будет показываться в отдельном блоке)</span>
+        </label>
+      )}
+
+      {/* Дополнительные поля для главной страницы */}
+      {page.id === 'home' && (
+        <>
+          <label className="editor-field">
+            <span>Заголовок главной страницы (H1)</span>
+            <input
+              value={page.mainTitle || '🚇 Транспорт Москвы'}
+              onChange={(e) => onChange({ ...page, mainTitle: e.target.value })}
+              placeholder="Например: 🚇 Транспорт Москвы"
+            />
+          </label>
+
+          <label className="editor-field">
+            <span>Заголовок раздела со страницами</span>
+            <input
+              value={page.sectionTitle || 'ВСЕ СТРАНИЦЫ'}
+              onChange={(e) => onChange({ ...page, sectionTitle: e.target.value })}
+              placeholder="Например: ВСЕ СТРАНИЦЫ"
+            />
+          </label>
+        </>
+      )}
+
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">
         <input

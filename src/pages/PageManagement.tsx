@@ -95,6 +95,7 @@ export default function PageManagement() {
       title,
       blocks: [],
       hidden: false,
+      featured: false, // добавить эту строку
       createdAt: now,
       createdBy: userName,
       updatedAt: now,

@@ -38,10 +38,9 @@ export default function Home() {
     return <span className="home-item-icon">{icon}</span>;
   };
 
-  // Рекурсивное отображение страниц с учётом parentId
-  const renderPageList = (parentId: string | null = null, level = 0): JSX.Element[] => {
-    if (!pages) return [];
-    const children = Object.values(pages)
+  // Функция для рендеринга списка страниц (рекурсивно)
+  const renderPageList = (pagesToRender: PageData[], parentId: string | null = null, level = 0): JSX.Element[] => {
+    const children = pagesToRender
       .filter(page => !page.hidden && (page.parentId || null) === parentId)
       .sort((a, b) => a.title.localeCompare(b.title));
 
@@ -58,7 +57,7 @@ export default function Home() {
           {page.description && <div className="home-item-subtitle">{page.description}</div>}
         </div>
       </div>,
-      ...renderPageList(page.id, level + 1)
+      ...renderPageList(pagesToRender, page.id, level + 1)
     ]);
   };
 
@@ -68,15 +67,25 @@ export default function Home() {
   const homePage = pages['home'];
   const homeBlocks = homePage?.blocks || [];
 
-  // Административные разделы (оставляем статическими)
+  // Все страницы, кроме home
+  const allOtherPages = Object.values(pages).filter(p => p.id !== 'home');
+
+  // Разделяем на закреплённые и обычные
+  const featuredPages = allOtherPages.filter(p => p.featured && !p.hidden);
+  const regularPages = allOtherPages.filter(p => !p.featured && !p.hidden);
+
   const adminSections = [
     { path: '/admin', icon: '🛠️', title: 'Админка', subtitle: 'Управление страницами' },
     { path: '/logs', icon: '📋', title: 'Журнал', subtitle: 'Действия администраторов' },
   ];
 
+  // Заголовки из страницы home (или значения по умолчанию)
+  const mainTitle = homePage?.mainTitle || '🚇 Транспорт Москвы';
+  const sectionTitle = homePage?.sectionTitle || 'ВСЕ СТРАНИЦЫ';
+
   return (
     <div className="page">
-      <h1 className="page-title">🎫 Билетик - справочник по транспорту Москвы и области</h1>
+      <h1 className="page-title">{mainTitle}</h1>
 
       {/* Блоки, добавленные через админку для главной страницы */}
       {homeBlocks.map((block) => (
@@ -96,10 +105,20 @@ export default function Home() {
         </div>
       )} */}
 
-      {/* Все страницы (кроме home) отображаются здесь с иерархией */}
-      <div className="home-section-title">ВСЕ СТРАНИЦЫ</div>
+      {/* Закреплённые разделы */}
+      {featuredPages.length > 0 && (
+        <>
+          <div className="home-section-title">📌 Закреплённые</div>
+          <div className="home-card">
+            {renderPageList(featuredPages)}
+          </div>
+        </>
+      )}
+
+      {/* Обычные страницы */}
+      <div className="home-section-title">{sectionTitle}</div>
       <div className="home-card">
-        {renderPageList(null)}
+        {renderPageList(regularPages)}
       </div>
 
       {/* Административные разделы (только для админов) */}
