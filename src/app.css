@@ -845,3 +845,90 @@ body {
   outline: none;
   border-color: var(--tg-accent);
 }
+
+/* ================================
+   App layout
+================================ */
+.app-content {
+  min-height: calc(100vh - 120px); /* высота подвала + запас */
+  padding-bottom: 20px;
+}
+
+/* ================================
+   Footer
+================================ */
+.footer {
+  background: var(--tg-card);
+  border-top: 1px solid var(--tg-border);
+  padding: 16px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-links a {
+  color: var(--tg-hint);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-copyright {
+  text-align: center;
+}
+
+/* ================================
+   Page header with share button
+================================ */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.page-title {
+  margin: 0; /* отменяем стандартный отступ */
+}
+
+.page-subtitle {
+  width: 100%;
+  font-size: 14px;
+  color: var(--tg-hint);
+  margin-top: 4px;
+}
+
+.share-button {
+  background: var(--tg-card);
+  border: 1px solid var(--tg-border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.share-button:hover {
+  background: var(--tg-border);
+}

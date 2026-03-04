@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import PageView from './PageView';
+import { PageTitle } from '../components/PageTitle';
 
 export default function DynamicPage() {
   const { "*": path } = useParams(); // весь путь после базового префикса
@@ -27,7 +28,7 @@ export default function DynamicPage() {
   if (!pageData) {
     return (
       <div className="page">
-        <h1 className="page-title">404</h1>
+        <PageTitle title={pages.title} />
         <p>Страница не найдена</p>
       </div>
     );

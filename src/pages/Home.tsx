@@ -5,6 +5,7 @@ import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
 import { BlockRenderer } from '../components/BlockRenderer';
+import { PageTitle } from '../components/PageTitle';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ export default function Home() {
 
   return (
     <div className="page">
-      <h1 className="page-title">{mainTitle}</h1>
+      <PageTitle title={mainTitle} />
 
       {/* Блоки, добавленные через админку для главной страницы */}
       {homeBlocks.map((block) => (

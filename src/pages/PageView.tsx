@@ -4,6 +4,7 @@ import { PageData } from '../types/page';
 import { BlockRenderer } from '../components/BlockRenderer';
 import { usePageMainButton } from '../hooks/usePageMainButton';
 import { loadPages } from '../utils/storage';
+import { ShareButton } from '../components/ShareButton';
 
 export default function PageView({ page }: { page: PageData }) {
   const navigate = useNavigate();
@@ -24,6 +25,14 @@ export default function PageView({ page }: { page: PageData }) {
       {page.blocks.map((block) => (
         <BlockRenderer key={block.id} block={block} />
       ))}
+
+      <div className="page">
+      <div className="page-header">
+        <h1 className="page-title">{page.title}</h1>
+        <ShareButton title={page.title} />
+      </div>
+      {/* ... */}
+    </div>
 
       {children.length > 0 && (
         <div className="page-children">
