@@ -8,8 +8,6 @@ import UploadPage from './pages/UploadPage';
 import Logs from './pages/Logs';
 import Login from './pages/Login';
 import Callback from './pages/Callback';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
 import { HamburgerMenu } from './components/HamburgerMenu';
@@ -36,8 +34,6 @@ function App() {
           <Route path="*" element={<DynamicPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/callback" element={<Callback />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
           <Route
             path="/admin"
             element={
