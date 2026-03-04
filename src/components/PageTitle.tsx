@@ -4,13 +4,14 @@ import { ShareButton } from './ShareButton';
 interface Props {
   title: string;
   subtitle?: string;
+  showShare?: boolean; // новая опция
 }
 
-export function PageTitle({ title, subtitle }: Props) {
+export function PageTitle({ title, subtitle, showShare = true }: Props) {
   return (
     <div className="page-header">
       <h1 className="page-title">{title}</h1>
-      <ShareButton title={title} />
+      {showShare && <ShareButton title={title} />}
       {subtitle && <div className="page-subtitle">{subtitle}</div>}
     </div>
   );

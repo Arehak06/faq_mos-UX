@@ -86,7 +86,7 @@ export default function Home() {
 
   return (
     <div className="page">
-      <PageTitle title={mainTitle} />
+      <PageTitle title={mainTitle} showShare={false} />
 
       {/* Блоки, добавленные через админку для главной страницы */}
       {homeBlocks.map((block) => (
