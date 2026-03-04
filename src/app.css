@@ -22,13 +22,13 @@ body {
   background: var(--tg-bg);
   color: var(--tg-text);
   font-family:
-    -apple-system,
-    BlinkMacSystemFont,п
-    'Segoe UI',
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  Roboto,
+  Helvetica,
+  Arial,
+  sans-serif;
 }
 
 /* ================================
