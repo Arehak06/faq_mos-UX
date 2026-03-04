@@ -4,91 +4,61 @@
     "title": "Главная",
     "blocks": [
       {
-        "id": "home-text-1",
-        "type": "text",
-        "text": "Добро пожаловать в справочник пассажира московского транспорта! Здесь вы найдёте информацию о билетах, расписании, правах и штрафах."
+        "id": "fwmglef6j35",
+        "type": "warning",
+        "text": "Внимание! Сайт в разработке",
+        "icon": "⚠️",
+        "backgroundColor": "#ffebee",
+        "textColor": "#b71c1c"
       },
       {
-        "id": "home-card-1",
-        "type": "card",
-        "title": "Быстрый доступ",
-        "text": "Используйте меню внизу или боковое меню для навигации."
+        "id": "3ir5bwrclg2",
+        "type": "image",
+        "url": "https://storage.yandexcloud.net/faq-mos-ux-data/images/1772608141997-263.png",
+        "alt": "",
+        "caption": ""
       }
-    ]
+    ],
+    "hidden": false,
+    "createdAt": "2026-02-27T06:02:32.286Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "",
+    "emoji": "🗽"
   },
   "tickets": {
     "id": "tickets",
-    "title": "Билеты",
+    "title": "Билетная система ЖД и наземного транспорта",
     "blocks": [
       {
         "id": "tickets-text-1",
         "type": "text",
-        "text": "Актуальные тарифы на проезд в московском транспорте."
+        "text": "<p>Актуальные тарифы на проезд в московском транспорте.</p>"
       },
       {
         "id": "tickets-card-1",
         "type": "card",
         "title": "Единый",
-        "text": "Одна поездка — 65 ₽\n90 минут — 81 ₽"
+        "text": "Одна поездка — 75 ₽\n90 минут — 112 ₽"
       },
       {
         "id": "tickets-card-2",
         "type": "card",
         "title": "Тройка",
         "text": "Электронный кошелёк. Пополнение на станциях метро, в приложении «Метро Москвы» или на сайте."
-      },
-      {
-        "id": "tickets-card-3",
-        "type": "card",
-        "title": "Льготные билеты",
-        "text": "Для школьников, студентов и пенсионеров действуют специальные тарифы. Подробнее — в кассах метро."
-      },
-      {
-        "id": "tickets-button-1",
-        "type": "button",
-        "text": "Официальный сайт",
-        "url": "https://mosmetro.ru"
       }
-    ]
-  },
-  "schedule": {
-    "id": "schedule",
-    "title": "Расписание",
-    "blocks": [
-      {
-        "id": "schedule-text-1",
-        "type": "text",
-        "text": "Режим работы основных видов транспорта Москвы."
-      },
-      {
-        "id": "schedule-card-1",
-        "type": "card",
-        "title": "Метро",
-        "text": "Станции открыты для входа и пересадки ежедневно с 05:30 до 01:00."
-      },
-      {
-        "id": "schedule-card-2",
-        "type": "card",
-        "title": "МЦД",
-        "text": "Поезда курсируют с 05:30 до 01:00 (интервалы могут увеличиваться в ночное время)."
-      },
-      {
-        "id": "schedule-card-3",
-        "type": "card",
-        "title": "МЦК",
-        "text": "Работает с 05:30 до 01:00."
-      },
-      {
-        "id": "schedule-card-4",
-        "type": "card",
-        "title": "Наземный транспорт",
-        "text": "Автобусы, трамваи, электробусы: с 05:30 до 00:30 (интервалы зависят от маршрута). Ночные маршруты следуют по отдельному расписанию."
-      }
-    ]
+    ],
+    "createdAt": "2026-02-27T06:02:32.286Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Хотите выгодно купить билет? Или понимать что такое Тройка и Стрелка? Тогда вам явно сюда... (Даже Собянин не в курсах про такие фишки)",
+    "emoji": "🎫"
   },
   "rights": {
     "id": "rights",
-    "title": "Права пассажира",
+    "title": "Юридический раздел",
     "blocks": [
       {
         "id": "rights-text-1",
@@ -119,42 +89,13 @@
         "text": "Подробнее на сайте",
         "url": "https://transport.mos.ru"
       }
-    ]
-  },
-  "fines": {
-    "id": "fines",
-    "title": "Штрафы",
-    "blocks": [
-      {
-        "id": "fines-text-1",
-        "type": "text",
-        "text": "Размеры штрафов за нарушения в московском транспорте."
-      },
-      {
-        "id": "fines-card-1",
-        "type": "card",
-        "title": "Безбилетный проезд",
-        "text": "2000 ₽ (для физических лиц)."
-      },
-      {
-        "id": "fines-card-2",
-        "type": "card",
-        "title": "Провоз неоплаченного багажа",
-        "text": "2000 ₽."
-      },
-      {
-        "id": "fines-card-3",
-        "type": "card",
-        "title": "Загрязнение транспортного средства",
-        "text": "1000 ₽."
-      },
-      {
-        "id": "fines-card-4",
-        "type": "card",
-        "title": "Курение в поездах и на станциях",
-        "text": "500–1500 ₽ (административный штраф)."
-      }
-    ]
+    ],
+    "createdAt": "2026-02-27T06:02:32.286Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Объясним, поясним и докажем что вы проехали по льготному билету вполне законно… (Псс, контролеры - пропустите его, он хороший)",
+    "emoji": "📄"
   },
   "about": {
     "id": "about",
@@ -163,26 +104,112 @@
       {
         "id": "about-text-1",
         "type": "text",
-        "text": "Данное приложение создано для удобства пассажиров московского транспорта."
+        "text": "<p><strong>Мы гордимся, что на Земле есть неравнодушные люди, и гордимся, что они среди нас! 💚</strong></p>"
+      },
+      {
+        "id": "thjhweqt6k",
+        "type": "text",
+        "text": "<h2><strong>🛠️ Обратная связь</strong></h2><p>По всем вопросам, нарушении и т.д - создайте тикет:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://forms.yandex.com/u/6919c96790fa7b52c4668f0e\" title=\"Тикет\"><strong>ЖМЯК</strong></a></p>"
+      },
+      {
+        "id": "qfz0ba0ccy",
+        "type": "text",
+        "text": "<h2><strong>📠 Контакты, ссылки автора и друзей справочника:</strong></h2><p><strong>✈️ Telegram</strong>:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://t.me/arehak\"><strong>t.me/arehak</strong></a></p><p></p><p><strong>🖤 GitHub</strong>:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://github.com/Arehak06\"><strong>Arehak</strong></a></p><p></p><p><strong>🎫 Telegram справочника</strong>:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://t.me/faq_transport_mos\"><strong>t.me/faq_transport_mos</strong></a></p><p></p><p><strong>💚 Telegram - чат «D4 Апрелевка - Железнодорожная»</strong>:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://t.me/D4passenger\"><strong>t.me/D4passenger</strong></a></p><p></p><p><strong>🟩 Подслушано МДЦ-D4 | Апрелевка - Железнодорожная</strong>:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://t.me/D4msk\"><strong>t.me/D4msk</strong></a></p>"
+      },
+      {
+        "id": "mdjrfitoeu",
+        "type": "text",
+        "text": "<p><strong>Для официальных обращений и направления корреспонденции - используйте данный контакт:</strong></p><p></p><p>📫 Почта: <strong>Arehak@yandex.ru</strong></p>"
+      },
+      {
+        "id": "8s20ls47t3f",
+        "type": "text",
+        "text": "<h2><strong>🙌 Хотите попасть в нашу команду или внести свой вклад в сообщество?</strong></h2><p><strong>Для того чтобы попасть к нам:</strong><br>Заполните анкету в Яндекс.Формы - и мы с вами свяжемся:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://forms.yandex.com/u/6919c0ebeb61462176cb40f8\" title=\"Анкета\"><strong>ЖМЯК</strong></a></p><p><strong>Хотите помочь нам разово?</strong><br>Заполните короткую анкету в Яндекс.Формы - и мы с вами сделаем новые правки в странички Справочника:&nbsp;<a target=\"_blank\" rel=\"noreferrer noopener\" href=\"https://forms.yandex.com/u/6919cc0495add57d5f6b526e\" title=\"Помочь\"><strong>ЖМЯК</strong></a></p>"
       },
       {
         "id": "about-card-1",
         "type": "card",
         "title": "Источники информации",
-        "text": "Данные собраны из открытых источников: официальный сайт Московского метрополитена, портал transport.mos.ru."
-      },
-      {
-        "id": "about-card-2",
-        "type": "card",
-        "title": "Разработчик",
-        "text": "Приложение разработано в рамках учебного проекта. Исходный код доступен на GitHub."
-      },
-      {
-        "id": "about-button-1",
-        "type": "button",
-        "text": "Исходный код",
-        "url": "https://github.com/username/faq_mos-ux"
+        "text": "Данные собраны из открытых источников: официальный сайт Московского метрополитена, портал transport.mos.ru, сайт ЦППК и другие доступные источники разрешенным законодательством Российской Федерации при условии сохранение авторского права.\n\n© Arehak / Билетик работаем с 2025 года"
       }
-    ]
+    ],
+    "createdAt": "2026-02-27T06:02:32.286Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "История о том как создавалось и превращалось в волшебство, как идеи могут жить вечно…",
+    "emoji": "😎"
+  },
+  "trainbus": {
+    "id": "trainbus",
+    "title": "Про поезда поездатые и автобусы",
+    "blocks": [],
+    "hidden": false,
+    "createdAt": "2026-03-03T06:40:35.433Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Раздел для фанатов поездов и автобусов (Осторожно: Горячие обсуждение почему Иволга на Дальняк - это ужас)",
+    "emoji": "🚈"
+  },
+  "glossary": {
+    "id": "glossary",
+    "title": "Глоссарий",
+    "blocks": [
+      {
+        "id": "o7xnh7dtwh9",
+        "type": "text",
+        "text": "<p><strong>Термины расположены в алфавитном порядке.</strong></p>"
+      },
+      {
+        "id": "x4dw2jty2vf",
+        "type": "text",
+        "text": "<ol><li><p><strong>6000-х </strong>- Пригородный поезд согласно нумерации поездов</p></li><li><p><strong>7000-х</strong>- Экспресс поезд согласно нумерации поездов</p></li><li><p><strong>D4 </strong>- Диаметр Горьковского и Киевского направлении</p></li><li><p><strong>ДТ </strong>- Департамент Транспорта Москвы</p></li><li><p><strong>Зацепер </strong>- человек, который едет без билета и на кузове/хвосте/между сцепками/на головных вагонах поезда</p></li><li><p><strong>Коконы</strong> - кассир - контролер особого назначение (проводят рейды по подавлению безбилетного проезда)</p></li><li><p><strong>Контра</strong> - Кассир-Контролер</p></li><li><p><strong>МЦД</strong> - Московские Центральные Диаметры</p></li><li><p><strong>МЦК</strong>- Московское Центральное Кольцо</p></li><li><p><strong>РЖД </strong>- Российские Железные Дороги</p></li><li><p><strong>Стрелка</strong> - транспортная карта для Подмосковье (Ссылка)</p></li><li><p><strong>ТБшники/ТБ</strong>- Транспортная безопасность, частная огранизация для обеспечение охраны</p></li><li><p><strong>Тройка </strong>- транспортная карта (ссылка)</p></li><li><p><strong>ЦППК </strong>- Центральная Пригородная Пассажирская Компания (АО ЦППК)</p></li><li><p><strong>Цыплята </strong>- ЦППК</p></li><li><p><strong>Шашлык</strong> - зацеперы, которые сгорели от контатной сети</p></li></ol><p></p>"
+      }
+    ],
+    "hidden": false,
+    "createdAt": "2026-03-03T08:46:43.496Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Термины используемые на ЖД и наземном транспорте",
+    "emoji": "📒"
+  },
+  "planoper": {
+    "id": "planoper",
+    "title": "Плановое изменение в движении поездов на линиях МЖД",
+    "blocks": [
+      {
+        "id": "7r5w4gidf0s",
+        "type": "image",
+        "url": "https://storage.yandexcloud.net/faq-mos-ux-data/images/1772528223810-258.png",
+        "alt": "Здесь тип alert-картинка",
+        "caption": "01.03.2026 - Плановые изменение на D4"
+      },
+      {
+        "id": "v6ktsk1499",
+        "type": "text",
+        "text": "<p><strong>🟢 ВНИМАНИЕ ПАССАЖИРОВ МЦД D4!</strong></p><p></p><p>&nbsp;🌸 В предпраздничные и праздничные дни марта для удобства пассажиров пригородные поезда будут курсировать по измененному расписанию. <br><br>🚉 <strong>Движение поездов будет осуществляться:</strong><br><br>▫️&nbsp; 6 марта – расписанием пятницы;<br>▫️&nbsp; 7-8 марта – субботы;<br>▫️&nbsp; 9 марта – воскресения; <br>▫️&nbsp; 10 марта – расписанием понедельника.<br><br><em>Актуальное расписание смотрите на официальном </em><a target=\"_blank\" rel=\"noopener noreferrer nofollow\" href=\"https://www.central-ppk.ru/new/\"><em>сайте</em></a><em> перевозчика и на сайтах-агрегаторах.</em></p>"
+      }
+    ],
+    "hidden": false,
+    "createdAt": "2026-03-03T08:53:25.769Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Сообщаем заранее о плановых изменениях в движении поездов на Московской железной дороге",
+    "emoji": "⚒️"
+  },
+  "arletoper": {
+    "id": "arletoper",
+    "title": "Оперативная информация по движению поездов",
+    "blocks": [],
+    "hidden": false,
+    "createdAt": "2026-03-03T08:54:21.702Z",
+    "createdBy": "Фея Крестная",
+    "updatedAt": "2026-03-04T08:14:12.616Z",
+    "updatedBy": "Фея Крестная",
+    "description": "Телеграм-каналы с актуальной информацией по движению поездов и оперативные изменения в расписании",
+    "emoji": "⚠️"
   }
 }
