@@ -932,3 +932,45 @@ body {
 .share-button:hover {
   background: var(--tg-border);
 }
+
+/* Footer links editor */
+.footer-links-editor {
+  background: var(--tg-card);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 16px;
+  border: 1px solid var(--tg-border);
+}
+
+.footer-links-editor > span {
+  display: block;
+  font-size: 13px;
+  color: var(--tg-hint);
+  margin-bottom: 10px;
+}
+
+.footer-link-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.footer-link-row input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  font-size: 14px;
+}
+
+.footer-link-row button {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: #ff4d4f;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}

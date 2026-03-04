@@ -470,6 +470,120 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
               placeholder="Например: ВСЕ СТРАНИЦЫ"
             />
           </label>
+
+          {/* Настройки подвала (только для home) */}
+          <h3 style={{ marginTop: '24px' }}>Настройки подвала</h3>
+
+          <label className="editor-field checkbox">
+            <input
+              type="checkbox"
+              checked={page.footerSettings?.enabled ?? true}
+              onChange={(e) =>
+                onChange({
+                  ...page,
+                  footerSettings: {
+                    enabled: e.target.checked,
+                    copyrightText: page.footerSettings?.copyrightText ?? '',
+                    links: page.footerSettings?.links ?? [],
+                  },
+                })
+              }
+            />
+            <span>Показывать подвал</span>
+          </label>
+
+          <label className="editor-field">
+            <span>Текст копирайта</span>
+            <input
+              value={page.footerSettings?.copyrightText || `© ${new Date().getFullYear()} Транспорт Москвы. Все права защищены.`}
+              onChange={(e) =>
+                onChange({
+                  ...page,
+                  footerSettings: {
+                    enabled: page.footerSettings?.enabled ?? true,
+                    copyrightText: e.target.value,
+                    links: page.footerSettings?.links ?? [],
+                  },
+                })
+              }
+              placeholder="Например: © 2024 Транспорт Москвы"
+            />
+          </label>
+
+          <div className="footer-links-editor">
+            <span>Ссылки в подвале</span>
+            {(page.footerSettings?.links || []).map((link, idx) => (
+              <div key={idx} className="footer-link-row">
+                <input
+                  type="text"
+                  value={link.text}
+                  onChange={(e) => {
+                    const newLinks = [...(page.footerSettings?.links || [])];
+                    newLinks[idx] = { ...link, text: e.target.value };
+                    onChange({
+                      ...page,
+                      footerSettings: {
+                        enabled: page.footerSettings?.enabled ?? true,
+                        copyrightText: page.footerSettings?.copyrightText ?? '',
+                        links: newLinks,
+                      },
+                    });
+                  }}
+                  placeholder="Текст ссылки"
+                />
+                <input
+                  type="text"
+                  value={link.url}
+                  onChange={(e) => {
+                    const newLinks = [...(page.footerSettings?.links || [])];
+                    newLinks[idx] = { ...link, url: e.target.value };
+                    onChange({
+                      ...page,
+                      footerSettings: {
+                        enabled: page.footerSettings?.enabled ?? true,
+                        copyrightText: page.footerSettings?.copyrightText ?? '',
+                        links: newLinks,
+                      },
+                    });
+                  }}
+                  placeholder="URL (например /privacy)"
+                />
+                <button
+                  className="danger"
+                  onClick={() => {
+                    const newLinks = (page.footerSettings?.links || []).filter((_, i) => i !== idx);
+                    onChange({
+                      ...page,
+                      footerSettings: {
+                        enabled: page.footerSettings?.enabled ?? true,
+                        copyrightText: page.footerSettings?.copyrightText ?? '',
+                        links: newLinks,
+                      },
+                    });
+                  }}
+                >
+                  🗑
+                </button>
+              </div>
+            ))}
+            <button
+              className="tg-button"
+              style={{ marginTop: '8px' }}
+              onClick={() => {
+                const newLinks = [...(page.footerSettings?.links || []), { text: '', url: '' }];
+                onChange({
+                  ...page,
+                  footerSettings: {
+                    enabled: page.footerSettings?.enabled ?? true,
+                    copyrightText: page.footerSettings?.copyrightText ?? '',
+                    links: newLinks,
+                  },
+                });
+              }}
+            >
+              + Добавить ссылку
+            </button>
+          </div>
         </>
       )}
 

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import DynamicPage from './pages/DynamicPage';
@@ -13,8 +14,18 @@ import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
 import { HamburgerMenu } from './components/HamburgerMenu';
 import { Footer } from './components/Footer';
+import { loadPages } from './utils/storage';
+import { PageData } from './types/page';
 
 function App() {
+  const [pages, setPages] = useState<Record<string, PageData> | null>(null);
+
+  useEffect(() => {
+    loadPages()
+      .then(setPages)
+      .catch(console.error);
+  }, []);
+
   return (
     <>
       <TelegramBackButton />
@@ -22,7 +33,7 @@ function App() {
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/:page" element={<DynamicPage />} />
+          <Route path="*" element={<DynamicPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/callback" element={<Callback />} />
           <Route path="/privacy" element={<Privacy />} />
@@ -61,7 +72,7 @@ function App() {
           />
         </Routes>
       </div>
-      <Footer />
+      <Footer pages={pages} />
     </>
   );
 }
