@@ -597,3 +597,112 @@ button.danger:active {
   width: 28px;
   height: 28px;
 }
+
+/* Yandex Flavored Markdown styles */
+.yfm {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--tg-text);
+}
+
+.yfm h1, .yfm h2, .yfm h3, .yfm h4, .yfm h5, .yfm h6 {
+  margin: 1.5em 0 0.5em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.yfm h1 { font-size: 2em; }
+.yfm h2 { font-size: 1.5em; }
+.yfm h3 { font-size: 1.25em; }
+
+.yfm p {
+  margin: 1em 0;
+}
+
+.yfm a {
+  color: var(--tg-accent);
+  text-decoration: none;
+}
+
+.yfm a:hover {
+  text-decoration: underline;
+}
+
+.yfm ul, .yfm ol {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+.yfm li {
+  margin: 0.5em 0;
+}
+
+.yfm blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--tg-border);
+  color: var(--tg-hint);
+}
+
+.yfm pre {
+  background: var(--tg-card);
+  border: 1px solid var(--tg-border);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+.yfm code {
+  background: var(--tg-card);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.yfm table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1em 0;
+}
+
+.yfm th, .yfm td {
+  border: 1px solid var(--tg-border);
+  padding: 8px;
+  text-align: left;
+}
+
+.yfm th {
+  background: var(--tg-card);
+  font-weight: 600;
+}
+
+/* YFM notes */
+.yfm .note {
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.yfm .note-info {
+  background: #e3f2fd;
+  border-left-color: #2196f3;
+  color: #0d47a1;
+}
+
+.yfm .note-warning {
+  background: #fff9c4;
+  border-left-color: #ffc107;
+  color: #f57f17;
+}
+
+.yfm .note-important {
+  background: #ffebee;
+  border-left-color: #f44336;
+  color: #b71c1c;
+}
+
+.yfm .note-title {
+  font-weight: 600;
+  margin-bottom: 8px;
+}

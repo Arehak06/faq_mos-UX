@@ -13,10 +13,9 @@
   },
   "dependencies": {
     "@advanceddev/telegram-login-react": "^1.2.0",
+    "@diplodoc/transform": "^4.70.0",
     "@supabase/supabase-js": "^2.97.0",
-    "@tiptap/extension-link": "^3.20.0",
-    "@tiptap/react": "^3.20.0",
-    "@tiptap/starter-kit": "^3.20.0",
+    "@toast-ui/react-editor": "^3.2.3",
     "@types/telegram-web-app": "^9.1.2",
     "gh-pages": "^6.3.0",
     "gray-matter": "^4.0.3",

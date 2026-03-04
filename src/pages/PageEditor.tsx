@@ -1,7 +1,6 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, AlertBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
@@ -14,7 +13,6 @@ type Props = {
   onChange: (p: PageData) => void;
 };
 
-// Компонент редактора MainButton
 function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton; onChange: (mb: PageMainButton) => void }) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...mainButton, text: e.target.value });
@@ -43,7 +41,6 @@ function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton
         <span>Текст кнопки</span>
         <input value={mainButton.text} onChange={handleTextChange} />
       </label>
-
       <label className="editor-field">
         <span>Тип действия</span>
         <select value={mainButton.action.type} onChange={handleTypeChange}>
@@ -51,7 +48,6 @@ function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton
           <option value="link">Внешняя ссылка</option>
         </select>
       </label>
-
       <label className="editor-field">
         <span>Значение</span>
         <input
@@ -64,7 +60,6 @@ function MainButtonEditor({ mainButton, onChange }: { mainButton: PageMainButton
   );
 }
 
-// Компонент редактора отдельного блока
 function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   block: Block;
   index: number;
@@ -80,66 +75,38 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
   };
 
   if (block.type === 'text') {
-    const editor = useEditor({
-      extensions: [StarterKit, Link.configure({ openOnClick: false })],
-      content: block.text,
-      onUpdate: ({ editor }) => {
-        onUpdate(index, { ...block, text: editor.getHTML() });
-      },
-    });
+    const editorRef = useRef<Editor>(null);
+    const handleChange = () => {
+      if (editorRef.current) {
+        const html = editorRef.current.getInstance().getHTML();
+        onUpdate(index, { ...block, text: html });
+      }
+    };
 
     return (
       <div className="editor-block">
         <div className="editor-block-header">
           <strong>Текст</strong>
-          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
-            🗑
-          </button>
+          <button className="danger" onClick={handleRemove}>🗑</button>
         </div>
-        <div className="tiptap-editor">
-          <EditorContent editor={editor} />
-        </div>
-        <div className="tiptap-toolbar">
-          <button
-            onClick={() => editor?.chain().focus().toggleBold().run()}
-            className={editor?.isActive('bold') ? 'is-active' : ''}
-          >
-            <strong>B</strong>
-          </button>
-          <button
-            onClick={() => editor?.chain().focus().toggleItalic().run()}
-            className={editor?.isActive('italic') ? 'is-active' : ''}
-          >
-            <em>I</em>
-          </button>
-          <button
-            onClick={() => editor?.chain().focus().toggleStrike().run()}
-            className={editor?.isActive('strike') ? 'is-active' : ''}
-          >
-            <s>S</s>
-          </button>
-          <button
-            onClick={() => editor?.chain().focus().toggleBulletList().run()}
-            className={editor?.isActive('bulletList') ? 'is-active' : ''}
-          >
-            • список
-          </button>
-          <button
-            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-            className={editor?.isActive('orderedList') ? 'is-active' : ''}
-          >
-            1. список
-          </button>
-          <button
-            onClick={() => {
-              const url = window.prompt('Введите URL:');
-              if (url) editor?.chain().focus().setLink({ href: url }).run();
-            }}
-            className={editor?.isActive('link') ? 'is-active' : ''}
-          >
-            🔗
-          </button>
-        </div>
+        <Editor
+          ref={editorRef}
+          initialValue={block.text || ''}
+          previewStyle="tab"
+          height="300px"
+          initialEditType="wysiwyg"
+          useCommandShortcut={true}
+          language="ru"
+          onChange={handleChange}
+          toolbarItems={[
+            ['heading', 'bold', 'italic', 'strike'],
+            ['hr', 'quote'],
+            ['ul', 'ol', 'task'],
+            ['table', 'image'],
+            ['link'],
+            ['code', 'codeblock'],
+          ]}
+        />
       </div>
     );
   }
@@ -155,9 +122,7 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
       <div className="editor-block">
         <div className="editor-block-header">
           <strong>Карточка</strong>
-          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
-            🗑
-          </button>
+          <button className="danger" onClick={handleRemove}>🗑</button>
         </div>
         <input value={block.title} placeholder="Заголовок карточки" onChange={handleTitleChange} />
         <textarea value={block.text} placeholder="Текст карточки" onChange={handleTextChange} />
@@ -255,9 +220,7 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
       <div className="editor-block">
         <div className="editor-block-header">
           <strong>Изображение</strong>
-          <button className="danger" onClick={handleRemove} aria-label="Удалить блок">
-            🗑
-          </button>
+          <button className="danger" onClick={handleRemove}>🗑</button>
         </div>
         <input value={block.url} placeholder="URL изображения" onChange={handleUrlChange} />
         <input value={block.alt || ''} placeholder="Alt текст (для доступности)" onChange={handleAltChange} />
@@ -444,13 +407,13 @@ export default function PageEditor({ page, onChange }: Props) {
       </label>
 
       <label className="editor-field">
-  <span>Эмодзи или URL иконки</span>
-  <input
-    value={page.emoji || ''}
-    onChange={(e) => onChange({ ...page, emoji: e.target.value })}
-    placeholder="Например: 🚇 или https://example.com/icon.png"
-  />
-</label>
+        <span>Эмодзи или URL иконки</span>
+        <input
+          value={page.emoji || ''}
+          onChange={(e) => onChange({ ...page, emoji: e.target.value })}
+          placeholder="Например: 🚇 или https://example.com/icon.png"
+        />
+      </label>
 
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">

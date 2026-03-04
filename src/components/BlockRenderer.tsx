@@ -7,11 +7,11 @@ export function BlockRenderer({ block }: { block: Block }) {
 
   switch (block.type) {
     case 'text':
-      return (
-        <TgCard>
-          <div dangerouslySetInnerHTML={{ __html: block.text }} />
-        </TgCard>
-      );
+  return (
+    <TgCard>
+      <div dangerouslySetInnerHTML={{ __html: block.text }} />
+    </TgCard>
+  );
 
     case 'card':
       return (
@@ -65,19 +65,18 @@ export function BlockRenderer({ block }: { block: Block }) {
       );
 
     case 'alert': {
-      // Цвета по умолчанию в зависимости от severity
       let defaultIcon = 'ℹ️';
-      let defaultBg = '#e3f2fd';   // светло-синий
-      let defaultColor = '#0d47a1'; // тёмно-синий
+      let defaultBg = '#e3f2fd';
+      let defaultColor = '#0d47a1';
 
       if (block.severity === 'warning') {
         defaultIcon = '⚠️';
-        defaultBg = '#fff9c4';      // светло-жёлтый
-        defaultColor = '#f57f17';    // тёмно-жёлтый
+        defaultBg = '#fff9c4';
+        defaultColor = '#f57f17';
       } else if (block.severity === 'important') {
         defaultIcon = '🔴';
-        defaultBg = '#ffebee';      // светло-красный
-        defaultColor = '#b71c1c';    // тёмно-красный
+        defaultBg = '#ffebee';
+        defaultColor = '#b71c1c';
       }
 
       return (
