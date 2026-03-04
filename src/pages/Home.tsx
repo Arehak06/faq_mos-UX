@@ -6,6 +6,7 @@ import { isAdmin } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
 import { BlockRenderer } from '../components/BlockRenderer';
 import { PageTitle } from '../components/PageTitle';
+import { Loading } from '../components/Loading';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ export default function Home() {
     ]);
   };
 
-  if (loading) return <div className="page">Загрузка...</div>;
+  if (loading) return <Loading />;
   if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
   const homePage = pages['home'];

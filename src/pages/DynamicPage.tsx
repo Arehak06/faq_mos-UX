@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import PageView from './PageView';
 import { PageTitle } from '../components/PageTitle';
+import { Loading } from '../components/Loading';
+import NotFound from './NotFound';
 
 export default function DynamicPage() {
   const { "*": path } = useParams(); // весь путь после базового префикса
@@ -19,19 +21,14 @@ export default function DynamicPage() {
       .catch(console.error);
   }, []);
 
-  if (loading) return <div className="page">Загрузка...</div>;
+  if (loading) return <Loading />;
   if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
   const pageKey = path || ''; // для главной страницы не используется
   const pageData = pages[pageKey];
 
-  if (!pageData) {
-  return (
-    <div className="page">
-      <PageTitle title="404" />
-      <p>Страница не найдена</p>
-    </div>
-  );
+if (!pageData) {
+  return <NotFound />;
 }
 
   return <PageView page={pageData} />;

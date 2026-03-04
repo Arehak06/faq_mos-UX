@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { fetchLogs, LogEntry } from '../services/logService';
+import { Loading } from '../components/Loading';
 
 export default function Logs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -70,7 +71,7 @@ export default function Logs() {
     setFilterDateTo('');
   };
 
-  if (loading) return <div className="page">Загрузка...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div className="page">
