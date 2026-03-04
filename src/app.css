@@ -32,10 +32,17 @@ body {
 }
 
 /* ================================
-   Page
+   Page layout
 ================================ */
 .page {
   padding: 12px;
+  padding-left: 60px; /* отступ для гамбургера */
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding-left: 52px;
+  }
 }
 
 .page-title {
@@ -45,9 +52,13 @@ body {
 }
 
 /* ================================
-   Telegram Cards
+   Cards
 ================================ */
-.tg-card {
+.tg-card,
+.home-card,
+.admin-card,
+.dashboard-card,
+.filters {
   background: var(--tg-card);
   border-radius: 14px;
   padding: 14px;
@@ -55,15 +66,17 @@ body {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
-.tg-card p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
+.home-card,
+.dashboard-card,
+.filters {
+  padding: 12px;
 }
 
-/* ================================
-   Card content blocks
-================================ */
+.home-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 .card-title {
   font-weight: 600;
   margin-bottom: 6px;
@@ -75,7 +88,7 @@ body {
 }
 
 /* ================================
-   Buttons (Telegram style)
+   Buttons
 ================================ */
 .tg-button {
   width: 100%;
@@ -87,10 +100,23 @@ body {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
 .tg-button:active {
   opacity: 0.85;
+}
+
+.tg-button.danger {
+  background: #ff4d4f;
+}
+
+.tg-button.danger:hover {
+  background: #ff7875;
+}
+
+.tg-button.danger:active {
+  background: #d9363e;
 }
 
 /* ================================
@@ -107,22 +133,43 @@ body {
 }
 
 /* ================================
-   Warning block
+   Warning / Alert blocks
 ================================ */
-.tg-warning {
-  background: #fff4d6;
-  color: #8a5b00;
+.tg-warning,
+.alert-block {
   border-radius: 12px;
   padding: 12px;
   font-size: 14px;
   margin-bottom: 12px;
 }
 
+.tg-warning {
+  background: #fff4d6;
+  color: #8a5b00;
+}
+
+.alert-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.4;
+}
+
+.alert-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
 /* ================================
-   Editor (Admin)
+   Editor
 ================================ */
 .editor {
   padding: 12px;
+}
+
+.editor-field {
+  display: block;
+  margin-bottom: 10px;
 }
 
 .editor-field span {
@@ -132,19 +179,39 @@ body {
   margin-bottom: 6px;
 }
 
+.editor-field.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-field.checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.editor-field.checkbox span {
+  display: inline;
+  margin-bottom: 0;
+}
+
 .editor input,
-.editor textarea {
+.editor textarea,
+.editor select {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
   border: 1px solid var(--tg-border);
   font-size: 14px;
-  margin-bottom: 10px;
   background: #fff;
 }
 
 .editor textarea {
   resize: vertical;
+}
+
+.editor select {
+  background: #fff;
 }
 
 .editor-block {
@@ -165,39 +232,24 @@ body {
   display: flex;
   gap: 8px;
   margin-top: 12px;
+  flex-wrap: wrap;
 }
 
 .editor-actions button {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 100px;
   padding: 10px;
   border-radius: 10px;
   border: none;
   background: var(--tg-accent);
   color: #fff;
   font-size: 14px;
+  cursor: pointer;
 }
 
-/* --------------------------------
-   Editor additions
--------------------------------- */
-
-/* Чекбокс в одну строку с текстом */
-.editor-field.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-}
-.editor-field.checkbox input[type="checkbox"] {
-  width: auto;
-  margin: 0;
-}
-.editor-field.checkbox span {
-  display: inline;
-  margin-bottom: 0;
-}
-
-/* Блок настроек MainButton */
+/* ================================
+   MainButton editor
+================================ */
 .editor-mainbutton {
   background: var(--tg-card);
   border-radius: 12px;
@@ -206,14 +258,14 @@ body {
   border: 1px solid var(--tg-border);
 }
 
-/* Улучшение для кнопки удаления */
-button.danger:hover {
-  opacity: 0.7;
+/* ================================
+   Admin
+================================ */
+.admin-card-title {
+  font-weight: 600;
+  margin-bottom: 8px;
 }
 
-/* ================================
-   Admin / Toolbar
-================================ */
 .admin-toolbar {
   display: flex;
   gap: 8px;
@@ -229,129 +281,8 @@ button.danger:hover {
   font-size: 13px;
 }
 
-button.danger {
-  background: transparent;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-}
 /* ================================
-   Home cards (Telegram settings)
-================================ */
-.home-card {
-  background: var(--tg-card);
-  border-radius: 14px;
-  margin-bottom: 12px;
-  overflow: hidden;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
-}
-
-.home-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.home-item:not(:last-child) {
-  border-bottom: 1px solid var(--tg-border);
-}
-
-.home-item:active {
-  background: #f0f0f0;
-}
-
-.home-item-icon {
-  font-size: 18px;
-}
-
-.home-item-text {
-  flex: 1;
-}
-
-.home-item-title {
-  font-weight: 500;
-}
-
-.home-item-subtitle {
-  font-size: 13px;
-  color: var(--tg-hint);
-}
-/* ================================
-   Admin cards
-================================ */
-.admin-card {
-  background: var(--tg-card);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.admin-card-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-/* ================================
-   Image block
-================================ */
-.tg-image {
-  max-width: 100%;
-  border-radius: 12px;
-  display: block;
-}
-
-/* TipTap editor styles */
-.tiptap-editor {
-  border: 1px solid var(--tg-border);
-  border-radius: 10px;
-  padding: 8px;
-  background: #fff;
-  margin-bottom: 10px;
-}
-
-.tiptap-editor .ProseMirror {
-  min-height: 100px;
-  outline: none;
-}
-
-.tiptap-editor .ProseMirror p {
-  margin: 0;
-}
-
-.tiptap-toolbar {
-  display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-  padding: 5px;
-  background: #f5f5f5;
-  border-radius: 8px;
-}
-
-.tiptap-toolbar button {
-  padding: 5px 10px;
-  border: 1px solid var(--tg-border);
-  border-radius: 5px;
-  background: white;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.tiptap-toolbar button.is-active {
-  background: var(--tg-accent);
-  color: white;
-  border-color: var(--tg-accent);
-}
-
-.tiptap-toolbar button:hover {
-  background: #e0e0e0;
-}
-
-/* ================================
-   Улучшенная главная страница
+   Home page
 ================================ */
 .home-section-title {
   font-size: 16px;
@@ -360,20 +291,6 @@ button.danger {
   color: var(--tg-hint);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.home-card {
-  background: var(--tg-card);
-  border-radius: 14px;
-  margin-bottom: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.home-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .home-item {
@@ -401,6 +318,13 @@ button.danger {
   text-align: center;
 }
 
+.home-item-icon.custom-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
 .home-item-text {
   flex: 1;
 }
@@ -415,7 +339,6 @@ button.danger {
   color: var(--tg-hint);
 }
 
-/* Выделенный блок для админ-панели */
 .home-admin-section {
   margin-top: 24px;
   border-top: 2px solid var(--tg-accent);
@@ -427,79 +350,14 @@ button.danger {
   border: 1px solid var(--tg-accent);
 }
 
-.home-admin-section .home-item:last-child {
-  border-bottom: none;
-}
-button.danger {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-}
-button.danger:hover {
-  background: #ff7875;
-}
-button.danger:active {
-  background: #d9363e;
+/* Закреплённые разделы */
+.home-section-title:has(+ .home-card) .home-item {
+  border-left: 3px solid var(--tg-accent);
 }
 
 /* ================================
-   Responsive styles
+   Hamburger menu
 ================================ */
-
-/* Для планшетов и небольших десктопов */
-@media (min-width: 768px) {
-  .page {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-
-  .page-title {
-    font-size: 28px;
-    margin-bottom: 24px;
-  }
-
-  .admin-card {
-    padding: 20px;
-  }
-
-  .home-item {
-    padding: 18px 20px;
-    font-size: 18px;
-  }
-
-  .home-item-icon {
-    font-size: 28px;
-    width: 40px;
-  }
-
-  .editor-actions {
-    flex-wrap: wrap;
-  }
-  
-  .editor-actions button {
-    flex: 0 1 auto;
-    min-width: 120px;
-  }
-}
-
-/* Для больших десктопов */
-@media (min-width: 1024px) {
-  .page {
-    max-width: 900px;
-  }
-
-  .admin-card select,
-  .admin-card input[type="text"] {
-    font-size: 16px;
-  }
-
-  .tiptap-editor .ProseMirror {
-    min-height: 150px;
-  }
-}
-
-/* app.css – добавить в конец */
 .hamburger-menu {
   position: fixed;
   top: 12px;
@@ -518,7 +376,7 @@ button.danger:active {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .menu-dropdown {
@@ -527,7 +385,7 @@ button.danger:active {
   left: 0;
   background: var(--tg-card);
   border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   padding: 12px;
   min-width: 200px;
   max-height: 80vh;
@@ -557,11 +415,11 @@ button.danger:active {
 }
 
 .menu-item:hover {
-  background: rgba(0,0,0,0.04);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .menu-item:active {
-  background: rgba(0,0,0,0.08);
+  background: rgba(0, 0, 0, 0.08);
 }
 
 .menu-item-emoji {
@@ -570,35 +428,229 @@ button.danger:active {
   text-align: center;
 }
 
-.menu-item-title {
-  font-size: 15px;
-  font-weight: 500;
-}
-.alert-block {
-  font-size: 15px;
-  line-height: 1.4;
-}
-
-.alert-icon {
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-/* Кастомные иконки-картинки */
-.menu-item .custom-icon,
-.home-item .custom-icon {
+.menu-item-emoji.custom-icon {
   width: 24px;
   height: 24px;
   object-fit: contain;
   border-radius: 4px;
 }
 
-.home-item-icon.custom-icon {
-  width: 28px;
-  height: 28px;
+.menu-item-title {
+  font-size: 15px;
+  font-weight: 500;
 }
 
-/* Yandex Flavored Markdown styles */
+/* ================================
+   Profile & Dashboard
+================================ */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--tg-card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--tg-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--tg-text);
+}
+
+.profile-role {
+  font-size: 14px;
+  color: var(--tg-hint);
+  margin-top: 4px;
+}
+
+.logout-button {
+  background: transparent;
+  border: 1px solid var(--tg-border);
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-cards {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.dashboard-card {
+  flex: 1;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dashboard-card .card-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.dashboard-card .card-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.dashboard-card .card-desc {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+/* ================================
+   Filters
+================================ */
+.filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+.reset-filters {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--tg-hint);
+  height: 38px;
+}
+
+.reset-filters:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ================================
+   Back button
+================================ */
+.back-to-admin {
+  background: transparent;
+  border: 1px solid var(--tg-border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.back-to-admin:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+/* ================================
+   Subpages
+================================ */
+.page-children {
+  margin-top: 24px;
+  border-top: 1px solid var(--tg-border);
+  padding-top: 16px;
+}
+
+.page-children h3 {
+  font-size: 16px;
+  color: var(--tg-hint);
+  margin-bottom: 12px;
+}
+
+.children-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.child-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--tg-card);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.child-item:active {
+  background: var(--tg-border);
+}
+
+.child-emoji {
+  font-size: 24px;
+  width: 32px;
+  text-align: center;
+}
+
+.child-title {
+  font-weight: 500;
+  flex: 1;
+}
+
+.child-description {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+/* ================================
+   Yandex Flavored Markdown
+================================ */
 .yfm {
   font-size: 15px;
   line-height: 1.5;
@@ -676,7 +728,6 @@ button.danger:active {
   font-weight: 600;
 }
 
-/* YFM notes */
 .yfm .note {
   padding: 16px;
   margin: 16px 0;
@@ -707,268 +758,61 @@ button.danger:active {
   margin-bottom: 8px;
 }
 
-/* Профиль администратора */
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: var(--tg-card);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-
-.profile-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: var(--tg-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.avatar-placeholder {
-  color: white;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.profile-info {
-  flex: 1;
-}
-
-.profile-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0;
-  color: var(--tg-text);
-}
-
-.profile-role {
-  font-size: 14px;
-  color: var(--tg-hint);
-  margin-top: 4px;
-}
-
-.logout-button {
-  background: transparent;
-  border: 1px solid var(--tg-border);
+/* ================================
+   Images
+================================ */
+.tg-image {
+  max-width: 100%;
   border-radius: 12px;
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
+  display: block;
 }
 
-.logout-button:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-/* Карточки действий */
-.dashboard-cards {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.dashboard-card {
-  flex: 1;
-  background: var(--tg-card);
-  border-radius: 14px;
-  padding: 16px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-}
-
-.dashboard-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.dashboard-card .card-icon {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.dashboard-card .card-title {
-  font-weight: 600;
-  font-size: 16px;
-  margin-bottom: 4px;
-}
-
-.dashboard-card .card-desc {
-  font-size: 13px;
-  color: var(--tg-hint);
-}
-
-.filters {
-  background: var(--tg-card);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 16px;
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.filter-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 150px;
-}
-
-.filter-group label {
-  font-size: 13px;
-  color: var(--tg-hint);
-}
-
-.filter-group select {
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--tg-border);
-  background: #fff;
-  font-size: 14px;
-}
-
-.reset-filters {
-  padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid var(--tg-border);
-  background: transparent;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--tg-hint);
-  height: 38px;
-}
-
-.reset-filters:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-.back-to-admin {
-  background: transparent;
-  border: 1px solid var(--tg-border);
-  border-radius: 20px;
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Подстраницы */
-.page-children {
-  margin-top: 24px;
-  border-top: 1px solid var(--tg-border);
-  padding-top: 16px;
-}
-
-.page-children h3 {
-  font-size: 16px;
-  color: var(--tg-hint);
-  margin-bottom: 12px;
-}
-
-.children-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.child-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: var(--tg-card);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.child-item:active {
-  background: var(--tg-border);
-}
-
-.child-emoji {
-  font-size: 24px;
-  width: 32px;
-  text-align: center;
-}
-
-.child-title {
-  font-weight: 500;
-  flex: 1;
-}
-
-.child-description {
-  font-size: 13px;
-  color: var(--tg-hint);
-}
-
-/* Иерархия в меню */
-.menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.menu-item:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-.menu-item-emoji {
-  font-size: 20px;
-  width: 24px;
-  text-align: center;
-}
-
-/* Кнопка назад */
-.back-to-admin {
-  background: transparent;
-  border: 1px solid var(--tg-border);
-  border-radius: 20px;
-  padding: 8px 16px;
-  margin-bottom: 16px;
-  font-size: 14px;
-  cursor: pointer;
-}
-.back-to-admin:hover {
-  background: rgba(0,0,0,0.04);
-}
-
-/* Отступ для контента, чтобы не перекрывался гамбургером */
-.page {
-  padding: 12px;
-  padding-left: 60px; /* Ширина гамбургера (~40px) + небольшой запас */
-}
-
-/* На мобильных устройствах можно уменьшить отступ */
-@media (max-width: 480px) {
+/* ================================
+   Responsive adjustments
+================================ */
+@media (min-width: 768px) {
   .page {
-    padding-left: 52px;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 28px;
+    margin-bottom: 24px;
+  }
+
+  .admin-card {
+    padding: 20px;
+  }
+
+  .home-item {
+    padding: 18px 20px;
+    font-size: 18px;
+  }
+
+  .home-item-icon {
+    font-size: 28px;
+    width: 40px;
+  }
+
+  .editor-actions {
+    flex-wrap: wrap;
+  }
+
+  .editor-actions button {
+    flex: 0 1 auto;
+    min-width: 120px;
   }
 }
-/* Закреплённые разделы */
-.home-section-title:has(+ .home-card) .home-item {
-  border-left: 3px solid var(--tg-accent);
+
+@media (min-width: 1024px) {
+  .page {
+    max-width: 900px;
+  }
+
+  .admin-card select,
+  .admin-card input[type="text"] {
+    font-size: 16px;
+  }
 }
