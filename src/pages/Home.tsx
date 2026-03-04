@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
@@ -30,46 +30,64 @@ export default function Home() {
       });
   }, []);
 
+  const renderIcon = (icon: string | undefined) => {
+    if (!icon) return <span className="home-item-icon">📄</span>;
+    if (icon.startsWith('http')) {
+      return <img src={icon} alt="" className="home-item-icon custom-icon" />;
+    }
+    return <span className="home-item-icon">{icon}</span>;
+  };
+
+  // Рекурсивное отображение страниц с учётом parentId
+  const renderPageList = (parentId: string | null = null, level = 0): JSX.Element[] => {
+    if (!pages) return [];
+    const children = Object.values(pages)
+      .filter(page => !page.hidden && (page.parentId || null) === parentId)
+      .sort((a, b) => a.title.localeCompare(b.title));
+
+    return children.flatMap(page => [
+      <div
+        key={page.id}
+        className="home-item"
+        onClick={() => navigate(`/${page.id}`)}
+        style={{ paddingLeft: 12 + level * 20 }}
+      >
+        {renderIcon(page.emoji)}
+        <div className="home-item-text">
+          <div className="home-item-title">{page.title}</div>
+          {page.description && <div className="home-item-subtitle">{page.description}</div>}
+        </div>
+      </div>,
+      ...renderPageList(page.id, level + 1)
+    ]);
+  };
+
   if (loading) return <div className="page">Загрузка...</div>;
   if (!pages) return <div className="page">Ошибка загрузки данных</div>;
 
   const homePage = pages['home'];
   const homeBlocks = homePage?.blocks || [];
 
-  // Рекурсивная отрисовка страниц
-  const renderPages = (parentId: string | null = null, level = 0): JSX.Element[] => {
-    const children = Object.values(pages)
-      .filter(page => !page.hidden && (page.parentId || null) === parentId)
-      .sort((a, b) => a.title.localeCompare(b.title));
-    return children.flatMap(page => [
-      <div
-        key={page.id}
-        className="home-item"
-        onClick={() => navigate(`/${page.id}`)}
-        style={{ paddingLeft: level * 16 + 16 }}
-      >
-        <span className="home-item-icon">{page.emoji || '📄'}</span>
-        <div className="home-item-text">
-          <div className="home-item-title">{page.title}</div>
-          {page.description && <div className="home-item-subtitle">{page.description}</div>}
-        </div>
-      </div>,
-      ...renderPages(page.id, level + 1)
-    ]);
-  };
+  // Административные разделы (оставляем статическими)
+  const adminSections = [
+    { path: '/admin', icon: '🛠️', title: 'Админка', subtitle: 'Управление страницами' },
+    { path: '/logs', icon: '📋', title: 'Журнал', subtitle: 'Действия администраторов' },
+  ];
 
   return (
     <div className="page">
       <h1 className="page-title">🎫 Билетик - справочник по транспорту Москвы и области</h1>
 
-      {/* Блоки главной страницы */}
-      {homeBlocks.map(block => <BlockRenderer key={block.id} block={block} />)}
+      {/* Блоки, добавленные через админку для главной страницы */}
+      {homeBlocks.map((block) => (
+        <BlockRenderer key={block.id} block={block} />
+      ))}
 
-      {/* Кнопка входа для администраторов */}
+      {/* Кнопка входа для администраторов (если не авторизован) */}
       {/* {!user && !admin && (
         <div className="home-card" style={{ marginBottom: '20px', border: '2px solid var(--tg-accent)' }}>
           <div className="home-item" onClick={() => navigate('/login')}>
-            <span className="home-item-icon">🔐</span>
+            <div className="home-item-icon">🔐</div>
             <div className="home-item-text">
               <div className="home-item-title">Вход для администраторов</div>
               <div className="home-item-subtitle">Авторизуйтесь через Telegram</div>
@@ -78,41 +96,30 @@ export default function Home() {
         </div>
       )} */}
 
-      {/* Основные разделы (статические) – можно тоже сделать через pages, но оставим как есть */}
-      <div className="home-section-title">Справочник</div>
+      {/* Все страницы (кроме home) отображаются здесь с иерархией */}
+      <div className="home-section-title">ВСЕ СТРАНИЦЫ</div>
       <div className="home-card">
-        {/* Здесь можно добавить статические ссылки или оставить как есть */}
-        {/* Например, если они есть в pages, они будут отрисованы через renderPages */}
+        {renderPageList(null)}
       </div>
 
-      {/* Динамические страницы */}
-      {Object.values(pages).filter(p => !p.hidden).length > 0 && (
-        <>
-          <div className="home-section-title">Все страницы</div>
-          <div className="home-card">
-            {renderPages(null)}
-          </div>
-        </>
-      )}
-
+      {/* Административные разделы (только для админов) */}
       {admin && (
         <>
           <div className="home-section-title home-admin-section">Управление</div>
           <div className="home-card">
-            <div className="home-item" onClick={() => navigate('/admin')}>
-              <span className="home-item-icon">🛠️</span>
-              <div className="home-item-text">
-                <div className="home-item-title">Админка</div>
-                <div className="home-item-subtitle">Управление страницами</div>
+            {adminSections.map((item) => (
+              <div
+                key={item.path}
+                className="home-item"
+                onClick={() => navigate(item.path)}
+              >
+                <div className="home-item-icon">{item.icon}</div>
+                <div className="home-item-text">
+                  <div className="home-item-title">{item.title}</div>
+                  <div className="home-item-subtitle">{item.subtitle}</div>
+                </div>
               </div>
-            </div>
-            <div className="home-item" onClick={() => navigate('/logs')}>
-              <span className="home-item-icon">📋</span>
-              <div className="home-item-text">
-                <div className="home-item-title">Журнал</div>
-                <div className="home-item-subtitle">Действия администраторов</div>
-              </div>
-            </div>
+            ))}
           </div>
         </>
       )}
