@@ -26,13 +26,13 @@ export default function DynamicPage() {
   const pageData = pages[pageKey];
 
   if (!pageData) {
-    return (
-      <div className="page">
-        <PageTitle title={pages.title} />
-        <p>Страница не найдена</p>
-      </div>
-    );
-  }
+  return (
+    <div className="page">
+      <PageTitle title="404" />
+      <p>Страница не найдена</p>
+    </div>
+  );
+}
 
   return <PageView page={pageData} />;
 }
