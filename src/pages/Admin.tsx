@@ -22,6 +22,11 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showHidden, setShowHidden] = useState(false);
 
+  // Данные пользователя Telegram
+  const user = getTelegramUser();
+  const userName = getTelegramUserName() || 'Администратор';
+  const userPhoto = user?.photo_url; // может быть undefined
+
   useEffect(() => {
     loadPages()
       .then(data => {
@@ -155,8 +160,41 @@ export default function Admin() {
 
   return (
     <div className="page">
-      <h1 className="page-title">🛠 Админ-панель</h1>
+      {/* Шапка профиля */}
+      <div className="profile-header">
+        <div className="profile-avatar">
+          {userPhoto ? (
+            <img src={userPhoto} alt={userName} className="avatar-image" />
+          ) : (
+            <div className="avatar-placeholder">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        <div className="profile-info">
+          <h2 className="profile-name">{userName}</h2>
+          <div className="profile-role">Администратор</div>
+        </div>
+        <button className="logout-button" onClick={handleLogout} title="Выйти">
+          🚪
+        </button>
+      </div>
 
+      {/* Навигационные карточки */}
+      <div className="dashboard-cards">
+        <div className="dashboard-card" onClick={() => setMode('edit')}>
+          <div className="card-icon">✏️</div>
+          <div className="card-title">Редактор страниц</div>
+          <div className="card-desc">Управление контентом</div>
+        </div>
+        <div className="dashboard-card" onClick={() => navigate('/logs')}>
+          <div className="card-icon">📋</div>
+          <div className="card-title">Журнал действий</div>
+          <div className="card-desc">Просмотр логов</div>
+        </div>
+      </div>
+
+      {/* Остальной интерфейс (фильтры, редактор) */}
       <div className="admin-card">
         <div className="admin-card-title">🔍 Фильтр страниц</div>
         <input
@@ -211,11 +249,6 @@ export default function Admin() {
         <button className="tg-button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
           {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
         </button>
-      </div>
-
-      {/* Кнопка выхода (для обычного браузера) */}
-      <div className="admin-card">
-        <button className="tg-button danger" onClick={handleLogout}>🚪 Выйти</button>
       </div>
 
       {mode === 'edit' ? (
