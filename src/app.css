@@ -814,3 +814,59 @@ button.danger:active {
   font-size: 13px;
   color: var(--tg-hint);
 }
+
+.filters {
+  background: var(--tg-card);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  color: var(--tg-hint);
+}
+
+.filter-group select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  background: #fff;
+  font-size: 14px;
+}
+
+.reset-filters {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--tg-hint);
+  height: 38px;
+}
+
+.reset-filters:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.back-to-admin {
+  background: transparent;
+  border: 1px solid var(--tg-border);
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
