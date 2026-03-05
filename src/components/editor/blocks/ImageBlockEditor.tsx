@@ -23,9 +23,20 @@ export function ImageBlockEditor({ block, onUpdate, onRemove }: Props) {
         <strong>Изображение</strong>
         <button className="danger" onClick={onRemove}>🗑</button>
       </div>
-      <input value={block.url} placeholder="URL изображения" onChange={handleUrlChange} />
-      <input value={block.alt || ''} placeholder="Alt текст (для доступности)" onChange={handleAltChange} />
-      <input value={block.caption || ''} placeholder="Подпись под изображением" onChange={handleCaptionChange} />
+      <div className="image-block-editor">
+        <label className="editor-field">
+          <span>URL изображения</span>
+          <input value={block.url} onChange={handleUrlChange} placeholder="https://..." />
+        </label>
+        <label className="editor-field">
+          <span>Alt текст (для доступности)</span>
+          <input value={block.alt || ''} onChange={handleAltChange} placeholder="Описание изображения" />
+        </label>
+        <label className="editor-field">
+          <span>Подпись под изображением</span>
+          <input value={block.caption || ''} onChange={handleCaptionChange} placeholder="Необязательно" />
+        </label>
+      </div>
     </div>
   );
 }
