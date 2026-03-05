@@ -114,7 +114,7 @@ export default function Admin() {
 
   useTelegramMainButton({
     text: saving ? '💾 Сохранение...' : '💾 Сохранить',
-    visible: false, // на дашборде кнопка сохранения не нужна
+    visible: false,
     onClick: handleSave,
   });
 
