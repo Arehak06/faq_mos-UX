@@ -115,6 +115,9 @@ export default function Admin() {
   // Сохраняем изменения на сервер!
   try {
     await savePages(updatedPages);
+    // после await savePages(updatedPages)
+const reloaded = await loadPages();
+console.log('Reloaded pages after save:', reloaded['home']?.inviteTokens);
     console.log('Invite token saved to server');
   } catch (err) {
     console.error('Failed to save invite token', err);
@@ -123,7 +126,7 @@ export default function Admin() {
   const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
   setNewInviteLink(link);
   setCopySuccess(false);
-  
+
 };
 
   const copyToClipboard = async () => {
