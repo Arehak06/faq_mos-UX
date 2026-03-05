@@ -81,7 +81,7 @@ export default function Home() {
     .filter(p => !p.featured && !p.hidden)
     .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
 
-  const mainTitle = homePage?.mainTitle || '🚇 Транспорт Москвы';
+  const mainTitle = homePage?.mainTitle || '';
   const sectionTitle = homePage?.sectionTitle || 'ВСЕ СТРАНИЦЫ';
 
   return (
