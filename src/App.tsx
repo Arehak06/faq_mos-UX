@@ -12,6 +12,7 @@ import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
 import { TopNav } from './components/TopNav';
 import { Footer } from './components/Footer';
+import { MaintenanceBanner } from './components/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
 
@@ -24,7 +25,6 @@ function App() {
     const redirect = sessionStorage.getItem('redirect');
     if (redirect) {
       sessionStorage.removeItem('redirect');
-      // Убираем базовый путь, так как navigate уже работает с basename
       const path = redirect.replace('/faq_mos-UX', '');
       navigate(path);
     }
@@ -36,9 +36,14 @@ function App() {
       .catch(console.error);
   }, []);
 
+  const homePage = pages?.['home'];
+  const maintenanceMode = homePage?.maintenanceMode ?? false;
+  const maintenanceImage = homePage?.maintenanceImage;
+
   return (
     <>
       <TelegramBackButton />
+      {maintenanceMode && <MaintenanceBanner imageUrl={maintenanceImage} />}
       <TopNav />
       <div className="app-content">
         <Routes>

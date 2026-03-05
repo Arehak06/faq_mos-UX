@@ -1374,3 +1374,37 @@ body {
     grid-template-columns: 1fr;
   }
 }
+/* Maintenance banner */
+.maintenance-banner {
+  background: #fff3cd;
+  border-bottom: 2px solid #ffeeba;
+  padding: 12px 16px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+
+.maintenance-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.maintenance-icon {
+  font-size: 24px;
+}
+
+.maintenance-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #856404;
+}
+
+.maintenance-image {
+  max-height: 60px;
+  max-width: 100%;
+  object-fit: contain;
+}

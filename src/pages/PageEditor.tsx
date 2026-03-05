@@ -511,6 +511,30 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
       />
     </label>
 
+  {/* Режим технических работ */}
+<div className="editor-section">
+  <h4>Режим технических работ</h4>
+  <label className="editor-field checkbox">
+    <input
+      type="checkbox"
+      checked={page.maintenanceMode ?? false}
+      onChange={(e) => onChange({ ...page, maintenanceMode: e.target.checked })}
+    />
+    <span>Включить режим техработ (поверх всех страниц будет баннер)</span>
+  </label>
+
+  {page.maintenanceMode && (
+    <label className="editor-field">
+      <span>URL изображения для баннера (опционально)</span>
+      <input
+        value={page.maintenanceImage || ''}
+        onChange={(e) => onChange({ ...page, maintenanceImage: e.target.value })}
+        placeholder="https://example.com/maintenance.png"
+      />
+    </label>
+  )}
+</div>
+
     <h4>Настройки подвала</h4>
     <label className="editor-field checkbox">
       <input
