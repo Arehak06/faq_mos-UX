@@ -46,6 +46,7 @@ export default function Callback() {
       })
       .then((data) => {
   console.log('Received user data:', data.user);
+  console.log('User ID from server:', data.user?.id);
   if (data.user) {
     setTelegramUser(data.user);
     navigate('/');
