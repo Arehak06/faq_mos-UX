@@ -14,20 +14,25 @@ export default function AdminInvite() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadPages()
-      .then(data => {
-        setPages(data);
-        setLoading(false);
-      })
-      .catch(console.error);
-  }, []);
+  console.log('Loading pages...');
+  loadPages()
+    .then(data => {
+      console.log('Pages loaded:', data);
+      setPages(data);
+      setLoading(false);
+    })
+    .catch(console.error);
+}, []);
 
-  useEffect(() => {
+ useEffect(() => {
   if (!pages) return;
   const params = new URLSearchParams(location.search);
   const token = params.get('token');
   const homePage = pages['home'];
+  console.log('Token from URL:', token);
+  console.log('Home page data:', homePage);
   const invite = homePage?.inviteTokens?.find(inv => inv.token === token);
+  console.log('Found invite:', invite);
   if (invite && !invite.usedBy) {
     setValid(true);
     setInviteInfo(invite);
