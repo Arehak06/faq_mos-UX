@@ -5,7 +5,7 @@ export function getTelegramUser() {
   if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
     return window.Telegram.WebApp.initDataUnsafe.user;
   }
-  // Затем localStorage (после OIDC-логина)
+  // Затем localStorage
   const stored = localStorage.getItem(TELEGRAM_USER_KEY);
   if (stored) {
     try {
@@ -23,17 +23,21 @@ export function getTelegramUser() {
   }
   return null;
 }
+
 export function setTelegramUser(user: any) {
   localStorage.setItem(TELEGRAM_USER_KEY, JSON.stringify(user));
+  // Генерируем событие для обновления компонентов
+  window.dispatchEvent(new Event('telegram-user-changed'));
 }
 
 export function clearTelegramUser() {
   localStorage.removeItem(TELEGRAM_USER_KEY);
+  window.dispatchEvent(new Event('telegram-user-changed'));
 }
 
 export function getTelegramUserId(): number | null {
   const user = getTelegramUser();
-  return user?.id || null;
+  return user?.id ? Number(user.id) : null;
 }
 
 export function getTelegramUserName(): string | undefined {

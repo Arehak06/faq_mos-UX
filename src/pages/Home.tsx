@@ -10,12 +10,22 @@ import { Loading } from '../components/Loading';
 
 export default function Home() {
   const navigate = useNavigate();
-  const [admin, setAdmin] = useState(false);
-  const [role, setRole] = useState<'owner' | 'admin' | 'editor' | null>(null);
+  const [admin, setAdmin] = useState(isAdmin());
+  const [user, setUser] = useState(getTelegramUser());
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
-  const user = getTelegramUser();
 
+  // Слушаем изменения пользователя (сохранение/удаление из localStorage)
+  useEffect(() => {
+    const handleUserChange = () => {
+      setUser(getTelegramUser());
+      setAdmin(isAdmin());
+    };
+    window.addEventListener('telegram-user-changed', handleUserChange);
+    return () => window.removeEventListener('telegram-user-changed', handleUserChange);
+  }, []);
+
+  // Дополнительно проверяем при монтировании (для Telegram WebApp)
   useEffect(() => {
     setAdmin(isAdmin());
   }, [user]);
@@ -26,7 +36,10 @@ export default function Home() {
         setPages(data);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error('Ошибка загрузки страниц:', err);
+        setLoading(false);
+      });
   }, []);
 
   const renderIcon = (icon: string | undefined) => {
@@ -115,19 +128,19 @@ export default function Home() {
       <div className="home-card">{renderPageList(regularPages)}</div>
 
       {admin && (
-  <>
-    <div className="home-section-title home-admin-section">Админ панель</div>
-    <div className="home-card">
-      <div className="home-item" onClick={() => navigate('/admin')}>
-        <div className="home-item-icon">🛠️</div>
-        <div className="home-item-text">
-          <div className="home-item-title">Админ панель</div>
-          <div className="home-item-subtitle">Управление сайтом</div>
-        </div>
-      </div>
-    </div>
-  </>
-)}
+        <>
+          <div className="home-section-title home-admin-section">Админ панель</div>
+          <div className="home-card">
+            <div className="home-item" onClick={() => navigate('/admin')}>
+              <div className="home-item-icon">🛠️</div>
+              <div className="home-item-text">
+                <div className="home-item-title">Админ панель</div>
+                <div className="home-item-subtitle">Управление сайтом</div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
