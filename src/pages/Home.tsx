@@ -17,20 +17,19 @@ export default function Home() {
 
   const user = getTelegramUser();
 
-  const [rolesLoaded, setRolesLoaded] = useState(false);
-
-useEffect(() => {
-  const checkRoles = async () => {
-    const a = await isAdmin();
-    const e = await isEditor();
-    setAdmin(a);
-    setEditor(e);
-    setRolesLoaded(true);
-  };
-  checkRoles();
-}, [user]);
-
-if (loading) return <Loading />;
+  useEffect(() => {
+    const checkRoles = async () => {
+      try {
+        const a = await isAdmin();
+        const e = await isEditor();
+        setAdmin(a);
+        setEditor(e);
+      } catch (err) {
+        console.error('Ошибка проверки ролей:', err);
+      }
+    };
+    checkRoles();
+  }, [user]);
 
   useEffect(() => {
     loadPages()
@@ -43,6 +42,7 @@ if (loading) return <Loading />;
         setLoading(false);
       });
   }, []);
+
 
   const renderIcon = (icon: string | undefined) => {
     if (!icon) return <span className="home-item-icon">📄</span>;
