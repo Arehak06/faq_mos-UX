@@ -3,7 +3,7 @@ import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
 const configuration = {
   authority: 'https://oauth.telegram.org',
   client_id: import.meta.env.VITE_TELEGRAM_CLIENT_ID,
-  redirect_uri: `${window.location.origin}/faq_mos-UX/callback`,
+  redirect_uri: `https://arehak06.github.io/faq_mos-UX/callback`,
   response_type: 'code',
   scope: 'openid profile',
   loadUserInfo: false, // пользователя загрузим с сервера
