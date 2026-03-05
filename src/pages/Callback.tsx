@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
 import { loadPages, savePages } from '../utils/storage';
+import { clearAdminsCache } from '../utils/isAdmin';
 
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
@@ -54,6 +55,7 @@ export default function Callback() {
                 ),
               };
               await savePages({ ...pages, home: updatedHome });
+              clearAdminsCache();
             }
             sessionStorage.removeItem('invite_token');
           }

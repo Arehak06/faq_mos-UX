@@ -4,6 +4,10 @@ import { AdminUser } from '../types/page';
 
 let cachedAdmins: AdminUser[] | null = null;
 
+export function clearAdminsCache() {
+  cachedAdmins = null;
+}
+
 async function loadAdmins(): Promise<AdminUser[]> {
   if (cachedAdmins) return cachedAdmins;
   const pages = await loadPages();

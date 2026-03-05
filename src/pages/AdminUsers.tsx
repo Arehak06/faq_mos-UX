@@ -5,6 +5,7 @@ import { PageData, AdminUser, InviteToken } from '../types/page';
 import { getTelegramUser } from '../utils/telegram';
 import { addLog } from '../services/logService';
 import { Loading } from '../components/Loading';
+import { clearAdminsCache } from '../utils/isAdmin';
 
 export default function AdminUsers() {
   const navigate = useNavigate();
@@ -107,6 +108,7 @@ export default function AdminUsers() {
     setHomePage(updatedHome);
     setPages(updatedPages);
     await savePages(updatedPages);
+    clearAdminsCache();
     addLog('invite_created', 'home', { token, role });
     
     const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
