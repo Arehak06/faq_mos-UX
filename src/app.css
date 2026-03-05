@@ -175,7 +175,7 @@ body {
 }
 
 /* ================================
-   Editor
+   Editor (PageEditor)
 ================================ */
 .editor {
   padding: 16px;
@@ -326,7 +326,7 @@ body {
 }
 
 /* ================================
-   Admin
+   Admin (dashboard)
 ================================ */
 .admin-card-title {
   font-weight: 600;
@@ -565,7 +565,7 @@ body {
 }
 
 /* ================================
-   Dropdown menu (used in TopNav and AdminUsers)
+   Dropdown menu (used in TopNav)
 ================================ */
 .menu-dropdown {
   position: absolute;
@@ -727,7 +727,7 @@ body {
 }
 
 /* ================================
-   Filters
+   Filters (used in Logs)
 ================================ */
 .filters {
   display: flex;
@@ -765,7 +765,7 @@ body {
 }
 
 /* ================================
-   Back button
+   Back button (used in PageManagement)
 ================================ */
 .back-to-admin {
   background: transparent;
@@ -783,7 +783,7 @@ body {
 }
 
 /* ================================
-   Subpages
+   Subpages (used in PageView)
 ================================ */
 .page-children {
   margin-top: 24px;
@@ -962,7 +962,7 @@ body {
 }
 
 /* ================================
-   Footer links editor
+   Footer links editor (used in PageEditor)
 ================================ */
 .footer-links-editor {
   background: var(--tg-card);
@@ -1082,7 +1082,7 @@ body {
 }
 
 /* ================================
-   Add block menu
+   Add block menu (used in PageEditor)
 ================================ */
 .add-block-container {
   position: relative;
@@ -1206,9 +1206,8 @@ body {
 }
 
 /* ================================
-   Invite page & login page
+   Login page
 ================================ */
-.invite-page,
 .login-page {
   min-height: 80vh;
   display: flex;
@@ -1217,7 +1216,6 @@ body {
   padding: 20px;
 }
 
-.invite-card,
 .login-card {
   background: var(--tg-card);
   border-radius: 32px;
@@ -1227,21 +1225,11 @@ body {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
   text-align: center;
   border: 1px solid var(--tg-border);
-  animation: fadeIn 0.4s ease;
-}
-
-.login-card {
   animation: slideUp 0.4s ease;
 }
 
-.invite-icon,
 .login-logo {
   font-size: 64px;
-  margin-bottom: 16px;
-  animation: float 3s ease-in-out infinite;
-}
-
-.login-logo {
   background: rgba(42, 171, 238, 0.1);
   width: 100px;
   height: 100px;
@@ -1250,10 +1238,9 @@ body {
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  animation: none;
+  animation: float 3s ease-in-out infinite;
 }
 
-.invite-title,
 .login-title {
   font-size: 28px;
   font-weight: 700;
@@ -1261,7 +1248,6 @@ body {
   color: var(--tg-text);
 }
 
-.invite-text,
 .login-description {
   font-size: 16px;
   line-height: 1.6;
@@ -1269,7 +1255,6 @@ body {
   margin-bottom: 32px;
 }
 
-.invite-button,
 .login-button {
   display: inline-flex;
   align-items: center;
@@ -1287,18 +1272,15 @@ body {
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.invite-button:hover,
 .login-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(42, 171, 238, 0.3);
 }
 
-.invite-footer,
 .login-footer {
   margin-top: 24px;
 }
 
-.invite-link,
 .login-link {
   color: var(--tg-hint);
   text-decoration: none;
@@ -1306,329 +1288,12 @@ body {
   transition: color 0.2s;
 }
 
-.invite-link:hover,
 .login-link:hover {
   color: var(--tg-accent);
   text-decoration: underline;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
-}
-
-/* ================================
-   Admin users management
-================================ */
-.admin-list {
-  list-style: none;
-  padding: 0;
-  margin: 12px 0;
-  border: 1px solid var(--tg-border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.admin-list-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--tg-border);
-  background: var(--tg-card);
-  position: relative;
-}
-
-.admin-list-item:last-child {
-  border-bottom: none;
-}
-
-.admin-id {
-  font-family: monospace;
-  font-weight: 500;
-  min-width: 100px;
-}
-
-.admin-role {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.role-owner {
-  background: #ffd700;
-  color: #000;
-}
-
-.role-admin {
-  background: var(--tg-accent);
-  color: #fff;
-}
-
-.role-editor {
-  background: #9e9e9e;
-  color: #fff;
-}
-
-.self-mark {
-  color: var(--tg-hint);
-  font-size: 12px;
-  margin-left: auto;
-}
-
-.admin-actions {
-  position: relative;
-  margin-left: auto;
-}
-
-.action-button {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 0 8px;
-}
-
-.action-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  background: var(--tg-card);
-  border: 1px solid var(--tg-border);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  min-width: 150px;
-  overflow: hidden;
-}
-
-.action-menu button {
-  display: block;
-  width: 100%;
-  padding: 10px 12px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 14px;
-}
-
-.action-menu button:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.action-menu button.danger {
-  color: #ff4d4f;
-}
-
-.action-menu button.danger:hover {
-  background: #ffebee;
-}
-
-/* Invite link block */
-.invite-link-container {
-  margin-top: 16px;
-  padding: 12px;
-  background: var(--tg-card);
-  border-radius: 12px;
-  border: 1px solid var(--tg-border);
-}
-
-.invite-link-label {
-  font-size: 14px;
-  color: var(--tg-hint);
-  margin-bottom: 8px;
-}
-
-.invite-link-row {
-  display: flex;
-  gap: 8px;
-}
-
-.invite-link-input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--tg-border);
-  font-size: 14px;
-  background: var(--tg-bg);
-  color: var(--tg-text);
-}
-
-.copy-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: none;
-  background: var(--tg-accent);
-  color: white;
-  cursor: pointer;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.2s;
-}
-
-.copy-button:hover {
-  opacity: 0.9;
-}
-
-/* Role selector */
-.role-selector {
-  padding: 16px;
-  background: var(--tg-card);
-  border-radius: 12px;
-  border: 1px solid var(--tg-border);
-  margin-top: 8px;
-}
-
-.role-selector p {
-  margin-bottom: 12px;
-  color: var(--tg-hint);
-}
-
-.role-buttons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-/* Access token display (old, kept for compatibility) */
-.access-token-display {
-  background: var(--tg-card);
-  border: 1px solid var(--tg-border);
-  border-radius: 12px;
-  padding: 12px;
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.access-token-display code {
-  background: var(--tg-bg);
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-family: monospace;
-  word-break: break-all;
-}
-
-.admin-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.admin-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--tg-border);
-  gap: 12px;
-}
-
-.admin-user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex: 1;
-}
-
-.admin-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.admin-avatar-placeholder {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--tg-accent);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-}
-
-.admin-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.admin-name {
-  font-weight: 500;
-}
-
-.admin-username {
-  font-size: 12px;
-  color: var(--tg-hint);
-}
-
-.self-mark {
-  font-size: 12px;
-  color: var(--tg-accent);
-  margin-left: 4px;
-}
-
-.admin-role-controls {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.role-select {
-  padding: 6px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--tg-border);
-  background: var(--tg-card);
-  font-size: 14px;
-}
-
-.admin-role-controls button.danger {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.admin-role-controls button.danger:hover {
-  background: #ff7875;
-}
-
-.add-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 12px;
-}
-
-.add-form input,
-.add-form select {
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid var(--tg-border);
-  font-size: 14px;
-}
-
-.form-buttons {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
 }
