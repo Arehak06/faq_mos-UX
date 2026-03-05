@@ -92,7 +92,7 @@ export default function Admin() {
   };
 
   // Генерация пригласительного токена
-  const generateInvite = async () => {
+const generateInvite = async () => {
   if (!homePage) return;
   const role = prompt('Введите роль для приглашения (admin / editor):', 'editor');
   if (role !== 'admin' && role !== 'editor') return;
@@ -107,26 +107,37 @@ export default function Admin() {
     inviteTokens: [...(homePage.inviteTokens || []), newInvite],
   };
   const updatedPages = { ...pages, home: updatedHome };
+  
+  // Сохраняем локально
   setPages(updatedPages);
   setHomePage(updatedHome);
   setInviteTokens(updatedHome.inviteTokens || []);
   addLog('invite_created', 'home', { token, role });
 
-  // Сохраняем изменения на сервер!
   try {
+    // Сохраняем на сервер
     await savePages(updatedPages);
-    // после await savePages(updatedPages)
-const reloaded = await loadPages();
-console.log('Reloaded pages after save:', reloaded['home']?.inviteTokens);
-    console.log('Invite token saved to server');
+    console.log('Invite token saved to server, reloading data...');
+    
+    // Принудительно загружаем свежие данные с сервера
+    const freshPages = await loadPages();
+    setPages(freshPages);
+    setOriginalPages(freshPages);
+    const freshHome = freshPages['home'];
+    setHomePage(freshHome);
+    setAdminList(freshHome?.adminList || []);
+    setInviteTokens(freshHome?.inviteTokens || []);
+    
+    console.log('Fresh pages loaded, invite tokens:', freshHome?.inviteTokens);
   } catch (err) {
     console.error('Failed to save invite token', err);
+    alert('Ошибка при сохранении приглашения. Попробуйте ещё раз.');
+    return;
   }
 
   const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
   setNewInviteLink(link);
   setCopySuccess(false);
-
 };
 
   const copyToClipboard = async () => {
