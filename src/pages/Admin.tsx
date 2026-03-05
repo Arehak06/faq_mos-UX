@@ -1,7 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PageEditor from './PageEditor';
-import PageView from './PageView';
 import { loadPages, savePages } from '../utils/storage';
 import { useTelegramMainButton } from '../hooks/useTelegramMainButton';
 import { useConfirmExitSimple } from '../hooks/useConfirmExitSimple';
@@ -14,13 +12,8 @@ export default function Admin() {
 
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [originalPages, setOriginalPages] = useState<Record<string, PageData> | null>(null);
-  const [current, setCurrent] = useState('home');
-  const [mode, setMode] = useState<'edit' | 'view'>('edit');
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showHidden, setShowHidden] = useState(false);
 
   const user = getTelegramUser();
   const userName = getTelegramUserName() || 'Администратор';
@@ -91,62 +84,6 @@ export default function Admin() {
     }
   };
 
-  const handleAddPage = () => {
-    if (!pages) return;
-    let key = prompt('Введите уникальный ключ страницы (например, "newpage"):');
-    if (!key) return;
-    key = key.trim().toLowerCase().replace(/\s+/g, '-');
-    if (pages[key]) {
-      alert('Страница с таким ключом уже существует');
-      return;
-    }
-    const title = prompt('Введите название страницы:', 'Новая страница');
-    if (!title) return;
-
-    const now = new Date().toISOString();
-    const userName = getTelegramUserName() || String(getTelegramUser()?.id) || 'unknown';
-
-    const newPage: PageData = {
-      id: key,
-      title,
-      blocks: [],
-      hidden: false,
-      createdAt: now,
-      createdBy: userName,
-      updatedAt: now,
-      updatedBy: userName,
-      description: '',
-      emoji: '📄',
-    };
-    const updatedPages = { ...pages, [key]: newPage };
-    setPages(updatedPages);
-    setCurrent(key);
-    addLog('page_created', key, { title });
-  };
-
-  const handleDeletePage = (key: string) => {
-    if (!pages) return;
-    if (key === 'home') {
-      alert('Нельзя удалить главную страницу');
-      return;
-    }
-    const children = Object.values(pages).filter(p => p.parentId === key);
-    if (children.length > 0) {
-      const confirm = window.confirm(`У страницы есть дочерние подразделы (${children.length}). Они также будут удалены. Продолжить?`);
-      if (!confirm) return;
-    }
-    const pageTitle = pages[key]?.title || key;
-    if (window.confirm(`Удалить страницу "${pageTitle}" (${key})? Это действие необратимо.`)) {
-      const updatedPages = { ...pages };
-      delete updatedPages[key];
-      setPages(updatedPages);
-      if (current === key) {
-        setCurrent('home');
-      }
-      addLog('page_deleted', key);
-    }
-  };
-
   const handleLogout = () => {
     clearTelegramUser();
     navigate('/');
@@ -177,25 +114,12 @@ export default function Admin() {
 
   useTelegramMainButton({
     text: saving ? '💾 Сохранение...' : '💾 Сохранить',
-    visible: mode === 'edit' && !saving,
+    visible: false, // на дашборде кнопка сохранения не нужна
     onClick: handleSave,
   });
 
-  const filteredPages = useMemo(() => {
-    if (!pages) return [];
-    const entries = Object.entries(pages);
-    return entries.filter(([key, page]) => {
-      const matchesSearch = key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            page.title?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesHidden = showHidden || !page.hidden;
-      return matchesSearch && matchesHidden;
-    });
-  }, [pages, searchTerm, showHidden]);
-
   if (loading) return <div className="page">Загрузка...</div>;
   if (!pages) return <div className="page">Ошибка загрузки</div>;
-
-  const page = pages[current];
 
   return (
     <div className="page">
@@ -217,10 +141,10 @@ export default function Admin() {
 
       {/* Карточки действий */}
       <div className="dashboard-cards">
-        <div className="dashboard-card" onClick={() => setMode('edit')}>
-          <div className="card-icon">✏️</div>
-          <div className="card-title">Редактор страниц</div>
-          <div className="card-desc">Управление контентом</div>
+        <div className="dashboard-card" onClick={() => navigate('/admin/pages')}>
+          <div className="card-icon">📄</div>
+          <div className="card-title">Управление страницами</div>
+          <div className="card-desc">Создание, редактирование, удаление</div>
         </div>
         <div className="dashboard-card" onClick={() => navigate('/logs')}>
           <div className="card-icon">📋</div>
@@ -251,73 +175,6 @@ export default function Admin() {
         )}
         <button className="tg-button" onClick={generateInvite}>➕ Пригласить администратора</button>
       </div>
-
-      {/* Остальной интерфейс (фильтры, редактор) */}
-      <div className="admin-card">
-        <div className="admin-card-title">🔍 Фильтр страниц</div>
-        <input
-          type="text"
-          placeholder="Поиск по названию или ключу..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ width: '100%', padding: '10px', marginBottom: '10px', borderRadius: '8px', border: '1px solid var(--tg-border)' }}
-        />
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
-          <input
-            type="checkbox"
-            checked={showHidden}
-            onChange={(e) => setShowHidden(e.target.checked)}
-          />
-          Показать скрытые страницы
-        </label>
-      </div>
-
-      <div className="admin-card">
-        <div className="admin-card-title">📄 Страница</div>
-        <select
-          value={current}
-          onChange={(e) => setCurrent(e.target.value)}
-          style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--tg-border)', marginBottom: '12px' }}
-        >
-          {filteredPages.map(([key, page]) => (
-            <option key={key} value={key}>
-              {key} {page.hidden ? '(скрыта)' : ''}
-            </option>
-          ))}
-        </select>
-
-        <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-          <button className="tg-button" onClick={handleAddPage} style={{ flex: 1 }}>
-            ➕ Новая страница
-          </button>
-          {current !== 'home' && (
-            <button
-              className="tg-button danger"
-              onClick={() => handleDeletePage(current)}
-              style={{ flex: 1, background: '#ff4d4f' }}
-            >
-              🗑️ Удалить
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="admin-card">
-        <div className="admin-card-title">👁 Режим</div>
-        <button className="tg-button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
-          {mode === 'edit' ? '👁 Просмотр' : '✏️ Редактор'}
-        </button>
-      </div>
-
-      {mode === 'edit' ? (
-        <PageEditor
-          page={page}
-          onChange={(updatedPage) => setPages({ ...pages, [current]: updatedPage })}
-          allPages={pages}
-        />
-      ) : (
-        <PageView page={page} />
-      )}
     </div>
   );
 }
