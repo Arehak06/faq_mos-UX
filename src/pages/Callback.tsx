@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
-import { saveTelegramUserData } from '../utils/isAdmin';
 
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
@@ -27,7 +26,6 @@ export default function Callback() {
       .then(data => {
         if (data.user) {
           setTelegramUser(data.user);
-          saveTelegramUserData(data.user); // сохраняем данные для отображения
           window.location.href = '/';
         } else {
           throw new Error('No user data');

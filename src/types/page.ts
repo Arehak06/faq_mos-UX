@@ -19,17 +19,6 @@ export type FooterSettings = {
   links: FooterLink[];
 };
 
-export type AdminUser = {
-  id: number;
-  role: 'owner' | 'admin' | 'editor';
-};
-
-export type InviteToken = {
-  token: string;
-  role: 'admin' | 'editor';
-  createdAt: string;
-  usedBy?: number; // ID пользователя, который активировал токен
-};
 
 export type PageData = {
   id: string;
@@ -50,8 +39,6 @@ export type PageData = {
   footerSettings?: FooterSettings;
   order?: number;
   maintenanceMode?: boolean;
-  maintenanceImage?: string;
-  adminList?: AdminUser[];          // список администраторов
-  inviteTokens?: InviteToken[];     // активные приглашения
+  maintenanceImage?: string;   // активные приглашения
   inviteToken?: string;             // для обратной совместимости (если нужно)
 };

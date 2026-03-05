@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
-import { isAdmin, getUserRole } from '../utils/isAdmin';
+import { isAdmin } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
 import { BlockRenderer } from '../components/BlockRenderer';
 import { PageTitle } from '../components/PageTitle';
@@ -18,7 +18,6 @@ export default function Home() {
 
   useEffect(() => {
     setAdmin(isAdmin());
-    setRole(getUserRole());
   }, [user]);
 
   useEffect(() => {
