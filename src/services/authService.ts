@@ -9,7 +9,7 @@ const configuration = {
   loadUserInfo: false,
   userStore: new WebStorageStateStore({ store: window.localStorage }),
   automaticSilentRenew: false,
-  disablePKCE: true, // обязательно!
+  disablePKCE: true, // <-- обязательно!
   metadata: {
     issuer: 'https://oauth.telegram.org',
     authorization_endpoint: 'https://oauth.telegram.org/auth',
