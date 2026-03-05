@@ -13,6 +13,12 @@ export default function AdminUsers() {
   const [adminList, setAdminList] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [menuOpenFor, setMenuOpenFor] = useState<number | null>(null);
+  
+  // Состояния для добавления администратора
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<'admin' | 'editor' | null>(null);
+  const [newInviteLink, setNewInviteLink] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const currentUser = getTelegramUser();
 
@@ -72,10 +78,18 @@ export default function AdminUsers() {
     setMenuOpenFor(null);
   };
 
-  const generateInvite = async () => {
+  // Обработчик добавления администратора (выбор роли)
+  const handleAddAdminClick = () => {
+    setShowRoleSelector(true);
+    setNewInviteLink(null); // скрываем старую ссылку
+  };
+
+  // Выбор роли и генерация приглашения
+  const handleRoleSelect = async (role: 'admin' | 'editor') => {
     if (!homePage || !pages) return;
-    const role = prompt('Введите роль для приглашения (admin / editor):', 'editor');
-    if (role !== 'admin' && role !== 'editor') return;
+    setSelectedRole(role);
+    setShowRoleSelector(false);
+    
     const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
     const newInvite: InviteToken = {
       token,
@@ -94,9 +108,18 @@ export default function AdminUsers() {
     setPages(updatedPages);
     await savePages(updatedPages);
     addLog('invite_created', 'home', { token, role });
+    
     const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
-    await navigator.clipboard.writeText(link);
-    alert(`Ссылка скопирована в буфер обмена:\n${link}`);
+    setNewInviteLink(link);
+    setCopySuccess(false);
+  };
+
+  const copyToClipboard = async () => {
+    if (newInviteLink) {
+      await navigator.clipboard.writeText(newInviteLink);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    }
   };
 
   if (loading) return <Loading />;
@@ -136,17 +159,58 @@ export default function AdminUsers() {
         )}
       </div>
 
-      <div className="dashboard-cards" style={{ marginTop: 20 }}>
-        <div className="dashboard-card" onClick={() => navigate('/login')}>
-          <div className="card-icon">🔐</div>
-          <div className="card-title">Авторизация</div>
-          <div className="card-desc">Страница входа для администраторов</div>
-        </div>
-        <div className="dashboard-card" onClick={generateInvite}>
-          <div className="card-icon">➕</div>
-          <div className="card-title">Добавить администратора</div>
-          <div className="card-desc">Сгенерировать пригласительную ссылку</div>
-        </div>
+      {/* Блок добавления администратора */}
+      <div className="admin-card" style={{ marginTop: 20 }}>
+        <div className="admin-card-title">➕ Добавить администратора</div>
+        
+        {!showRoleSelector && !newInviteLink && (
+          <button className="tg-button" onClick={handleAddAdminClick}>
+            Создать приглашение
+          </button>
+        )}
+
+        {showRoleSelector && (
+          <div className="role-selector">
+            <p>Выберите роль для нового администратора:</p>
+            <div className="role-buttons">
+              <button className="tg-button" onClick={() => handleRoleSelect('admin')}>Администратор</button>
+              <button className="tg-button" onClick={() => handleRoleSelect('editor')}>Редактор</button>
+            </div>
+          </div>
+        )}
+
+        {newInviteLink && (
+          <div className="invite-link-container">
+            <p className="invite-link-label">Ссылка для приглашения (скопируйте и отправьте):</p>
+            <div className="invite-link-row">
+              <input
+                type="text"
+                value={newInviteLink}
+                readOnly
+                className="invite-link-input"
+              />
+              <button
+                className="copy-button"
+                onClick={copyToClipboard}
+              >
+                {copySuccess ? '✓' : '📋'}
+              </button>
+            </div>
+            <button className="tg-button" style={{ marginTop: 8 }} onClick={() => {
+              setNewInviteLink(null);
+              setShowRoleSelector(false);
+            }}>
+              Готово
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Кнопка на страницу авторизации (уже есть в дашборде, но можно оставить) */}
+      <div className="dashboard-card" onClick={() => navigate('/login')} style={{ marginTop: 16 }}>
+        <div className="card-icon">🔐</div>
+        <div className="card-title">Авторизация</div>
+        <div className="card-desc">Страница входа для администраторов</div>
       </div>
     </div>
   );
