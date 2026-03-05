@@ -31,7 +31,6 @@ export default function AdminInvite() {
   if (invite && !invite.usedBy) {
     setValid(true);
     setInviteInfo(invite);
-    // Удалена некорректная JSX-строка
   } else {
     setValid(false);
   }
