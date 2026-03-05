@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, JSX } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loadPages } from '../utils/storage';
-import { PageData } from '../types/page';
-import { isAdmin } from '../utils/isAdmin';
+import { loadPages } from '../../utils/storage';
+import { PageData } from '../../types/page';
+import { isAdmin } from '../../utils/isAdmin';
 
 export function TopNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

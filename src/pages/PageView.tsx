@@ -4,7 +4,7 @@ import { PageData } from '../types/page';
 import { BlockRenderer } from '../components/BlockRenderer';
 import { usePageMainButton } from '../hooks/usePageMainButton';
 import { loadPages } from '../utils/storage';
-import { PageTitle } from '../components/PageTitle';
+import { PageTitle } from '../components/common/PageTitle';
 
 export default function PageView({ page }: { page: PageData }) {
   const navigate = useNavigate();

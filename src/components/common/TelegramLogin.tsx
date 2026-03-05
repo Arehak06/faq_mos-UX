@@ -1,4 +1,4 @@
-import { signIn } from '../services/authService';
+import { signIn } from '../../services/authService';
 
 interface Props {
   className?: string;

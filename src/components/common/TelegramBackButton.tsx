@@ -19,9 +19,7 @@ export function TelegramBackButton() {
     const handler = () => navigate(-1);
     tg.BackButton.onClick(handler);
 
-    return () => {
-      tg.BackButton.offClick(handler);
-    };
+    return () => tg.BackButton.offClick(handler);
   }, [location.pathname, navigate]);
 
   return null;

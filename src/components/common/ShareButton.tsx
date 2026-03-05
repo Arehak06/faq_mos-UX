@@ -12,11 +12,7 @@ export function ShareButton({ title, text, url = window.location.href }: Props) 
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({
-          title,
-          text,
-          url,
-        });
+        await navigator.share({ title, text, url });
       } catch (err) {
         console.log('Share cancelled or failed', err);
       }

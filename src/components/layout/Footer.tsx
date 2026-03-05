@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PageData } from '../types/page';
+import { PageData } from '../../types/page';
 
 interface FooterProps {
   pages: Record<string, PageData> | null;
@@ -10,7 +10,6 @@ export function Footer({ pages }: FooterProps) {
   const homePage = pages?.['home'];
   const settings = homePage?.footerSettings;
 
-  // Если подвал отключён, не показываем ничего
   if (settings && !settings.enabled) return null;
 
   const currentYear = new Date().getFullYear();

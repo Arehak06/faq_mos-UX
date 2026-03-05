@@ -9,10 +9,10 @@ import Logs from './pages/Logs';
 import Login from './pages/Login';
 import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
-import { TelegramBackButton } from './hooks/TelegramBackButton';
-import { TopNav } from './components/TopNav';
-import { Footer } from './components/Footer';
-import { MaintenanceBanner } from './components/MaintenanceBanner';
+import { TelegramBackButton } from './components/common/TelegramBackButton';
+import { TopNav } from '../src/components/layout/TopNav';
+import { Footer } from './components/layout/Footer';
+import { MaintenanceBanner } from './components//layout/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
 

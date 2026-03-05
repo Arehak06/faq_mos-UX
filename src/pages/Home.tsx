@@ -5,8 +5,8 @@ import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
 import { BlockRenderer } from '../components/BlockRenderer';
-import { PageTitle } from '../components/PageTitle';
-import { Loading } from '../components/Loading';
+import { PageTitle } from '../components/common/PageTitle';
+import { Loading } from '../components/common/Loading';
 
 export default function Home() {
   const navigate = useNavigate();

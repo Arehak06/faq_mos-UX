@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import PageView from './PageView';
-import { Loading } from '../components/Loading';
-import NotFound from './NotFound';
+import { Loading } from '../components/common/Loading';
+import NotFound from '../components/common/NotFound';
 
 export default function DynamicPage() {
   const { "*": path } = useParams();

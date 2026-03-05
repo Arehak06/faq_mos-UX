@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Block } from '../types/blocks';
-import { TgCard } from './TgCard';
+import { TgCard } from './common/TgCard';
 
 export function BlockRenderer({ block }: { block: Block }) {
   const navigate = useNavigate();

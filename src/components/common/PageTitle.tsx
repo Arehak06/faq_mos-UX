@@ -4,7 +4,7 @@ import { ShareButton } from './ShareButton';
 interface Props {
   title: string;
   subtitle?: string;
-  showShare?: boolean; // новая опция
+  showShare?: boolean;
 }
 
 export function PageTitle({ title, subtitle, showShare = true }: Props) {

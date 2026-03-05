@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { fetchLogs, LogEntry } from '../services/logService';
-import { Loading } from '../components/Loading';
+import { Loading } from '../components/common/Loading';
 
 export default function Logs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
