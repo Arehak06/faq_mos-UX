@@ -48,58 +48,56 @@ function App() {
       {maintenanceMode && <MaintenanceBanner imageUrl={maintenanceImage} />}
       <TopNav />
       <div className="app-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<DynamicPage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/callback" element={<Callback />} />
-          <Route path="/admin/invite" element={<AdminInvite />} />
+  <Routes>
+    <Route path="/" element={<Home />} />
+    <Route path="*" element={<DynamicPage />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/callback" element={<Callback />} />
+    <Route path="/admin/invite" element={<AdminInvite />} />
 
-          {/* Маршруты для редакторов (управление страницами) */}
-          <Route
-            path="/admin"
-            element={
-              <EditorRoute>
-                <Admin />
-              </EditorRoute>
-            }
-          />
-          <Route
-            path="/admin/pages"
-            element={
-              <EditorRoute>
-                <PageManagement />
-              </EditorRoute>
-            }
-          />
-          <Route
-            path="/admin/upload"
-            element={
-              <EditorRoute>
-                <UploadPage />
-              </EditorRoute>
-            }
-          />
-
-          {/* Маршрут для администраторов (журнал) */}
-          <Route
-            path="/logs"
-            element={
-              <AdminRoute>
-                <Logs />
-              </AdminRoute>
-            }
-          />
-        </Routes>
-<Route
-  path="/admin/users"
-  element={
-    <EditorRoute>
-      <AdminUsers />
-    </EditorRoute>
-  }
-/>
-      </div>
+    <Route
+      path="/admin"
+      element={
+        <EditorRoute>
+          <Admin />
+        </EditorRoute>
+      }
+    />
+    <Route
+      path="/admin/pages"
+      element={
+        <EditorRoute>
+          <PageManagement />
+        </EditorRoute>
+      }
+    />
+    <Route
+      path="/admin/upload"
+      element={
+        <EditorRoute>
+          <UploadPage />
+        </EditorRoute>
+      }
+    />
+    {/* Новый маршрут для управления администраторами */}
+    <Route
+      path="/admin/users"
+      element={
+        <EditorRoute>
+          <AdminUsers />
+        </EditorRoute>
+      }
+    />
+    <Route
+      path="/logs"
+      element={
+        <AdminRoute>
+          <Logs />
+        </AdminRoute>
+      }
+    />
+  </Routes>
+</div>
       <Footer pages={pages} />
     </>
   );
