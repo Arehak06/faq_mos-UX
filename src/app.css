@@ -1522,3 +1522,113 @@ body {
   font-family: monospace;
   word-break: break-all;
 }
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--tg-border);
+  gap: 12px;
+}
+
+.admin-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.admin-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--tg-accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.admin-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-name {
+  font-weight: 500;
+}
+
+.admin-username {
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+
+.self-mark {
+  font-size: 12px;
+  color: var(--tg-accent);
+  margin-left: 4px;
+}
+
+.admin-role-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.role-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  background: var(--tg-card);
+  font-size: 14px;
+}
+
+.admin-role-controls button.danger {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.admin-role-controls button.danger:hover {
+  background: #ff7875;
+}
+
+.add-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.add-form input,
+.add-form select {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  font-size: 14px;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

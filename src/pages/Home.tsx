@@ -2,7 +2,7 @@ import React, { JSX, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
-import { isAdmin } from '../utils/isAdmin';
+import { isAdmin, getUserRole } from '../utils/isAdmin';
 import { getTelegramUser } from '../utils/telegram';
 import { BlockRenderer } from '../components/BlockRenderer';
 import { PageTitle } from '../components/PageTitle';
@@ -11,12 +11,14 @@ import { Loading } from '../components/Loading';
 export default function Home() {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(false);
+  const [role, setRole] = useState<'owner' | 'admin' | 'editor' | null>(null);
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const [loading, setLoading] = useState(true);
   const user = getTelegramUser();
 
   useEffect(() => {
     setAdmin(isAdmin());
+    setRole(getUserRole());
   }, [user]);
 
   useEffect(() => {
@@ -25,10 +27,7 @@ export default function Home() {
         setPages(data);
         setLoading(false);
       })
-      .catch(err => {
-        console.error('Ошибка загрузки страниц:', err);
-        setLoading(false);
-      });
+      .catch(console.error);
   }, []);
 
   const renderIcon = (icon: string | undefined) => {
@@ -39,7 +38,6 @@ export default function Home() {
     return <span className="home-item-icon">{icon}</span>;
   };
 
-  // Рекурсивный рендеринг страниц
   const renderPageList = (pagesToRender: PageData[], parentId: string | null = null, level = 0): JSX.Element[] => {
     const children = pagesToRender
       .filter(page => !page.hidden && (page.parentId || null) === parentId)
@@ -100,7 +98,7 @@ export default function Home() {
             <div className="home-item-icon">🔐</div>
             <div className="home-item-text">
               <div className="home-item-title">Вход для администраторов</div>
-              <div className="home-item-subtitle">Авторизуйтесь через Telegram для управления сайтом</div>
+              <div className="home-item-subtitle">Авторизуйтесь через Telegram</div>
             </div>
             <div className="home-item-arrow">→</div>
           </div>
@@ -124,8 +122,15 @@ export default function Home() {
             <div className="home-item" onClick={() => navigate('/admin')}>
               <div className="home-item-icon">🛠️</div>
               <div className="home-item-text">
-                <div className="home-item-title">Админка</div>
-                <div className="home-item-subtitle">Управление страницами</div>
+                <div className="home-item-title">Дашборд</div>
+                <div className="home-item-subtitle">Статистика и инструменты</div>
+              </div>
+            </div>
+            <div className="home-item" onClick={() => navigate('/admin/pages')}>
+              <div className="home-item-icon">📄</div>
+              <div className="home-item-text">
+                <div className="home-item-title">Управление страницами</div>
+                <div className="home-item-subtitle">Создание, редактирование, удаление</div>
               </div>
             </div>
             <div className="home-item" onClick={() => navigate('/logs')}>
@@ -133,6 +138,13 @@ export default function Home() {
               <div className="home-item-text">
                 <div className="home-item-title">Журнал</div>
                 <div className="home-item-subtitle">Действия администраторов</div>
+              </div>
+            </div>
+            <div className="home-item" onClick={() => navigate('/admin/users')}>
+              <div className="home-item-icon">👥</div>
+              <div className="home-item-text">
+                <div className="home-item-title">Администраторы</div>
+                <div className="home-item-subtitle">Управление ролями</div>
               </div>
             </div>
           </div>

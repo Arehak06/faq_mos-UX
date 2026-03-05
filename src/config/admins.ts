@@ -5,8 +5,7 @@ export interface AdminUser {
   role: AdminRole;
 }
 
-export const ADMINS: AdminUser[] = [
+export const INITIAL_ADMINS: AdminUser[] = [
   { id: 8530682852, role: 'owner' },
-  { id: 1087619106, role: 'admin' },
-  
+  { id: 1159560429, role: 'editor' },
 ];

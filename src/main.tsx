@@ -4,7 +4,7 @@ import App from './App';
 import './app.css';
 import { initAdmins } from './utils/isAdmin';
 
-initAdmins(); // загружает список администраторов в localStorage
+initAdmins();
 
 const basename = '/faq_mos-UX';
 ReactDOM.createRoot(document.getElementById('root')!).render(
