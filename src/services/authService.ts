@@ -3,12 +3,13 @@ import { UserManager, WebStorageStateStore } from 'oidc-client-ts';
 const configuration = {
   authority: 'https://oauth.telegram.org',
   client_id: import.meta.env.VITE_TELEGRAM_CLIENT_ID,
-  redirect_uri: `https://arehak06.github.io/faq_mos-UX/callback`,
+  redirect_uri: `${window.location.origin}/faq_mos-UX/callback`,
   response_type: 'code',
   scope: 'openid profile',
-  loadUserInfo: false, // пользователя загрузим с сервера
+  loadUserInfo: false,
   userStore: new WebStorageStateStore({ store: window.localStorage }),
   automaticSilentRenew: false,
+  disablePKCE: true, // обязательно!
   metadata: {
     issuer: 'https://oauth.telegram.org',
     authorization_endpoint: 'https://oauth.telegram.org/auth',
@@ -23,7 +24,5 @@ const configuration = {
 };
 
 export const userManager = new UserManager(configuration);
-
 export const signIn = () => userManager.signinRedirect();
 export const signOut = () => userManager.removeUser();
-export const getUser = () => userManager.getUser();
