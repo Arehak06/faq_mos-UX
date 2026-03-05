@@ -1,7 +1,8 @@
 export type TextBlock = {
   id: string;
   type: 'text';
-  text: string;
+  text: string;      // исходный YFM
+  html?: string;     // сгенерированный HTML (заполняется сервером)
 };
 
 export type CardBlock = {

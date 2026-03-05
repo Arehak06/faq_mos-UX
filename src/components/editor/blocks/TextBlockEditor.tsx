@@ -1,5 +1,4 @@
-import React, { useRef } from 'react';
-import { Editor } from '@toast-ui/react-editor';
+import React from 'react';
 import { TextBlock } from '../../../types/blocks';
 
 interface Props {
@@ -9,37 +8,29 @@ interface Props {
 }
 
 export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
-  const editorRef = useRef<Editor>(null);
-  const handleChange = () => {
-    if (editorRef.current) {
-      onUpdate({ ...block, text: editorRef.current.getInstance().getHTML() });
-    }
+  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onUpdate({ ...block, text: e.target.value });
   };
 
   return (
     <div className="editor-block">
       <div className="editor-block-header">
-        <strong>Текст</strong>
+        <strong>Текст (YFM)</strong>
         <button className="danger" onClick={onRemove}>🗑</button>
       </div>
-      <Editor
-        ref={editorRef}
-        initialValue={block.text}
-        previewStyle="tab"
-        height="300px"
-        initialEditType="wysiwyg"
-        useCommandShortcut={true}
-        language="ru"
-        onChange={handleChange}
-        toolbarItems={[
-          ['heading', 'bold', 'italic', 'strike'],
-          ['hr', 'quote'],
-          ['ul', 'ol', 'task'],
-          ['table', 'image'],
-          ['link'],
-          ['code', 'codeblock'],
-        ]}
+      <textarea
+        value={block.text}
+        onChange={handleTextChange}
+        placeholder="Введите YFM-разметку..."
+        rows={8}
+        style={{ width: '100%', fontFamily: 'monospace' }}
       />
+      <div className="yfm-hint">
+        <small>
+          Поддерживаются: **жирный**, *курсив*, ## заголовки, [ссылки](url),<br />
+          заметки: {'{% note info %}Текст{% endnote %}'}, вкладки: {'{% tabs %}{% endtabs %}'}
+        </small>
+      </div>
     </div>
   );
 }
