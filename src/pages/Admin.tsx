@@ -93,29 +93,38 @@ export default function Admin() {
 
   // Генерация пригласительного токена
   const generateInvite = async () => {
-    if (!homePage) return;
-    const role = prompt('Введите роль для приглашения (admin / editor):', 'editor');
-    if (role !== 'admin' && role !== 'editor') return;
-    const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    const newInvite: InviteToken = {
-      token,
-      role,
-      createdAt: new Date().toISOString(),
-    };
-    const updatedHome = {
-      ...homePage,
-      inviteTokens: [...(homePage.inviteTokens || []), newInvite],
-    };
-    const updatedPages = { ...pages, home: updatedHome };
-    setPages(updatedPages);
-    setHomePage(updatedHome);
-    setInviteTokens(updatedHome.inviteTokens || []);
-    addLog('invite_created', 'home', { token, role });
-    // Сохраняем ссылку для отображения
-    const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
-    setNewInviteLink(link);
-    setCopySuccess(false);
+  if (!homePage) return;
+  const role = prompt('Введите роль для приглашения (admin / editor):', 'editor');
+  if (role !== 'admin' && role !== 'editor') return;
+  const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+  const newInvite: InviteToken = {
+    token,
+    role,
+    createdAt: new Date().toISOString(),
   };
+  const updatedHome = {
+    ...homePage,
+    inviteTokens: [...(homePage.inviteTokens || []), newInvite],
+  };
+  const updatedPages = { ...pages, home: updatedHome };
+  setPages(updatedPages);
+  setHomePage(updatedHome);
+  setInviteTokens(updatedHome.inviteTokens || []);
+  addLog('invite_created', 'home', { token, role });
+
+  // Сохраняем изменения на сервер!
+  try {
+    await savePages(updatedPages);
+    console.log('Invite token saved to server');
+  } catch (err) {
+    console.error('Failed to save invite token', err);
+  }
+
+  const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
+  setNewInviteLink(link);
+  setCopySuccess(false);
+  
+};
 
   const copyToClipboard = async () => {
     if (newInviteLink) {
