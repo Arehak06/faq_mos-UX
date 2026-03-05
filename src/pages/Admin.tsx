@@ -23,6 +23,8 @@ export default function Admin() {
   const [homePage, setHomePage] = useState<PageData | null>(null);
   const [adminList, setAdminList] = useState<AdminUser[]>([]);
   const [inviteTokens, setInviteTokens] = useState<InviteToken[]>([]);
+  const [newInviteLink, setNewInviteLink] = useState<string | null>(null);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     loadPages()
@@ -109,7 +111,18 @@ export default function Admin() {
     setHomePage(updatedHome);
     setInviteTokens(updatedHome.inviteTokens || []);
     addLog('invite_created', 'home', { token, role });
-    alert(`Ссылка для приглашения:\n${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`);
+    // Сохраняем ссылку для отображения
+    const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
+    setNewInviteLink(link);
+    setCopySuccess(false);
+  };
+
+  const copyToClipboard = async () => {
+    if (newInviteLink) {
+      await navigator.clipboard.writeText(newInviteLink);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    }
   };
 
   useTelegramMainButton({
@@ -174,6 +187,27 @@ export default function Admin() {
           </ul>
         )}
         <button className="tg-button" onClick={generateInvite}>➕ Пригласить администратора</button>
+
+        {/* Отображение последней сгенерированной ссылки */}
+        {newInviteLink && (
+          <div className="invite-link-container">
+            <p className="invite-link-label">Ссылка для приглашения (скопируйте и отправьте):</p>
+            <div className="invite-link-row">
+              <input
+                type="text"
+                value={newInviteLink}
+                readOnly
+                className="invite-link-input"
+              />
+              <button
+                className="copy-button"
+                onClick={copyToClipboard}
+              >
+                {copySuccess ? '✓' : '📋'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
