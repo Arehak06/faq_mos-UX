@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import DynamicPage from './pages/DynamicPage';
 import Admin from './pages/Admin';
@@ -17,6 +17,18 @@ import { PageData } from './types/page';
 
 function App() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
+  const navigate = useNavigate();
+
+  // Восстановление пути после редиректа через 404.html
+  useEffect(() => {
+    const redirect = sessionStorage.getItem('redirect');
+    if (redirect) {
+      sessionStorage.removeItem('redirect');
+      // Убираем базовый путь, так как navigate уже работает с basename
+      const path = redirect.replace('/faq_mos-UX', '');
+      navigate(path);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     loadPages()
