@@ -115,40 +115,19 @@ export default function Home() {
       <div className="home-card">{renderPageList(regularPages)}</div>
 
       {admin && (
-        <>
-          <div className="home-section-title home-admin-section">Управление</div>
-          <div className="home-card">
-            <div className="home-item" onClick={() => navigate('/admin')}>
-              <div className="home-item-icon">🛠️</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Дашборд</div>
-                <div className="home-item-subtitle">Статистика и инструменты</div>
-              </div>
-            </div>
-            <div className="home-item" onClick={() => navigate('/admin/pages')}>
-              <div className="home-item-icon">📄</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Управление страницами</div>
-                <div className="home-item-subtitle">Создание, редактирование, удаление</div>
-              </div>
-            </div>
-            <div className="home-item" onClick={() => navigate('/logs')}>
-              <div className="home-item-icon">📋</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Журнал</div>
-                <div className="home-item-subtitle">Действия администраторов</div>
-              </div>
-            </div>
-            <div className="home-item" onClick={() => navigate('/admin/users')}>
-              <div className="home-item-icon">👥</div>
-              <div className="home-item-text">
-                <div className="home-item-title">Администраторы</div>
-                <div className="home-item-subtitle">Управление ролями</div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+  <>
+    <div className="home-section-title home-admin-section">Админ панель</div>
+    <div className="home-card">
+      <div className="home-item" onClick={() => navigate('/admin')}>
+        <div className="home-item-icon">🛠️</div>
+        <div className="home-item-text">
+          <div className="home-item-title">Админ панель</div>
+          <div className="home-item-subtitle">Управление сайтом</div>
+        </div>
+      </div>
+    </div>
+  </>
+)}
     </div>
   );
 }

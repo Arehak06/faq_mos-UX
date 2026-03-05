@@ -1,7 +1,16 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { isAdmin } from '../utils/isAdmin';
+import { getTelegramUser } from '../utils/telegram';
+import NotFound from '../pages/NotFound';
 
 export default function AdminRoute({ children }: { children: ReactNode }) {
-  return isAdmin() ? <>{children}</> : <Navigate to="/login" replace />;
+  const user = getTelegramUser();
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  if (!isAdmin()) {
+    return <NotFound />;
+  }
+  return <>{children}</>;
 }
