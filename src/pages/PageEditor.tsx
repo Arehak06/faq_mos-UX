@@ -728,18 +728,6 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         />
         <span>Скрыть страницу</span>
       </label>
-
-   {/* Пригласительный токен для страницы входа
-<label className="editor-field">
-  <span>Токен для страницы входа (/admin/invite?token=...)</span>
-  <input
-    type="text"
-    value={page.inviteToken || ''}
-    onChange={(e) => onChange({ ...page, inviteToken: e.target.value })}
-    placeholder="Оставьте пустым, чтобы отключить"
-  />
-</label>
-</div> */}
     </div>
   );
 }
