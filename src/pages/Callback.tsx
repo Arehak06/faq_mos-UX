@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
 
 // ⚠️ ЗАМЕНИТЕ НА АКТУАЛЬНЫЙ URL ВАШЕГО API GATEWAY
-const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net';
+const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
 export default function Callback() {
   const navigate = useNavigate();
