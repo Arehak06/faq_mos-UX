@@ -53,7 +53,7 @@ export default function AdminInvite() {
         </p>
         <button className="invite-button tg-button" onClick={handleLogin}>
           <span className="button-icon">📱</span>
-          Войти через Telegram
+          Принять приглашение
         </button>
         <div className="invite-footer">
           <a href="/" className="invite-link">← Вернуться на главную</a>
