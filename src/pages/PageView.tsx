@@ -13,11 +13,13 @@ export default function PageView({ page }: { page: PageData }) {
   usePageMainButton(page);
 
   useEffect(() => {
-    loadPages().then(allPages => {
-      const childPages = Object.values(allPages).filter(p => p.parentId === page.id && !p.hidden);
-      setChildren(childPages);
-    });
-  }, [page.id]);
+  loadPages().then(allPages => {
+    const childPages = Object.values(allPages)
+      .filter(p => p.parentId === page.id && !p.hidden)
+      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
+    setChildren(childPages);
+  });
+}, [page.id]);
 
   return (
     <div className="page">

@@ -44,7 +44,7 @@ export function TopNav() {
     const query = searchQuery.toLowerCase();
     const results = Object.values(pages)
       .filter(page => !page.hidden && (page.title?.toLowerCase().includes(query) || page.description?.toLowerCase().includes(query)))
-      .slice(0, 10); // ограничим 10 результатами
+      .slice(0, 10);
     setSearchResults(results);
   }, [searchQuery, pages]);
 
@@ -67,7 +67,13 @@ export function TopNav() {
     if (!pages) return [];
     const children = Object.values(pages)
       .filter(page => !page.hidden && (page.parentId || null) === parentId)
-      .sort((a, b) => a.title.localeCompare(b.title));
+      .sort((a, b) => {
+        // Сначала по order, потом по названию
+        const orderA = a.order ?? 999;
+        const orderB = b.order ?? 999;
+        if (orderA !== orderB) return orderA - orderB;
+        return a.title.localeCompare(b.title);
+      });
 
     return children.flatMap(page => [
       <div
@@ -135,7 +141,6 @@ export function TopNav() {
           </div>
         </div>
 
-        {/* Выпадающее меню страниц */}
         {isMenuOpen && (
           <div className="menu-dropdown" ref={menuRef}>
             <div className="menu-section">

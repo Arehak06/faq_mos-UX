@@ -426,6 +426,18 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
             value={page.parentId || ''}
             onChange={(e) => onChange({ ...page, parentId: e.target.value || undefined })}
           >
+
+        <label className="editor-field">
+  <span>Порядок сортировки (число)</span>
+  <input
+    type="number"
+    value={page.order ?? 0}
+    onChange={(e) => onChange({ ...page, order: parseInt(e.target.value, 10) })}
+    min="0"
+    step="1"
+  />
+  <small>Меньшее число — выше в списке</small>
+</label>
             <option value="">— Корневая страница —</option>
             {Object.entries(allPages)
               .filter(([key, p]) => key !== page.id)

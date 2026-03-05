@@ -43,8 +43,15 @@ export default function Home() {
   // Функция для рендеринга списка страниц (рекурсивно)
   const renderPageList = (pagesToRender: PageData[], parentId: string | null = null, level = 0): JSX.Element[] => {
     const children = pagesToRender
-      .filter(page => !page.hidden && (page.parentId || null) === parentId)
-      .sort((a, b) => a.title.localeCompare(b.title));
+  .filter(page => !page.hidden && (page.parentId || null) === parentId)
+  .sort((a, b) => {
+    // Сначала по order (если есть, иначе 0)
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+    if (orderA !== orderB) return orderA - orderB;
+    // Если order равны, сортируем по заголовку
+    return a.title.localeCompare(b.title);
+  });
 
     return children.flatMap(page => [
       <div
@@ -73,8 +80,12 @@ export default function Home() {
   const allOtherPages = Object.values(pages).filter(p => p.id !== 'home');
 
   // Разделяем на закреплённые и обычные
-  const featuredPages = allOtherPages.filter(p => p.featured && !p.hidden);
-  const regularPages = allOtherPages.filter(p => !p.featured && !p.hidden);
+  const featuredPages = allOtherPages
+  .filter(p => p.featured && !p.hidden)
+  .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
+const regularPages = allOtherPages
+  .filter(p => !p.featured && !p.hidden)
+  .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
 
   const adminSections = [
     { path: '/admin', icon: '🛠️', title: 'Админка', subtitle: 'Управление страницами' },

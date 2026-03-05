@@ -36,4 +36,5 @@ export type PageData = {
   mainTitle?: string;            // заголовок главной страницы (только для home)
   sectionTitle?: string;         // заголовок раздела со страницами (только для home)
   footerSettings?: FooterSettings; 
+  order?: number;
 };
