@@ -93,7 +93,6 @@ export function TopNav() {
             ☰
           </button>
           <div className="logo" onClick={() => handleNavigate('/')}>
-            🚇 Москва
           </div>
         </div>
 
