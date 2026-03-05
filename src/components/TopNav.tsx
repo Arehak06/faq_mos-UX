@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
-const [admin, setAdmin] = useState(false);
 
 export function TopNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,12 +16,12 @@ export function TopNav() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-  const checkAdmin = async () => {
-    const result = await isAdmin(); // isAdmin теперь асинхронная
-    setAdmin(result);
-  };
-  checkAdmin();
-}, []);
+    const checkAdmin = async () => {
+      const result = await isAdmin(); // isAdmin асинхронная
+      setAdmin(result);
+    };
+    checkAdmin();
+  }, []);
 
   // Закрытие меню при клике вне
   useEffect(() => {
@@ -72,7 +71,6 @@ export function TopNav() {
     const children = Object.values(pages)
       .filter(page => !page.hidden && (page.parentId || null) === parentId)
       .sort((a, b) => {
-        // Сначала по order, потом по названию
         const orderA = a.order ?? 999;
         const orderB = b.order ?? 999;
         if (orderA !== orderB) return orderA - orderB;
@@ -103,6 +101,7 @@ export function TopNav() {
             ☰
           </button>
           <div className="logo" onClick={() => handleNavigate('/')}>
+            🚇 Москва
           </div>
         </div>
 
