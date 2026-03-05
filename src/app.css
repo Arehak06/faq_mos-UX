@@ -1408,3 +1408,22 @@ body {
   max-width: 100%;
   object-fit: contain;
 }
+.access-token-display {
+  background: var(--tg-card);
+  border: 1px solid var(--tg-border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.access-token-display code {
+  background: var(--tg-bg);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: monospace;
+  word-break: break-all;
+}

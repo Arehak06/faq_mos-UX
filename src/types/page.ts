@@ -39,4 +39,6 @@ export type PageData = {
   order?: number;
   maintenanceMode?: boolean;
   maintenanceImage?: string;
+  accessToken?: string;   // случайный токен
+  accessEnabled?: boolean; // включена ли защита
 };

@@ -728,6 +728,43 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         />
         <span>Скрыть страницу</span>
       </label>
+
+    {/* Доступ по ссылке */}
+<div className="editor-section">
+  <h4>Доступ по ссылке</h4>
+  <label className="editor-field checkbox">
+    <input
+      type="checkbox"
+      checked={page.accessEnabled ?? false}
+      onChange={(e) => {
+        if (e.target.checked && !page.accessToken) {
+          // Генерируем случайный токен
+          const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+          onChange({ ...page, accessEnabled: true, accessToken: token });
+        } else {
+          onChange({ ...page, accessEnabled: e.target.checked });
+        }
+      }}
+    />
+    <span>Требовать уникальный токен в ссылке</span>
+  </label>
+
+  {page.accessEnabled && page.accessToken && (
+    <div className="access-token-display">
+      <span>Токен:</span>
+      <code>{page.accessToken}</code>
+      <button
+        className="tg-button small"
+        onClick={() => {
+          navigator.clipboard.writeText(`${window.location.origin}/faq_mos-UX/${page.id}?token=${page.accessToken}`);
+          alert('Ссылка скопирована!');
+        }}
+      >
+        📋 Копировать ссылку
+      </button>
+    </div>
+  )}
+</div>
     </div>
   );
 }
