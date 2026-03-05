@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { PageData } from '../types/page';
 import { isAdmin } from '../utils/isAdmin';
+const [admin, setAdmin] = useState(false);
 
 export function TopNav() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,9 +17,12 @@ export function TopNav() {
   const searchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setAdmin(isAdmin());
-    loadPages().then(data => setPages(data)).catch(console.error);
-  }, []);
+  const checkAdmin = async () => {
+    const result = await isAdmin(); // isAdmin теперь асинхронная
+    setAdmin(result);
+  };
+  checkAdmin();
+}, []);
 
   // Закрытие меню при клике вне
   useEffect(() => {

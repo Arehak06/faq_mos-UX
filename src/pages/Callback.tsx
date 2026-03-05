@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
-import { userManager } from '../services/authService';
+import { loadPages, savePages } from '../utils/storage';
 
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
@@ -21,21 +21,10 @@ export default function Callback() {
       return;
     }
 
-    // Извлекаем code_verifier из хранилища oidc-client-ts
-    const storageKey = `oidc.user:${userManager.settings.authority}:${userManager.settings.client_id}`;
-    const storedStateString = localStorage.getItem(storageKey);
-    let code_verifier = null;
-    if (storedStateString) {
-      try {
-        const storedState = JSON.parse(storedStateString);
-        code_verifier = storedState.code_verifier;
-      } catch (e) {}
-    }
-
     fetch(API_GATEWAY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, state, code_verifier }),
+      body: JSON.stringify({ code, state }),
     })
       .then(async (res) => {
         if (!res.ok) {
@@ -44,16 +33,36 @@ export default function Callback() {
         }
         return res.json();
       })
-      .then((data) => {
-  console.log('Received user data:', data.user);
-  console.log('User ID from server:', data.user?.id);
-  if (data.user) {
-    setTelegramUser(data.user);
-    navigate('/');
-  } else {
-    setError('Authentication failed');
-  }
-})
+      .then(async (data) => {
+        if (data.user) {
+          setTelegramUser(data.user);
+
+          // Проверяем, есть ли пригласительный токен
+          const inviteToken = sessionStorage.getItem('invite_token');
+          if (inviteToken) {
+            const pages = await loadPages();
+            const home = pages['home'];
+            const invite = home.inviteTokens?.find(inv => inv.token === inviteToken);
+            if (invite && !invite.usedBy) {
+              // Добавляем нового администратора
+              const newAdmin = { id: data.user.id, role: invite.role };
+              const updatedHome = {
+                ...home,
+                adminList: [...(home.adminList || []), newAdmin],
+                inviteTokens: home.inviteTokens?.map(inv =>
+                  inv.token === inviteToken ? { ...inv, usedBy: data.user.id } : inv
+                ),
+              };
+              await savePages({ ...pages, home: updatedHome });
+            }
+            sessionStorage.removeItem('invite_token');
+          }
+
+          navigate('/');
+        } else {
+          setError('Authentication failed');
+        }
+      })
       .catch((err) => {
         console.error('Callback error:', err);
         setError(err.message || 'Network error');

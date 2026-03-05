@@ -1647,3 +1647,34 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
+
+.admin-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+  border: 1px solid var(--tg-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.admin-list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--tg-border);
+  background: var(--tg-card);
+}
+
+.admin-list-item:last-child {
+  border-bottom: none;
+}
+
+.admin-id {
+  font-family: monospace;
+  font-weight: 500;
+}
+
+.admin-role {
+  color: var(--tg-hint);
+  text-transform: capitalize;
+}

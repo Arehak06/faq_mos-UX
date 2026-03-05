@@ -7,21 +7,21 @@ import PageManagement from './pages/PageManagement';
 import UploadPage from './pages/UploadPage';
 import Logs from './pages/Logs';
 import Login from './pages/Login';
+import AdminInvite from './pages/AdminInvite';
 import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
+import EditorRoute from './components/EditorRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
 import { TopNav } from './components/TopNav';
 import { Footer } from './components/Footer';
 import { MaintenanceBanner } from './components/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
-import AdminInvite from './pages/AdminInvite';
 
 function App() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
   const navigate = useNavigate();
 
-  // Восстановление пути после редиректа через 404.html
   useEffect(() => {
     const redirect = sessionStorage.getItem('redirect');
     if (redirect) {
@@ -53,30 +53,34 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/callback" element={<Callback />} />
           <Route path="/admin/invite" element={<AdminInvite />} />
+
+          {/* Маршруты для редакторов (управление страницами) */}
           <Route
             path="/admin"
             element={
-              <AdminRoute>
+              <EditorRoute>
                 <Admin />
-              </AdminRoute>
+              </EditorRoute>
             }
           />
           <Route
             path="/admin/pages"
             element={
-              <AdminRoute>
+              <EditorRoute>
                 <PageManagement />
-              </AdminRoute>
+              </EditorRoute>
             }
           />
           <Route
             path="/admin/upload"
             element={
-              <AdminRoute>
+              <EditorRoute>
                 <UploadPage />
-              </AdminRoute>
+              </EditorRoute>
             }
           />
+
+          {/* Маршрут для администраторов (журнал) */}
           <Route
             path="/logs"
             element={

@@ -19,6 +19,18 @@ export type FooterSettings = {
   links: FooterLink[];
 };
 
+export type AdminUser = {
+  id: number;
+  role: 'owner' | 'admin' | 'editor';
+};
+
+export type InviteToken = {
+  token: string;
+  role: 'admin' | 'editor';
+  createdAt: string;
+  usedBy?: number; // ID пользователя, который активировал токен
+};
+
 export type PageData = {
   id: string;
   title: string;
@@ -32,14 +44,14 @@ export type PageData = {
   description?: string;
   emoji?: string;
   parentId?: string;
-  featured?: boolean;            // закреплена ли страница на главной
-  mainTitle?: string;            // заголовок главной страницы (только для home)
-  sectionTitle?: string;         // заголовок раздела со страницами (только для home)
-  footerSettings?: FooterSettings; 
+  featured?: boolean;
+  mainTitle?: string;
+  sectionTitle?: string;
+  footerSettings?: FooterSettings;
   order?: number;
   maintenanceMode?: boolean;
   maintenanceImage?: string;
-  accessToken?: string;   // случайный токен
-  accessEnabled?: boolean; // включена ли защита
-  inviteToken?: string;
+  adminList?: AdminUser[];          // список администраторов
+  inviteTokens?: InviteToken[];     // активные приглашения
+  inviteToken?: string;             // для обратной совместимости (если нужно)
 };
