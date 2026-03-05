@@ -31,7 +31,6 @@ useEffect(() => {
 }, [user]);
 
 if (loading) return <Loading />;
-if (!rolesLoaded) return <Loading />; // ждём определения ролей
 
   useEffect(() => {
     loadPages()
