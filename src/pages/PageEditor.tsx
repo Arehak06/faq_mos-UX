@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { Editor } from '@toast-ui/react-editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, AlertBlock } from '../types/blocks';
@@ -7,11 +7,12 @@ import { reorder } from '../utils/reorder';
 import { uid } from '../utils/uid';
 import { uploadImage } from '../services/uploadService';
 import { addLog } from '../services/logService';
+import { Footer } from '../components/Footer';
 
 type Props = {
   page: PageData;
   onChange: (p: PageData) => void;
-  allPages?: Record<string, PageData>; // для выбора родительской страницы
+  allPages?: Record<string, PageData>;
 };
 
 // Компонент редактора MainButton
@@ -238,26 +239,43 @@ function BlockEditor({ block, index, onUpdate, onRemove, pageId }: {
 export default function PageEditor({ page, onChange, allPages }: Props) {
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [showAddMenu, setShowAddMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const addMenuRef = useRef<HTMLDivElement>(null);
 
   const blocksList = useMemo(() => page.blocks, [page.blocks]);
 
+  // Закрытие меню при клике вне
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (addMenuRef.current && !addMenuRef.current.contains(e.target as Node)) {
+        setShowAddMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Обработчики добавления блоков
   const handleAddTextBlock = useCallback(() => {
     const block: TextBlock = { id: uid(), type: 'text', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'text' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleAddCardBlock = useCallback(() => {
     const block: CardBlock = { id: uid(), type: 'card', title: '', text: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'card' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleAddButtonBlock = useCallback(() => {
     const block: ButtonBlock = { id: uid(), type: 'button', text: '', url: '' };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'button' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleAddInfoBlock = useCallback(() => {
@@ -270,6 +288,7 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
     };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'alert', severity: 'info' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleAddWarningBlock = useCallback(() => {
@@ -282,6 +301,7 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
     };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'alert', severity: 'warning' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleAddImportantBlock = useCallback(() => {
@@ -294,12 +314,12 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
     };
     onChange({ ...page, blocks: [...page.blocks, block] });
     addLog('block_added', page.id, { type: 'alert', severity: 'important' });
+    setShowAddMenu(false);
   }, [page, onChange]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setUploading(true);
     try {
       const url = await uploadImage(file);
@@ -312,6 +332,7 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
       };
       onChange({ ...page, blocks: [...page.blocks, block] });
       addLog('image_uploaded', page.id, { filename: file.name, url });
+      setShowAddMenu(false);
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -324,6 +345,7 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
     fileInputRef.current?.click();
   };
 
+  // Обработчики управления блоками
   const handleRemoveBlock = useCallback(
     (index: number) => {
       onChange({ ...page, blocks: page.blocks.filter((_, i) => i !== index) });
@@ -395,214 +417,271 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         onChange={handleFileSelect}
       />
 
-      <label className="editor-field">
-        <span>Заголовок страницы</span>
-        <input value={page.title} onChange={(e) => onChange({ ...page, title: e.target.value })} />
-      </label>
+      <div className="editor-header">
+        <h2 className="editor-title">Редактирование страницы</h2>
+      </div>
 
-      <label className="editor-field">
-        <span>Описание для главного меню</span>
-        <input
-          value={page.description || ''}
-          onChange={(e) => onChange({ ...page, description: e.target.value })}
-          placeholder="Краткое описание страницы"
-        />
-      </label>
-
-      <label className="editor-field">
-        <span>Эмодзи или URL иконки</span>
-        <input
-          value={page.emoji || ''}
-          onChange={(e) => onChange({ ...page, emoji: e.target.value })}
-          placeholder="Например: 🚇 или https://example.com/icon.png"
-        />
-      </label>
-
-      {/* Поле для порядка сортировки */}
-      <label className="editor-field">
-        <span>Порядок сортировки (число)</span>
-        <input
-          type="number"
-          value={page.order ?? ''}
-          onChange={(e) => {
-            const val = e.target.value === '' ? undefined : parseInt(e.target.value, 10);
-            onChange({ ...page, order: val });
-          }}
-          placeholder="Например: 10"
-          min="0"
-        />
-        <small>Меньшее число — выше в списке</small>
-      </label>
-
-      {/* Выбор родительской страницы */}
-      {allPages && (
+      {/* Поля страницы */}
+      <div className="editor-section">
         <label className="editor-field">
-          <span>Родительская страница</span>
-          <select
-            value={page.parentId || ''}
-            onChange={(e) => onChange({ ...page, parentId: e.target.value || undefined })}
-          >
-            <option value="">— Корневая страница —</option>
-            {Object.entries(allPages)
-              .filter(([key, p]) => key !== page.id)
-              .map(([key, p]) => (
-                <option key={key} value={key}>
-                  {p.title} ({key})
-                </option>
-              ))}
-          </select>
+          <span>Заголовок страницы</span>
+          <input value={page.title} onChange={(e) => onChange({ ...page, title: e.target.value })} />
         </label>
-      )}
 
-      {/* Закрепление на главной (для всех страниц, кроме home) */}
-      {page.id !== 'home' && (
-        <label className="editor-field checkbox" style={{ marginTop: '8px' }}>
+        <label className="editor-field">
+          <span>Описание для меню</span>
           <input
-            type="checkbox"
-            checked={!!page.featured}
-            onChange={(e) => onChange({ ...page, featured: e.target.checked })}
+            value={page.description || ''}
+            onChange={(e) => onChange({ ...page, description: e.target.value })}
+            placeholder="Краткое описание"
           />
-          <span>Закрепить на главной странице (будет показываться в отдельном блоке)</span>
         </label>
-      )}
 
-      {/* Дополнительные поля для главной страницы */}
-      {page.id === 'home' && (
-        <>
+        <label className="editor-field">
+          <span>Эмодзи или URL иконки</span>
+          <input
+            value={page.emoji || ''}
+            onChange={(e) => onChange({ ...page, emoji: e.target.value })}
+            placeholder="Например: 🚇 или https://..."
+          />
+        </label>
+
+        <label className="editor-field">
+          <span>Порядок сортировки (число)</span>
+          <input
+            type="number"
+            value={page.order ?? ''}
+            onChange={(e) => {
+              const val = e.target.value === '' ? undefined : parseInt(e.target.value, 10);
+              onChange({ ...page, order: val });
+            }}
+            placeholder="10"
+            min="0"
+          />
+          <small>Меньше — выше в списке</small>
+        </label>
+
+        {allPages && (
           <label className="editor-field">
-            <span>Заголовок главной страницы (H1)</span>
-            <input
-              value={page.mainTitle || '🚇 Транспорт Москвы'}
-              onChange={(e) => onChange({ ...page, mainTitle: e.target.value })}
-              placeholder="Например: 🚇 Транспорт Москвы"
-            />
+            <span>Родительская страница</span>
+            <select
+              value={page.parentId || ''}
+              onChange={(e) => onChange({ ...page, parentId: e.target.value || undefined })}
+            >
+              <option value="">— Корневая —</option>
+              {Object.entries(allPages)
+                .filter(([key, p]) => key !== page.id)
+                .map(([key, p]) => (
+                  <option key={key} value={key}>
+                    {p.title} ({key})
+                  </option>
+                ))}
+            </select>
           </label>
+        )}
 
-          <label className="editor-field">
-            <span>Заголовок раздела со страницами</span>
-            <input
-              value={page.sectionTitle || 'ВСЕ СТРАНИЦЫ'}
-              onChange={(e) => onChange({ ...page, sectionTitle: e.target.value })}
-              placeholder="Например: ВСЕ СТРАНИЦЫ"
-            />
-          </label>
-
-          {/* Настройки подвала (только для home) */}
-          <h3 style={{ marginTop: '24px' }}>Настройки подвала</h3>
-
+        {page.id !== 'home' && (
           <label className="editor-field checkbox">
             <input
               type="checkbox"
-              checked={page.footerSettings?.enabled ?? true}
-              onChange={(e) =>
-                onChange({
-                  ...page,
-                  footerSettings: {
-                    enabled: e.target.checked,
-                    copyrightText: page.footerSettings?.copyrightText ?? '',
-                    links: page.footerSettings?.links ?? [],
-                  },
-                })
-              }
+              checked={!!page.featured}
+              onChange={(e) => onChange({ ...page, featured: e.target.checked })}
             />
-            <span>Показывать подвал</span>
+            <span>Закрепить на главной</span>
           </label>
+        )}
+      </div>
 
-          <label className="editor-field">
-            <span>Текст копирайта</span>
-            <input
-              value={page.footerSettings?.copyrightText || `© ${new Date().getFullYear()} Транспорт Москвы. Все права защищены.`}
-              onChange={(e) =>
-                onChange({
-                  ...page,
-                  footerSettings: {
-                    enabled: page.footerSettings?.enabled ?? true,
-                    copyrightText: e.target.value,
-                    links: page.footerSettings?.links ?? [],
-                  },
-                })
-              }
-              placeholder="Например: © 2024 Транспорт Москвы"
+      {/* Специальные поля для home */}
+      {page.id === 'home' && (
+  <div className="editor-section">
+    <h3>Настройки главной страницы</h3>
+    <label className="editor-field">
+      <span>Заголовок главной (H1)</span>
+      <input
+        value={page.mainTitle || ''}
+        onChange={(e) => onChange({ ...page, mainTitle: e.target.value })}
+      />
+    </label>
+    <label className="editor-field">
+      <span>Заголовок раздела со страницами</span>
+      <input
+        value={page.sectionTitle || 'ВСЕ СТРАНИЦЫ'}
+        onChange={(e) => onChange({ ...page, sectionTitle: e.target.value })}
+      />
+    </label>
+
+    <h4>Настройки подвала</h4>
+    <label className="editor-field checkbox">
+      <input
+        type="checkbox"
+        checked={page.footerSettings?.enabled ?? true}
+        onChange={(e) =>
+          onChange({
+            ...page,
+            footerSettings: {
+              enabled: e.target.checked,
+              copyrightText: page.footerSettings?.copyrightText ?? '',
+              links: page.footerSettings?.links ?? [],
+            },
+          })
+        }
+      />
+      <span>Показывать подвал</span>
+    </label>
+
+    <label className="editor-field">
+      <span>Текст копирайта</span>
+      <input
+        value={page.footerSettings?.copyrightText || ''}
+        onChange={(e) =>
+          onChange({
+            ...page,
+            footerSettings: {
+              enabled: page.footerSettings?.enabled ?? true,
+              copyrightText: e.target.value,
+              links: page.footerSettings?.links ?? [],
+            },
+          })
+        }
+        placeholder="© {year} ..."
+      />
+    </label>
+
+    <div className="footer-links-editor">
+      <span>Ссылки в подвале</span>
+      {(page.footerSettings?.links || []).map((link, idx) => (
+        <div key={idx} className="footer-link-row">
+          <input
+            value={link.text}
+            onChange={(e) => {
+              const newLinks = [...(page.footerSettings?.links || [])];
+              newLinks[idx] = { ...link, text: e.target.value };
+              onChange({
+                ...page,
+                footerSettings: {
+                  enabled: page.footerSettings?.enabled ?? true,
+                  copyrightText: page.footerSettings?.copyrightText ?? '',
+                  links: newLinks,
+                },
+              });
+            }}
+            placeholder="Текст ссылки"
+          />
+          <input
+            value={link.url}
+            onChange={(e) => {
+              const newLinks = [...(page.footerSettings?.links || [])];
+              newLinks[idx] = { ...link, url: e.target.value };
+              onChange({
+                ...page,
+                footerSettings: {
+                  enabled: page.footerSettings?.enabled ?? true,
+                  copyrightText: page.footerSettings?.copyrightText ?? '',
+                  links: newLinks,
+                },
+              });
+            }}
+            placeholder="URL"
+          />
+          <button
+            className="danger"
+            onClick={() => {
+              const newLinks = (page.footerSettings?.links || []).filter((_, i) => i !== idx);
+              onChange({
+                ...page,
+                footerSettings: {
+                  enabled: page.footerSettings?.enabled ?? true,
+                  copyrightText: page.footerSettings?.copyrightText ?? '',
+                  links: newLinks,
+                },
+              });
+            }}
+          >
+            🗑
+          </button>
+        </div>
+      ))}
+      <button
+        className="tg-button small"
+        onClick={() => {
+          const newLinks = [...(page.footerSettings?.links || []), { text: '', url: '' }];
+          onChange({
+            ...page,
+            footerSettings: {
+              enabled: page.footerSettings?.enabled ?? true,
+              copyrightText: page.footerSettings?.copyrightText ?? '',
+              links: newLinks,
+            },
+          });
+        }}
+      >
+        + Добавить ссылку
+      </button>
+    </div>
+  </div>
+)}
+
+      <h3>Блоки</h3>
+      <div className="blocks-container">
+        {blocksList.map((b, i) => (
+          <div
+            key={b.id}
+            className="editor-block"
+            draggable
+            onDragStart={(e) => handleDragStart(e, i)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, i)}
+          >
+            <BlockEditor
+              block={b}
+              index={i}
+              onUpdate={handleUpdateBlock}
+              onRemove={handleRemoveBlock}
+              pageId={page.id}
             />
-          </label>
+          </div>
+        ))}
+      </div>
 
-          <div className="footer-links-editor">
-            <span>Ссылки в подвале</span>
-            {(page.footerSettings?.links || []).map((link, idx) => (
-              <div key={idx} className="footer-link-row">
-                <input
-                  type="text"
-                  value={link.text}
-                  onChange={(e) => {
-                    const newLinks = [...(page.footerSettings?.links || [])];
-                    newLinks[idx] = { ...link, text: e.target.value };
-                    onChange({
-                      ...page,
-                      footerSettings: {
-                        enabled: page.footerSettings?.enabled ?? true,
-                        copyrightText: page.footerSettings?.copyrightText ?? '',
-                        links: newLinks,
-                      },
-                    });
-                  }}
-                  placeholder="Текст ссылки"
-                />
-                <input
-                  type="text"
-                  value={link.url}
-                  onChange={(e) => {
-                    const newLinks = [...(page.footerSettings?.links || [])];
-                    newLinks[idx] = { ...link, url: e.target.value };
-                    onChange({
-                      ...page,
-                      footerSettings: {
-                        enabled: page.footerSettings?.enabled ?? true,
-                        copyrightText: page.footerSettings?.copyrightText ?? '',
-                        links: newLinks,
-                      },
-                    });
-                  }}
-                  placeholder="URL (например /privacy)"
-                />
-                <button
-                  className="danger"
-                  onClick={() => {
-                    const newLinks = (page.footerSettings?.links || []).filter((_, i) => i !== idx);
-                    onChange({
-                      ...page,
-                      footerSettings: {
-                        enabled: page.footerSettings?.enabled ?? true,
-                        copyrightText: page.footerSettings?.copyrightText ?? '',
-                        links: newLinks,
-                      },
-                    });
-                  }}
-                >
-                  🗑
-                </button>
-              </div>
-            ))}
-            <button
-              className="tg-button"
-              style={{ marginTop: '8px' }}
-              onClick={() => {
-                const newLinks = [...(page.footerSettings?.links || []), { text: '', url: '' }];
-                onChange({
-                  ...page,
-                  footerSettings: {
-                    enabled: page.footerSettings?.enabled ?? true,
-                    copyrightText: page.footerSettings?.copyrightText ?? '',
-                    links: newLinks,
-                  },
-                });
-              }}
-            >
-              + Добавить ссылку
+      {/* Кнопка добавления блока с выпадающим меню */}
+      <div className="add-block-container" ref={addMenuRef}>
+        <button
+          className="add-block-button"
+          onClick={() => setShowAddMenu(!showAddMenu)}
+        >
+          <span className="add-icon">➕</span>
+          <span>Добавить блок</span>
+          <span className="arrow">{showAddMenu ? '▲' : '▼'}</span>
+        </button>
+        {showAddMenu && (
+          <div className="add-block-menu">
+            <button onClick={handleAddTextBlock}>
+              <span className="menu-icon">📝</span> Текст
+            </button>
+            <button onClick={handleAddCardBlock}>
+              <span className="menu-icon">📇</span> Карточка
+            </button>
+            <button onClick={handleAddButtonBlock}>
+              <span className="menu-icon">🔘</span> Кнопка
+            </button>
+            <button onClick={handleAddInfoBlock}>
+              <span className="menu-icon">ℹ️</span> Инфо (синий)
+            </button>
+            <button onClick={handleAddWarningBlock}>
+              <span className="menu-icon">⚠️</span> Внимание (жёлтый)
+            </button>
+            <button onClick={handleAddImportantBlock}>
+              <span className="menu-icon">🔴</span> Важно (красный)
+            </button>
+            <button onClick={handleAddImageClick}>
+              <span className="menu-icon">🖼️</span> Изображение
             </button>
           </div>
-        </>
-      )}
+        )}
+      </div>
 
+      {/* Кнопка MainButton */}
       <h3>Telegram MainButton</h3>
       <label className="editor-field checkbox">
         <input
@@ -617,45 +696,14 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         <MainButtonEditor mainButton={page.mainButton} onChange={handleMainButtonChange} />
       )}
 
-      <label className="editor-field checkbox" style={{ marginTop: '16px' }}>
+      <label className="editor-field checkbox">
         <input
           type="checkbox"
           checked={!!page.hidden}
           onChange={(e) => onChange({ ...page, hidden: e.target.checked })}
         />
-        <span>Скрыть страницу (не показывать в публичном доступе)</span>
+        <span>Скрыть страницу</span>
       </label>
-
-      <h3 style={{ marginTop: '24px' }}>Блоки</h3>
-      {blocksList.map((b, i) => (
-        <div
-          key={b.id}
-          draggable
-          onDragStart={(e) => handleDragStart(e, i)}
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, i)}
-        >
-          <BlockEditor
-            block={b}
-            index={i}
-            onUpdate={handleUpdateBlock}
-            onRemove={handleRemoveBlock}
-            pageId={page.id}
-          />
-        </div>
-      ))}
-
-      <div className="editor-actions">
-        <button onClick={handleAddTextBlock}>➕ Текст</button>
-        <button onClick={handleAddCardBlock}>➕ Карточка</button>
-        <button onClick={handleAddButtonBlock}>➕ Кнопка</button>
-        <button onClick={handleAddInfoBlock}>ℹ️ Инфо</button>
-        <button onClick={handleAddWarningBlock}>⚠️ Внимание</button>
-        <button onClick={handleAddImportantBlock}>🔴 Важно</button>
-        <button onClick={handleAddImageClick} disabled={uploading}>
-          {uploading ? '⏳ Загрузка...' : '➕ Изображение'}
-        </button>
-      </div>
     </div>
   );
 }
