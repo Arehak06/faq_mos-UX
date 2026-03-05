@@ -104,20 +104,6 @@ export default function Home() {
         <BlockRenderer key={block.id} block={block} />
       ))}
 
-      {/* Кнопка входа для администраторов (если не авторизован) */}
-      {!user && !admin && (
-        <div className="home-card login-prompt-card" onClick={() => navigate('/login')}>
-          <div className="home-item">
-            <div className="home-item-icon">🔐</div>
-            <div className="home-item-text">
-              <div className="home-item-title">Вход для администраторов</div>
-              <div className="home-item-subtitle">Авторизуйтесь через Telegram для управления сайтом</div>
-            </div>
-            <div className="home-item-arrow">→</div>
-          </div>
-        </div>
-      )}
-
       {featuredPages.length > 0 && (
         <>
           <div className="home-section-title">📌 Закреплённые</div>
