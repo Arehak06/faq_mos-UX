@@ -10,7 +10,7 @@ import Login from './pages/Login';
 import Callback from './pages/Callback';
 import AdminRoute from './components/AdminRoute';
 import { TelegramBackButton } from './hooks/TelegramBackButton';
-import { HamburgerMenu } from './components/HamburgerMenu';
+import { TopNav } from './components/TopNav';
 import { Footer } from './components/Footer';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
@@ -27,7 +27,7 @@ function App() {
   return (
     <>
       <TelegramBackButton />
-      <HamburgerMenu />
+      <TopNav />
       <div className="app-content">
         <Routes>
           <Route path="/" element={<Home />} />

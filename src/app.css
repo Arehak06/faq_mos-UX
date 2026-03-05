@@ -940,3 +940,231 @@ body {
   color: var(--tg-hint);
   margin-bottom: 24px;
 }
+/* ================================
+   Top navigation
+================================ */
+.top-nav {
+  background: var(--tg-card);
+  border-bottom: 1px solid var(--tg-border);
+  padding: 8px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-toggle {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.menu-toggle:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--tg-text);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-wrapper {
+  position: relative;
+}
+
+.search-toggle {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.search-toggle:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: var(--tg-card);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 12px;
+  min-width: 280px;
+  max-width: 350px;
+  z-index: 1000;
+}
+
+.search-dropdown input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--tg-border);
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.search-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.search-result-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.search-result-item .menu-item-emoji {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.search-result-text {
+  flex: 1;
+}
+
+.search-result-title {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.search-result-desc {
+  font-size: 12px;
+  color: var(--tg-hint);
+}
+
+.search-no-results {
+  padding: 12px;
+  text-align: center;
+  color: var(--tg-hint);
+  font-size: 14px;
+}
+
+/* Меню (выпадающее) – можно использовать существующие стили из HamburgerMenu */
+.menu-dropdown {
+  position: absolute;
+  top: 60px;
+  left: 16px;
+  background: var(--tg-card);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  padding: 12px;
+  min-width: 220px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.menu-section {
+  margin-bottom: 16px;
+}
+
+.menu-section-title {
+  font-size: 12px;
+  color: var(--tg-hint);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.menu-item-emoji {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-item-emoji.custom-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.menu-item-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* ================================
+   Центрирование контента
+================================ */
+.page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Убираем старый отступ для гамбургера */
+@media (min-width: 768px) {
+  .page {
+    padding: 20px;
+  }
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .page {
+    padding: 12px;
+  }
+}
