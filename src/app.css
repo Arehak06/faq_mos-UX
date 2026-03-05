@@ -1427,3 +1427,31 @@ body {
   font-family: monospace;
   word-break: break-all;
 }
+.invite-card {
+  background: var(--tg-card);
+  border-radius: 24px;
+  padding: 32px;
+  text-align: center;
+  max-width: 400px;
+  margin: 40px auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.invite-title {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: var(--tg-text);
+}
+
+.invite-text {
+  font-size: 16px;
+  color: var(--tg-hint);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.invite-button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+}

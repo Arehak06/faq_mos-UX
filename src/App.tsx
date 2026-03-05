@@ -15,6 +15,7 @@ import { Footer } from './components/Footer';
 import { MaintenanceBanner } from './components/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
+import AdminInvite from './pages/AdminInvite';
 
 function App() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
@@ -51,6 +52,7 @@ function App() {
           <Route path="*" element={<DynamicPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/callback" element={<Callback />} />
+          <Route path="/admin/invite" element={<AdminInvite />} />
           <Route
             path="/admin"
             element={

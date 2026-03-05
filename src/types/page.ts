@@ -41,4 +41,5 @@ export type PageData = {
   maintenanceImage?: string;
   accessToken?: string;   // случайный токен
   accessEnabled?: boolean; // включена ли защита
+  inviteToken?: string;
 };
