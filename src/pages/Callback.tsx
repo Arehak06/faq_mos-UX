@@ -26,7 +26,7 @@ export default function Callback() {
       .then(data => {
         if (data.user) {
           setTelegramUser(data.user);
-          window.location.href = '/';
+          navigate('/'); // ← используем navigate, он учитывает basename
         } else {
           throw new Error('No user data');
         }
