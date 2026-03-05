@@ -45,13 +45,14 @@ export default function Callback() {
         return res.json();
       })
       .then((data) => {
-        if (data.user) {
-          setTelegramUser(data.user);
-          navigate('/');
-        } else {
-          setError('Authentication failed');
-        }
-      })
+  console.log('Received user data:', data.user);
+  if (data.user) {
+    setTelegramUser(data.user);
+    navigate('/');
+  } else {
+    setError('Authentication failed');
+  }
+})
       .catch((err) => {
         console.error('Callback error:', err);
         setError(err.message || 'Network error');

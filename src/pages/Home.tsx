@@ -30,6 +30,10 @@ export default function Home() {
         console.error('Ошибка загрузки страниц:', err);
         setLoading(false);
       });
+  useEffect(() => {
+  console.log('Telegram user:', getTelegramUser());
+  console.log('Is admin:', isAdmin());
+}, []);
   }, []);
 
   const renderIcon = (icon: string | undefined) => {
