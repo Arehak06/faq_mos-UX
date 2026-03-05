@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
+import { userManager } from '../services/authService';
 
-// URL вашего API Gateway (эндпоинт /auth)
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
 export default function Callback() {
@@ -13,7 +13,7 @@ export default function Callback() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    const state = params.get('state'); // можно проверить (опционально)
+    const state = params.get('state');
 
     if (!code) {
       setError('No authorization code received');
@@ -21,10 +21,21 @@ export default function Callback() {
       return;
     }
 
+    // Извлекаем code_verifier из хранилища oidc-client-ts
+    const storageKey = `oidc.user:${userManager.settings.authority}:${userManager.settings.client_id}`;
+    const storedStateString = localStorage.getItem(storageKey);
+    let code_verifier = null;
+    if (storedStateString) {
+      try {
+        const storedState = JSON.parse(storedStateString);
+        code_verifier = storedState.code_verifier;
+      } catch (e) {}
+    }
+
     fetch(API_GATEWAY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, state }),
+      body: JSON.stringify({ code, state, code_verifier }),
     })
       .then(async (res) => {
         if (!res.ok) {
