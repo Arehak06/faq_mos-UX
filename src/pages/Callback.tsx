@@ -1,95 +1,53 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { setTelegramUser } from '../utils/telegram';
-import { loadPages, savePages } from '../utils/storage';
-import { clearAdminsCache } from '../utils/isAdmin';
+import { getAdmins, setAdmins } from '../utils/isAdmin';
 
 const API_GATEWAY_URL = 'https://d5d8hp02glq5i9vs2544.z7jmlavt.apigw.yandexcloud.net/auth';
 
 export default function Callback() {
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
-    const state = params.get('state');
+    const token = sessionStorage.getItem('invite_token');
 
     if (!code) {
-      setError('No authorization code received');
-      setLoading(false);
+      console.error('No code');
+      navigate('/login');
       return;
     }
 
     fetch(API_GATEWAY_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, state }),
+      body: JSON.stringify({ code }),
     })
-      .then(async (res) => {
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || `HTTP error ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(async (data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.user) {
           setTelegramUser(data.user);
 
-          // Проверяем, есть ли пригласительный токен
-          const inviteToken = sessionStorage.getItem('invite_token');
-          if (inviteToken) {
-            const pages = await loadPages();
-            const home = pages['home'];
-            const invite = home.inviteTokens?.find(inv => inv.token === inviteToken);
-            if (invite && !invite.usedBy) {
-              // Добавляем нового администратора
-              const newAdmin = { id: data.user.id, role: invite.role };
-              const updatedHome = {
-                ...home,
-                adminList: [...(home.adminList || []), newAdmin],
-                inviteTokens: home.inviteTokens?.map(inv =>
-                  inv.token === inviteToken ? { ...inv, usedBy: data.user.id } : inv
-                ),
-              };
-              await savePages({ ...pages, home: updatedHome });
-              clearAdminsCache();
-              navigate('/');
+          // Если есть пригласительный токен, добавляем пользователя в администраторы
+          if (token) {
+            const currentAdmins = getAdmins();
+            if (!currentAdmins.includes(data.user.id)) {
+              setAdmins([...currentAdmins, data.user.id]);
             }
             sessionStorage.removeItem('invite_token');
           }
 
-          navigate('/');
+          window.location.href = '/';
         } else {
-          setError('Authentication failed');
+          throw new Error('No user data');
         }
       })
-      .catch((err) => {
-        console.error('Callback error:', err);
-        setError(err.message || 'Network error');
-      })
-      .finally(() => setLoading(false));
+      .catch(err => {
+        console.error(err);
+        navigate('/login');
+      });
   }, [navigate]);
 
-  if (loading) {
-    return (
-      <div className="page">
-        <p>Вход выполняется, пожалуйста, подождите...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="page">
-        <h1>Ошибка</h1>
-        <p>{error}</p>
-        <button onClick={() => navigate('/login')}>Вернуться к входу</button>
-      </div>
-    );
-  }
-
-  return null;
+  return <div className="page">Вход выполняется...</div>;
 }

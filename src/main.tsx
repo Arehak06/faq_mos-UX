@@ -2,9 +2,11 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './app.css';
+import { initAdmins } from './utils/isAdmin';
 
-const basename = '/faq_mos-UX'; // должен совпадать с base в vite.config.js
+initAdmins(); // загружает список администраторов в localStorage
 
+const basename = '/faq_mos-UX';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <BrowserRouter basename={basename}>
     <App />

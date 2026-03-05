@@ -1,21 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { isEditor } from '../utils/isAdmin';
-import { getTelegramUser } from '../utils/telegram';
-import { Loading } from './Loading';
+import { ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
+import { isAdmin } from '../utils/isAdmin';
 
 export default function AdminRoute({ children }: { children: ReactNode }) {
-  const location = useLocation();
-  const [allowed, setAllowed] = useState<boolean | null>(null);
-  const user = getTelegramUser();
-
-  useEffect(() => {
-    isEditor().then(setAllowed);
-  }, [user]);
-
-  if (allowed === null) return <Loading />;
-  if (!allowed) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  return <>{children}</>;
+  return isAdmin() ? <>{children}</> : <Navigate to="/login" replace />;
 }

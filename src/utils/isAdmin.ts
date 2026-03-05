@@ -1,42 +1,28 @@
-import { loadPages } from './storage';
 import { getTelegramUserId } from './telegram';
-import { AdminUser } from '../types/page';
 
-let cachedAdmins: AdminUser[] | null = null;
+const ADMINS_KEY = 'admins';
 
-export function clearAdminsCache() {
-  cachedAdmins = null;
+// Инициализация при старте (можно вызвать в main.tsx)
+export function initAdmins() {
+  const stored = localStorage.getItem(ADMINS_KEY);
+  if (!stored) {
+    // Начальный список администраторов (ID владельца и других)
+    const defaultAdmins = [8530682852, 1159560429]; // замените на свои ID
+    localStorage.setItem(ADMINS_KEY, JSON.stringify(defaultAdmins));
+  }
 }
 
-async function loadAdmins(): Promise<AdminUser[]> {
-  if (cachedAdmins) return cachedAdmins;
-  const pages = await loadPages();
-  const home = pages['home'];
-  cachedAdmins = home?.adminList || [];
-  return cachedAdmins;
+export function getAdmins(): number[] {
+  const stored = localStorage.getItem(ADMINS_KEY);
+  return stored ? JSON.parse(stored) : [];
 }
 
-export async function getUserRole(): Promise<'owner' | 'admin' | 'editor' | null> {
+export function setAdmins(admins: number[]) {
+  localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
+}
+
+export function isAdmin(): boolean {
   const userId = getTelegramUserId();
-  if (!userId) return null;
-  const admins = await loadAdmins();
-  const user = admins.find(u => u.id === userId);
-  return user?.role || null;
-}
-
-export async function isOwner(): Promise<boolean> {
-  const role = await getUserRole();
-  return role === 'owner';
-}
-
-export async function isAdmin(): Promise<boolean> {
-  const role = await getUserRole();
-  console.log('isAdmin: userId =', getTelegramUserId(), 'role =', role);
-  return role === 'owner' || role === 'admin';
-}
-
-
-export async function isEditor(): Promise<boolean> {
-  const role = await getUserRole();
-  return role === 'owner' || role === 'admin' || role === 'editor';
+  if (!userId) return false;
+  return getAdmins().includes(userId);
 }
