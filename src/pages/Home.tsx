@@ -18,12 +18,15 @@ export default function Home() {
   const user = getTelegramUser();
 
   useEffect(() => {
-    const checkRoles = async () => {
-      setAdmin(await isAdmin());
-      setEditor(await isEditor());
-    };
-    checkRoles();
-  }, [user]);
+  const checkRoles = async () => {
+    const a = await isAdmin();
+    const e = await isEditor();
+    console.log('Home: admin =', a, 'editor =', e);
+    setAdmin(a);
+    setEditor(e);
+  };
+  checkRoles();
+}, [user]);
 
   useEffect(() => {
     loadPages()

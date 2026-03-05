@@ -31,8 +31,10 @@ export async function isOwner(): Promise<boolean> {
 
 export async function isAdmin(): Promise<boolean> {
   const role = await getUserRole();
+  console.log('isAdmin: userId =', getTelegramUserId(), 'role =', role);
   return role === 'owner' || role === 'admin';
 }
+
 
 export async function isEditor(): Promise<boolean> {
   const role = await getUserRole();

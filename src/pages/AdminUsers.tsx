@@ -52,6 +52,7 @@ export default function AdminUsers() {
     setHomePage(updatedHome);
     setPages(updatedPages);
     await savePages(updatedPages);
+    clearAdminsCache(); // сброс кэша прав
     addLog('role_changed', 'home', { userId, newRole });
     setMenuOpenFor(null);
   };
@@ -75,6 +76,7 @@ export default function AdminUsers() {
     setHomePage(updatedHome);
     setPages(updatedPages);
     await savePages(updatedPages);
+    clearAdminsCache(); // сброс кэша прав
     addLog('admin_removed', 'home', { userId });
     setMenuOpenFor(null);
   };
@@ -108,7 +110,7 @@ export default function AdminUsers() {
     setHomePage(updatedHome);
     setPages(updatedPages);
     await savePages(updatedPages);
-    clearAdminsCache();
+    // При добавлении приглашения кэш не сбрасываем, так как список админов не меняется
     addLog('invite_created', 'home', { token, role });
     
     const link = `${window.location.origin}/faq_mos-UX/admin/invite?token=${token}`;
