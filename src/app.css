@@ -1455,3 +1455,195 @@ body {
   padding: 14px;
   font-size: 16px;
 }
+/* ================================
+   Invite page
+================================ */
+.invite-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.invite-card {
+  background: var(--tg-card);
+  border-radius: 32px;
+  padding: 40px 32px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border: 1px solid var(--tg-border);
+  animation: fadeIn 0.4s ease;
+}
+
+.invite-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+.invite-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: var(--tg-text);
+}
+
+.invite-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--tg-hint);
+  margin-bottom: 32px;
+}
+
+.invite-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--tg-accent), #1c8fd1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.invite-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(42, 171, 238, 0.3);
+}
+
+.invite-footer {
+  margin-top: 24px;
+}
+
+.invite-link {
+  color: var(--tg-hint);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.invite-link:hover {
+  color: var(--tg-accent);
+  text-decoration: underline;
+}
+
+/* ================================
+   Login page
+================================ */
+.login-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.login-card {
+  background: var(--tg-card);
+  border-radius: 32px;
+  padding: 48px 32px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--tg-border);
+  animation: slideUp 0.4s ease;
+}
+
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.login-logo {
+  font-size: 64px;
+  background: rgba(42, 171, 238, 0.1);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--tg-text);
+  margin: 0;
+}
+
+.login-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--tg-hint);
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--tg-accent), #1c8fd1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(42, 171, 238, 0.3);
+}
+
+.login-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.login-link {
+  color: var(--tg-hint);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+
+.login-link:hover {
+  color: var(--tg-accent);
+  text-decoration: underline;
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}

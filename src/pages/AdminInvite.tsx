@@ -44,15 +44,20 @@ export default function AdminInvite() {
   }
 
   return (
-    <div className="page">
+    <div className="invite-page">
       <div className="invite-card">
-        <h1 className="invite-title">🔐 Приглашение в админ-панель</h1>
+        <div className="invite-icon">🔐</div>
+        <h1 className="invite-title">Приглашение в админ‑панель</h1>
         <p className="invite-text">
-          Вы получили приглашение для входа в админ-панель. Для продолжения необходимо авторизоваться через Telegram.
+          Вы получили приглашение для доступа к управлению сайтом. Для продолжения необходимо авторизоваться через Telegram.
         </p>
-        <button className="tg-button invite-button" onClick={handleLogin}>
+        <button className="invite-button tg-button" onClick={handleLogin}>
+          <span className="button-icon">📱</span>
           Войти через Telegram
         </button>
+        <div className="invite-footer">
+          <a href="/" className="invite-link">← Вернуться на главную</a>
+        </div>
       </div>
     </div>
   );
