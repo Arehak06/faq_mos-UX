@@ -17,16 +17,21 @@ export default function Home() {
 
   const user = getTelegramUser();
 
-  useEffect(() => {
+  const [rolesLoaded, setRolesLoaded] = useState(false);
+
+useEffect(() => {
   const checkRoles = async () => {
     const a = await isAdmin();
     const e = await isEditor();
-    console.log('Home: admin =', a, 'editor =', e);
     setAdmin(a);
     setEditor(e);
+    setRolesLoaded(true);
   };
   checkRoles();
 }, [user]);
+
+if (loading) return <Loading />;
+if (!rolesLoaded) return <Loading />; // ждём определения ролей
 
   useEffect(() => {
     loadPages()

@@ -56,6 +56,7 @@ export default function Callback() {
               };
               await savePages({ ...pages, home: updatedHome });
               clearAdminsCache();
+              navigate('/');
             }
             sessionStorage.removeItem('invite_token');
           }
