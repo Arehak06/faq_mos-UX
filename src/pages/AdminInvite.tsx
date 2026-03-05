@@ -23,19 +23,19 @@ export default function AdminInvite() {
   }, []);
 
   useEffect(() => {
-    if (!pages) return;
-    const params = new URLSearchParams(location.search);
-    const token = params.get('token');
-    const homePage = pages['home'];
-    const invite = homePage?.inviteTokens?.find(inv => inv.token === token);
-    if (invite && !invite.usedBy) {
-      setValid(true);
-      setInviteInfo(invite);
-      {inviteInfo && <strong>{inviteInfo.role}</strong>}
-    } else {
-      setValid(false);
-    }
-  }, [pages, location.search]);
+  if (!pages) return;
+  const params = new URLSearchParams(location.search);
+  const token = params.get('token');
+  const homePage = pages['home'];
+  const invite = homePage?.inviteTokens?.find(inv => inv.token === token);
+  if (invite && !invite.usedBy) {
+    setValid(true);
+    setInviteInfo(invite);
+    // Удалена некорректная JSX-строка
+  } else {
+    setValid(false);
+  }
+}, [pages, location.search]);
 
   const handleLogin = () => {
     navigate('/login', { state: { from: '/admin/invite' } });
