@@ -15,9 +15,19 @@ export function TopNav() {
   const menuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
+  // Загрузка страниц
+  useEffect(() => {
+    loadPages()
+      .then(data => {
+        setPages(data);
+      })
+      .catch(console.error);
+  }, []);
+
+  // Проверка прав администратора
   useEffect(() => {
     const checkAdmin = async () => {
-      const result = await isAdmin(); // isAdmin асинхронная
+      const result = await isAdmin();
       setAdmin(result);
     };
     checkAdmin();
