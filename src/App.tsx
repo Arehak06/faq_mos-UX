@@ -17,6 +17,7 @@ import { Footer } from './components/Footer';
 import { MaintenanceBanner } from './components/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
+import AdminUsers from './pages/AdminUsers';
 
 function App() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
@@ -90,6 +91,14 @@ function App() {
             }
           />
         </Routes>
+<Route
+  path="/admin/users"
+  element={
+    <EditorRoute>
+      <AdminUsers />
+    </EditorRoute>
+  }
+/>
       </div>
       <Footer pages={pages} />
     </>
