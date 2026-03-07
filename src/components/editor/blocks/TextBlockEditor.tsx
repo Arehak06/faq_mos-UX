@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
+import '@uiw/react-md-editor/markdown-editor.css'; // обязательно!
 import { TextBlock } from '../../../types/blocks';
 
 interface Props {
@@ -28,18 +29,13 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
         <MDEditor
           value={value}
           onChange={handleChange}
-          preview="live"          // одновременный предпросмотр
+          preview="live"
           height={400}
-          visibleDragbar={false}  // скрываем полосу для изменения размера
+          visibleDragbar={false}
           enableScroll={true}
           textareaProps={{
             placeholder: 'Введите Markdown...',
           }}
-          // Можно настроить панель инструментов, убрать лишние кнопки
-          commands={[
-            // Полный список команд можно импортировать и кастомизировать
-            // Подробнее: https://uiwjs.github.io/react-md-editor/
-          ]}
         />
       </div>
     </div>

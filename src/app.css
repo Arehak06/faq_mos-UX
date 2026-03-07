@@ -1349,23 +1349,69 @@ body {
   border-radius: 4px;
   font-family: monospace;
 }
-/* Для корректного отображения редактора */
+/* Переменные для светлой темы (уже есть в компоненте) */
 [data-color-mode="light"] {
   --color-canvas-default: var(--tg-card);
   --color-border-default: var(--tg-border);
   --color-accent-fg: var(--tg-accent);
+  --color-neutral-muted: var(--tg-bg);
 }
+
 .w-md-editor {
   border-radius: 10px;
   overflow: hidden;
+  background: var(--tg-card);
+  border: 1px solid var(--tg-border);
 }
+
 .w-md-editor-toolbar {
   background: var(--tg-bg);
   border-bottom: 1px solid var(--tg-border);
+  padding: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
 }
+
 .w-md-editor-toolbar li button {
   color: var(--tg-text);
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
+
+.w-md-editor-toolbar li button:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.w-md-editor-toolbar li button svg {
+  fill: currentColor;
+  width: 16px;
+  height: 16px;
+}
+
 .w-md-editor-content {
   background: var(--tg-card);
+}
+
+.w-md-editor-text {
+  color: var(--tg-text);
+}
+
+.w-md-editor-preview {
+  background: var(--tg-card);
+  color: var(--tg-text);
+  border-left: 1px solid var(--tg-border);
+  padding: 12px;
+}
+
+.w-md-editor-preview .wmde-markdown {
+  background: transparent;
+  color: var(--tg-text);
 }
