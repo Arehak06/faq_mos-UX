@@ -105,7 +105,7 @@ export default function Home() {
         <BlockRenderer key={block.id} block={block} />
       ))}
 
-      {!user && !admin && (
+      {/* {!user && !admin && (
         <div className="home-card login-prompt-card" onClick={() => navigate('/login')}>
           <div className="home-item">
             <div className="home-item-icon">🔐</div>
@@ -116,7 +116,7 @@ export default function Home() {
             <div className="home-item-arrow">→</div>
           </div>
         </div>
-      )}
+      )} */}
 
       {featuredPages.length > 0 && (
         <>
