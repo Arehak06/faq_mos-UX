@@ -103,7 +103,7 @@ export default function PageEditor({ page, onChange, allPages, onSave }: Props) 
     if (!file) return;
     setUploading(true);
     try {
-      const url = await uploadImage(file);
+      const { url } = await uploadImage(file);
       const block: ImageBlock = {
         id: uid(),
         type: 'image',
