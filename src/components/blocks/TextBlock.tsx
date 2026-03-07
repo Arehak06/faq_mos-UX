@@ -1,13 +1,22 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { TextBlock as TextBlockType } from '../../types/blocks';
 import { TgCard } from '../common/TgCard';
 
 export function TextBlock({ block }: { block: TextBlockType }) {
-  // Используем html, если он есть; иначе показываем text как fallback
-  const content = block.html || block.text;
   return (
     <TgCard>
-      <div dangerouslySetInnerHTML={{ __html: content }} />
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ node, ...props }) => (
+            <a target="_blank" rel="noopener noreferrer" {...props} />
+          ),
+        }}
+      >
+        {block.text}
+      </ReactMarkdown>
     </TgCard>
   );
 }
