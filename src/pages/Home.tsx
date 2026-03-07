@@ -8,6 +8,7 @@ import { BlockRenderer } from '../components/BlockRenderer';
 import { PageTitle } from '../components/common/PageTitle';
 import { Loading } from '../components/common/Loading';
 
+
 export default function Home() {
   const navigate = useNavigate();
   const [admin, setAdmin] = useState(isAdmin());
@@ -136,6 +137,7 @@ export default function Home() {
               <div className="home-item-text">
                 <div className="home-item-title">Админ панель</div>
                 <div className="home-item-subtitle">Управление сайтом</div>
+
               </div>
             </div>
           </div>
