@@ -1349,3 +1349,23 @@ body {
   border-radius: 4px;
   font-family: monospace;
 }
+/* Для корректного отображения редактора */
+[data-color-mode="light"] {
+  --color-canvas-default: var(--tg-card);
+  --color-border-default: var(--tg-border);
+  --color-accent-fg: var(--tg-accent);
+}
+.w-md-editor {
+  border-radius: 10px;
+  overflow: hidden;
+}
+.w-md-editor-toolbar {
+  background: var(--tg-bg);
+  border-bottom: 1px solid var(--tg-border);
+}
+.w-md-editor-toolbar li button {
+  color: var(--tg-text);
+}
+.w-md-editor-content {
+  background: var(--tg-card);
+}
