@@ -1,17 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { Block } from '../types/blocks';
 import { TgCard } from './common/TgCard';
+import { TextBlock } from './blocks/TextBlock'; // импортируем компонент для Markdown
 
 export function BlockRenderer({ block }: { block: Block }) {
   const navigate = useNavigate();
 
   switch (block.type) {
     case 'text':
-  return (
-    <TgCard>
-      <div dangerouslySetInnerHTML={{ __html: block.text }} />
-    </TgCard>
-  );
+      // Используем специальный компонент для Markdown
+      return <TextBlock block={block} />;
 
     case 'card':
       return (
