@@ -4,10 +4,9 @@ import { AlertBlock } from '../../../types/blocks';
 interface Props {
   block: AlertBlock;
   onUpdate: (block: AlertBlock) => void;
-  onRemove: () => void;
 }
 
-export function AlertBlockEditor({ block, onUpdate, onRemove }: Props) {
+export function AlertBlockEditor({ block, onUpdate }: Props) {
   const handleSeverityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onUpdate({ ...block, severity: e.target.value as 'info' | 'warning' | 'important' });
   };
@@ -24,11 +23,7 @@ export function AlertBlockEditor({ block, onUpdate, onRemove }: Props) {
     onUpdate({ ...block, textColor: e.target.value });
   };
   return (
-    <div className="editor-block">
-      <div className="editor-block-header">
-        <strong>Уведомление</strong>
-        <button className="danger" onClick={onRemove}>🗑</button>
-      </div>
+    <>
       <select value={block.severity} onChange={handleSeverityChange}>
         <option value="info">Информация (синий)</option>
         <option value="warning">Внимание (жёлтый)</option>
@@ -38,6 +33,6 @@ export function AlertBlockEditor({ block, onUpdate, onRemove }: Props) {
       <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
       <input value={block.backgroundColor || ''} placeholder="Цвет фона (например, #e3f2fd)" onChange={handleBgColorChange} />
       <input value={block.textColor || ''} placeholder="Цвет текста (например, #0d47a1)" onChange={handleTextColorChange} />
-    </div>
+    </>
   );
 }

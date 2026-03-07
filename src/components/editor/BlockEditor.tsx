@@ -9,21 +9,20 @@ import { AlertBlockEditor } from './blocks/AlertBlockEditor';
 interface Props {
   block: Block;
   onUpdate: (updatedBlock: Block) => void;
-  onRemove: () => void;
 }
 
-export function BlockEditor({ block, onUpdate, onRemove }: Props) {
+export function BlockEditor({ block, onUpdate }: Props) {
   switch (block.type) {
     case 'text':
-      return <TextBlockEditor block={block} onUpdate={onUpdate} onRemove={onRemove} />;
+      return <TextBlockEditor block={block} onUpdate={onUpdate} />;
     case 'card':
-      return <CardBlockEditor block={block} onUpdate={onUpdate} onRemove={onRemove} />;
+      return <CardBlockEditor block={block} onUpdate={onUpdate} />;
     case 'button':
-      return <ButtonBlockEditor block={block} onUpdate={onUpdate} onRemove={onRemove} />;
+      return <ButtonBlockEditor block={block} onUpdate={onUpdate} />;
     case 'image':
-      return <ImageBlockEditor block={block} onUpdate={onUpdate} onRemove={onRemove} />;
+      return <ImageBlockEditor block={block} onUpdate={onUpdate} />;
     case 'alert':
-      return <AlertBlockEditor block={block} onUpdate={onUpdate} onRemove={onRemove} />;
+      return <AlertBlockEditor block={block} onUpdate={onUpdate} />;
     default:
       return null;
   }

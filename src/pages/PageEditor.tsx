@@ -325,15 +325,23 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
           <div
             key={b.id}
             className="editor-block"
-            draggable
-            onDragStart={(e) => handleDragStart(e, i)}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, i)}
           >
+            <div className="editor-block-header">
+              <span
+                className="drag-handle"
+                draggable
+                onDragStart={(e) => handleDragStart(e, i)}
+              >
+                ⋮⋮
+              </span>
+              <strong>{b.type}</strong>
+              <button className="danger" onClick={() => handleRemoveBlock(i)}>🗑</button>
+            </div>
             <BlockEditor
               block={b}
               onUpdate={(updated) => handleUpdateBlock(i, updated)}
-              onRemove={() => handleRemoveBlock(i)}
             />
           </div>
         ))}

@@ -4,10 +4,9 @@ import { ButtonBlock } from '../../../types/blocks';
 interface Props {
   block: ButtonBlock;
   onUpdate: (block: ButtonBlock) => void;
-  onRemove: () => void;
 }
 
-export function ButtonBlockEditor({ block, onUpdate, onRemove }: Props) {
+export function ButtonBlockEditor({ block, onUpdate }: Props) {
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onUpdate({ ...block, text: e.target.value });
   };
@@ -26,11 +25,7 @@ export function ButtonBlockEditor({ block, onUpdate, onRemove }: Props) {
   const isUrlValid = block.url === '' || block.url.startsWith('http') || block.url.startsWith('/');
 
   return (
-    <div className="editor-block">
-      <div className="editor-block-header">
-        <strong>Кнопка</strong>
-        <button className="danger" onClick={onRemove}>🗑</button>
-      </div>
+    <>
       <input value={block.text} placeholder="Текст кнопки" onChange={handleTextChange} />
       <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
       <input value={block.description || ''} placeholder="Описание (необязательно)" onChange={handleDescChange} />
@@ -42,6 +37,6 @@ export function ButtonBlockEditor({ block, onUpdate, onRemove }: Props) {
         style={!isUrlValid ? { borderColor: 'red' } : {}}
       />
       {!isUrlValid && <small style={{ color: 'red' }}>Ссылка должна начинаться с http:// или /</small>}
-    </div>
+    </>
   );
 }

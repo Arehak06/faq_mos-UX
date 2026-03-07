@@ -6,10 +6,9 @@ import { TextBlock } from '../../../types/blocks';
 interface Props {
   block: TextBlock;
   onUpdate: (block: TextBlock) => void;
-  onRemove: () => void;
 }
 
-export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
+export function TextBlockEditor({ block, onUpdate }: Props) {
   const [showPreview, setShowPreview] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -17,7 +16,6 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
     onUpdate({ ...block, text: e.target.value });
   };
 
-  // Вставка синтаксиса вокруг выделенного текста или в позицию курсора
   const insertMarkdown = (prefix: string, suffix: string = '') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
@@ -32,7 +30,6 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
 
     onUpdate({ ...block, text: newText });
 
-    // Восстанавливаем выделение или ставим курсор после вставленного текста
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(
@@ -56,18 +53,11 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
   ];
 
   return (
-    <div className="editor-block">
-      <div className="editor-block-header">
-        <strong>Текст (Markdown)</strong>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="action-button" onClick={() => setShowPreview(!showPreview)}>
-            {showPreview ? '✏️' : '👁️'}
-          </button>
-          <button className="danger" onClick={onRemove}>🗑</button>
-        </div>
-      </div>
-
+    <>
       <div className="markdown-toolbar">
+        <button className="toolbar-button" onClick={() => setShowPreview(!showPreview)}>
+          {showPreview ? '✏️' : '👁️'}
+        </button>
         {commands.map((cmd) => (
           <button
             key={cmd.name}
@@ -79,7 +69,6 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
           </button>
         ))}
       </div>
-
       <textarea
         ref={textareaRef}
         value={block.text}
@@ -88,7 +77,6 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
         rows={10}
         className="markdown-textarea"
       />
-
       {showPreview && (
         <div className="markdown-preview">
           <ReactMarkdown
@@ -103,6 +91,6 @@ export function TextBlockEditor({ block, onUpdate, onRemove }: Props) {
           </ReactMarkdown>
         </div>
       )}
-    </div>
+    </>
   );
 }
