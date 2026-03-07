@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Block, TextBlock, CardBlock, ButtonBlock, ImageBlock, AlertBlock } from '../types/blocks';
 import { PageData, PageMainButton } from '../types/page';
 import { reorder } from '../utils/reorder';
@@ -13,9 +14,11 @@ type Props = {
   page: PageData;
   onChange: (p: PageData) => void;
   allPages?: Record<string, PageData>;
+  onSave?: () => Promise<void>; // опционально, для вызова сохранения
 };
 
-export default function PageEditor({ page, onChange, allPages }: Props) {
+export default function PageEditor({ page, onChange, allPages, onSave }: Props) {
+  const navigate = useNavigate();
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [showAddMenu, setShowAddMenu] = useState(false);
@@ -194,8 +197,12 @@ export default function PageEditor({ page, onChange, allPages }: Props) {
         onChange={handleFileSelect}
       />
 
-      <div className="editor-header">
+      <div className="editor-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2 className="editor-title">Редактирование страницы</h2>
+        <div className="editor-header-buttons" style={{ display: 'flex', gap: '8px' }}>
+          <button className="tg-button" onClick={() => navigate(-1)}>← Назад</button>
+          <button className="tg-button" onClick={() => onSave?.()}>💾 Сохранить</button>
+        </div>
       </div>
 
       {/* Основные поля страницы */}

@@ -231,10 +231,11 @@ export default function PageManagement() {
 
       {mode === 'edit' ? (
         <PageEditor
-          page={page}
-          onChange={(updatedPage) => setPages({ ...pages, [current]: updatedPage })}
-          allPages={pages}
-        />
+  page={page}
+  onChange={(updatedPage) => setPages({ ...pages, [current]: updatedPage })}
+  allPages={pages}
+  onSave={handleSave} // передаём функцию сохранения
+/>
       ) : (
         <PageView page={page} />
       )}
