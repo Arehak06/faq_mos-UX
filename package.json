@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@advanceddev/telegram-login-react": "^1.2.0",
+    "@diplodoc/transform": "^4.70.1",
     "@supabase/supabase-js": "^2.97.0",
     "@types/telegram-web-app": "^9.1.2",
     "gh-pages": "^6.3.0",

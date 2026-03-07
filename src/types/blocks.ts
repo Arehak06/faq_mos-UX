@@ -1,10 +1,9 @@
 export type TextBlock = {
   id: string;
   type: 'text';
-  text: string;          // исходный Markdown (GFM)
+  text: string;      // исходный YFM
+  html?: string;      // сгенерированный HTML (будет добавляться сервером)
 };
-
-// остальные типы без изменений
 
 export type CardBlock = {
   id: string;
