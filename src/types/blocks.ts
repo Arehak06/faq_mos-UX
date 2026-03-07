@@ -1,10 +1,10 @@
 export type TextBlock = {
   id: string;
   type: 'text';
-  text: string;      // исходный YFM
-  html?: string;      // сгенерированный HTML (будет добавляться сервером)
+  text: string;
 };
 
+// остальные типы без изменений
 export type CardBlock = {
   id: string;
   type: 'card';

@@ -1349,30 +1349,3 @@ body {
   border-radius: 4px;
   font-family: monospace;
 }
-
-.yfm-help {
-  background: var(--tg-card);
-  border: 1px solid var(--tg-border);
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 8px;
-  font-size: 13px;
-}
-.yfm-help h4 {
-  margin: 0 0 8px 0;
-  color: var(--tg-text);
-}
-.yfm-help ul {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--tg-hint);
-}
-.yfm-help li {
-  margin-bottom: 4px;
-}
-.yfm-help code {
-  background: var(--tg-bg);
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-family: monospace;
-}
