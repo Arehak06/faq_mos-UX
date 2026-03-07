@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { loadPages } from '../utils/storage';
 import { getTelegramUser, getTelegramUserName, clearTelegramUser } from '../utils/telegram';
 import { PageData } from '../types/page';
-import { TestMarkdown } from '../components/TestMarkdown';
 
 export default function Admin() {
   const navigate = useNavigate();
@@ -62,7 +61,7 @@ export default function Admin() {
           <div className="card-icon">📤</div>
           <div className="card-title">Загрузка изображений</div>
           <div className="card-desc">Загрузите картинку и получите ссылку</div>
-          
+
         </div>
       </div>
     </div>

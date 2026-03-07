@@ -15,7 +15,6 @@ import { Footer } from './components/layout/Footer';
 import { MaintenanceBanner } from './components//layout/MaintenanceBanner';
 import { loadPages } from './utils/storage';
 import { PageData } from './types/page';
-import TestMarkdownPage from './pages/TestMarkdownPage';
 
 function App() {
   const [pages, setPages] = useState<Record<string, PageData> | null>(null);
@@ -51,7 +50,6 @@ function App() {
           <Route path="*" element={<DynamicPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/callback" element={<Callback />} />
-          <Route path="/test" element={<TestMarkdownPage />} />
 
           <Route
             path="/admin"
