@@ -17,19 +17,19 @@ export function ImageBlockEditor({ block, onUpdate }: Props) {
     onUpdate({ ...block, caption: e.target.value });
   };
   return (
-    <div className="image-block-editor">
+    <>
       <label className="editor-field">
         <span>URL изображения</span>
-        <input value={block.url} placeholder="URL изображения" onChange={handleUrlChange} />
+        <input value={block.url} onChange={handleUrlChange} placeholder="https://..." />
       </label>
       <label className="editor-field">
         <span>Alt текст (для доступности)</span>
-        <input value={block.alt || ''} placeholder="Alt текст" onChange={handleAltChange} />
+        <input value={block.alt || ''} onChange={handleAltChange} placeholder="Описание" />
       </label>
       <label className="editor-field">
         <span>Подпись под изображением</span>
-        <input value={block.caption || ''} placeholder="Подпись" onChange={handleCaptionChange} />
+        <input value={block.caption || ''} onChange={handleCaptionChange} placeholder="Необязательно" />
       </label>
-    </div>
+    </>
   );
 }

@@ -24,15 +24,30 @@ export function AlertBlockEditor({ block, onUpdate }: Props) {
   };
   return (
     <>
-      <select value={block.severity} onChange={handleSeverityChange}>
-        <option value="info">Информация (синий)</option>
-        <option value="warning">Внимание (жёлтый)</option>
-        <option value="important">Важно (красный)</option>
-      </select>
-      <input value={block.text} placeholder="Текст уведомления" onChange={handleTextChange} />
-      <input value={block.icon || ''} placeholder="Иконка (эмодзи или URL)" onChange={handleIconChange} />
-      <input value={block.backgroundColor || ''} placeholder="Цвет фона (например, #e3f2fd)" onChange={handleBgColorChange} />
-      <input value={block.textColor || ''} placeholder="Цвет текста (например, #0d47a1)" onChange={handleTextColorChange} />
+      <label className="editor-field">
+        <span>Тип уведомления</span>
+        <select value={block.severity} onChange={handleSeverityChange}>
+          <option value="info">Информация (синий)</option>
+          <option value="warning">Внимание (жёлтый)</option>
+          <option value="important">Важно (красный)</option>
+        </select>
+      </label>
+      <label className="editor-field">
+        <span>Текст уведомления</span>
+        <input value={block.text} onChange={handleTextChange} placeholder="Текст" />
+      </label>
+      <label className="editor-field">
+        <span>Иконка (эмодзи или URL)</span>
+        <input value={block.icon || ''} onChange={handleIconChange} placeholder="⚠️ или https://..." />
+      </label>
+      <label className="editor-field">
+        <span>Цвет фона</span>
+        <input value={block.backgroundColor || ''} onChange={handleBgColorChange} placeholder="#ffebee" />
+      </label>
+      <label className="editor-field">
+        <span>Цвет текста</span>
+        <input value={block.textColor || ''} onChange={handleTextColorChange} placeholder="#b71c1c" />
+      </label>
     </>
   );
 }

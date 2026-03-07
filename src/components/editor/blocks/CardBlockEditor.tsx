@@ -15,8 +15,14 @@ export function CardBlockEditor({ block, onUpdate }: Props) {
   };
   return (
     <>
-      <input value={block.title} placeholder="Заголовок карточки" onChange={handleTitleChange} />
-      <textarea value={block.text} placeholder="Текст карточки" onChange={handleTextChange} />
+      <label className="editor-field">
+        <span>Заголовок карточки</span>
+        <input value={block.title} onChange={handleTitleChange} placeholder="Заголовок" />
+      </label>
+      <label className="editor-field">
+        <span>Текст карточки</span>
+        <textarea value={block.text} onChange={handleTextChange} placeholder="Текст" rows={3} />
+      </label>
     </>
   );
 }

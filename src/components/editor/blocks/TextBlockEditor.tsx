@@ -19,7 +19,6 @@ export function TextBlockEditor({ block, onUpdate }: Props) {
   const insertMarkdown = (prefix: string, suffix: string = '') => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = block.text.substring(start, end);
@@ -27,9 +26,7 @@ export function TextBlockEditor({ block, onUpdate }: Props) {
       block.text.substring(0, start) +
       prefix + selectedText + suffix +
       block.text.substring(end);
-
     onUpdate({ ...block, text: newText });
-
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(
