@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { uploadImage, fetchImages, deleteImage, ImageRecord } from '../services/uploadService';
+import { uploadImage, fetchImages, ImageRecord } from '../services/uploadService';
+import { getTelegramUserId } from '../utils/telegram';
+import { Loading } from '../components/common/Loading';
+import { PageTitle } from '../components/common/PageTitle';
+
+const API_URL = 'https://d5dfre3k7o8lq2478qsp.4b4k4pg5.apigw.yandexcloud.net/images';
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +17,7 @@ export default function UploadPage() {
   const [images, setImages] = useState<ImageRecord[]>([]);
   const [loadingImages, setLoadingImages] = useState(false);
   const [filterText, setFilterText] = useState('');
+  const [deleting, setDeleting] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -22,9 +28,10 @@ export default function UploadPage() {
     setLoadingImages(true);
     try {
       const data = await fetchImages();
-      setImages(data);
+      setImages(data.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()));
     } catch (err) {
       console.error(err);
+      setError('Не удалось загрузить список изображений');
     } finally {
       setLoadingImages(false);
     }
@@ -52,7 +59,7 @@ export default function UploadPage() {
     try {
       const result = await uploadImage(file, displayName || undefined);
       setUploadedUrl(result.url);
-      await loadImages(); // обновляем список
+      await loadImages();
     } catch (err) {
       setError((err as Error).message || 'Ошибка загрузки');
     } finally {
@@ -66,13 +73,32 @@ export default function UploadPage() {
     setTimeout(() => setCopySuccess(false), 2000);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Удалить изображение? Это действие нельзя отменить.')) return;
+  const handleDelete = async (image: ImageRecord) => {
+    const userId = getTelegramUserId();
+    if (!userId) {
+      alert('Не удалось определить пользователя');
+      return;
+    }
+    if (!image.id) {
+      alert('Ошибка: идентификатор изображения отсутствует');
+      return;
+    }
+    if (!window.confirm(`Удалить изображение "${image.displayName}"?`)) return;
+    setDeleting(image.id);
     try {
-      await deleteImage(id);
-      await loadImages(); // обновляем список
+      const response = await fetch(`${API_URL}/${image.id}`, {
+        method: 'DELETE',
+        headers: { 'X-Telegram-User-Id': userId.toString() },
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Ошибка удаления');
+      }
+      await loadImages();
     } catch (err) {
       alert((err as Error).message);
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -93,64 +119,64 @@ export default function UploadPage() {
 
   return (
     <div className="page">
-      <h1 className="page-title">📤 Загрузка изображений</h1>
+      <PageTitle title="📤 Загрузка изображений" showShare={false} />
 
       <div className="admin-card">
         <div className="admin-card-title">Загрузить новое изображение</div>
-        <div className="upload-area">
-          <input
-            type="file"
-            ref={fileInputRef}
-            accept="image/*"
-            onChange={handleFileChange}
+        <input
+          type="file"
+          ref={fileInputRef}
+          accept="image/*"
+          onChange={handleFileChange}
+          disabled={uploading}
+        />
+        {file && (
+          <div style={{ marginTop: '12px' }}>
+            <label className="editor-field">
+              <span>Понятное имя (для поиска)</span>
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Например: логотип метро"
+              />
+            </label>
+          </div>
+        )}
+        {preview && (
+          <div style={{ marginTop: '12px', textAlign: 'center' }}>
+            <img src={preview} alt="Preview" className="upload-preview" />
+          </div>
+        )}
+        {file && !uploadedUrl && (
+          <button
+            className="tg-button"
+            onClick={handleUpload}
             disabled={uploading}
-            className="file-input"
-          />
-          {file && (
-            <div className="upload-details">
-              <label className="editor-field">
-                <span>Понятное имя (для поиска)</span>
-                <input
-                  type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Например: логотип метро"
-                />
-              </label>
-            </div>
-          )}
-          {preview && (
-            <div className="preview-container">
-              <img src={preview} alt="Preview" className="upload-preview" />
-            </div>
-          )}
-          {file && !uploadedUrl && (
-            <button
-              className="tg-button upload-button"
-              onClick={handleUpload}
-              disabled={uploading}
-            >
-              {uploading ? '⏳ Загрузка...' : '📤 Загрузить'}
-            </button>
-          )}
-          {error && (
-            <div className="error-message">⚠️ {error}</div>
-          )}
-          {uploadedUrl && (
-            <div className="success-container">
-              <p>✅ Файл загружен</p>
-              <div className="url-row">
-                <input type="text" value={uploadedUrl} readOnly className="url-input" />
-                <button className="copy-button" onClick={() => handleCopy(uploadedUrl)}>
-                  {copySuccess ? '✓' : '📋'}
-                </button>
-              </div>
-              <button className="tg-button reset-button" onClick={resetForm}>
-                Загрузить ещё
+            style={{ marginTop: '12px' }}
+          >
+            {uploading ? '⏳ Загрузка...' : '📤 Загрузить'}
+          </button>
+        )}
+        {error && (
+          <div className="alert-block" style={{ backgroundColor: '#ffebee', color: '#b71c1c', marginTop: '12px' }}>
+            ⚠️ {error}
+          </div>
+        )}
+        {uploadedUrl && (
+          <div style={{ marginTop: '12px' }}>
+            <p>✅ Файл загружен</p>
+            <div className="upload-url-container">
+              <input type="text" value={uploadedUrl} readOnly className="upload-url-input" />
+              <button className="tg-button" onClick={() => handleCopy(uploadedUrl)} style={{ flex: '0 0 auto', marginLeft: '8px' }}>
+                {copySuccess ? '✓' : '📋'}
               </button>
             </div>
-          )}
-        </div>
+            <button className="tg-button" onClick={resetForm} style={{ marginTop: '8px', background: '#9e9e9e' }}>
+              Загрузить ещё
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="admin-card">
@@ -160,41 +186,51 @@ export default function UploadPage() {
           placeholder="Поиск по имени или файлу..."
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
-          className="search-input"
+          style={{ width: '100%', padding: '8px', marginBottom: '12px', borderRadius: '8px', border: '1px solid var(--tg-border)' }}
         />
         {loadingImages ? (
-          <p>Загрузка...</p>
+          <Loading />
         ) : filteredImages.length === 0 ? (
           <p>Нет загруженных изображений</p>
         ) : (
-          <div className="images-table">
-            <table>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
                   <th>Имя</th>
                   <th>Файл</th>
                   <th>Дата</th>
                   <th>Размер</th>
-                  <th>Ссылка</th>
-                  <th></th>
+                  <th>Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredImages.map(img => (
-                  <tr key={img.id}>
-                    <td>{img.displayName}</td>
-                    <td>{img.filename}</td>
-                    <td>{new Date(img.uploadedAt).toLocaleDateString()}</td>
-                    <td>{img.size ? Math.round(img.size / 1024) + ' KB' : '-'}</td>
-                    <td>
-                      <button className="copy-link-button" onClick={() => handleCopy(img.url)}>
-                        Копировать
-                      </button>
-                    </td>
-                    <td>
-                      <button className="delete-button" onClick={() => handleDelete(img.id)}>
-                        🗑
-                      </button>
+                  <tr key={img.id} style={{ borderBottom: '1px solid var(--tg-border)' }}>
+                    <td style={{ padding: '8px' }}>{img.displayName}</td>
+                    <td style={{ padding: '8px' }}>{img.filename}</td>
+                    <td style={{ padding: '8px' }}>{new Date(img.uploadedAt).toLocaleDateString()}</td>
+                    <td style={{ padding: '8px' }}>{img.size ? Math.round(img.size / 1024) + ' KB' : '-'}</td>
+                    <td style={{ padding: '8px' }}>
+                      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <button
+                          className="tg-button"
+                          onClick={() => handleCopy(img.url)}
+                          style={{ padding: '4px 8px', fontSize: '12px' }}
+                          title="Копировать ссылку"
+                        >
+                          📋
+                        </button>
+                        <button
+                          className="tg-button danger"
+                          onClick={() => handleDelete(img)}
+                          disabled={deleting === img.id}
+                          style={{ padding: '4px 8px', fontSize: '12px', background: '#ff4d4f' }}
+                          title="Удалить"
+                        >
+                          {deleting === img.id ? '⏳' : '🗑️'}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
