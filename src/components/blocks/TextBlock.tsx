@@ -38,6 +38,20 @@ function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement
     };
     const style = styles[alertType];
 
+    // Рендерим содержимое заметки как Markdown (чтобы поддерживалось форматирование)
+    const MarkdownContent = () => (
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
+          // Чтобы не создавать вложенные цитаты, можно запретить blockquote внутри заметки,
+          // но пока оставим как есть – редкий случай.
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+
     return (
       <div
         style={{
@@ -47,13 +61,15 @@ function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement
           borderRadius: '12px',
           marginBottom: '12px',
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: 'center', // выравнивание по центру вертикали
           gap: '12px',
           border: 'none',
         }}
       >
         <span style={{ fontSize: '24px', flexShrink: 0 }}>{style.icon}</span>
-        <div style={{ flex: 1 }}>{content}</div>
+        <div style={{ flex: 1 }}>
+          <MarkdownContent />
+        </div>
       </div>
     );
   }
