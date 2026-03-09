@@ -13,13 +13,21 @@ export default function PageView({ page }: { page: PageData }) {
   usePageMainButton(page);
 
   useEffect(() => {
-  loadPages().then(allPages => {
-    const childPages = Object.values(allPages)
-      .filter(p => p.parentId === page.id && !p.hidden)
-      .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
-    setChildren(childPages);
-  });
-}, [page.id]);
+    loadPages().then(allPages => {
+      const childPages = Object.values(allPages)
+        .filter(p => p.parentId === page.id && !p.hidden)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999) || a.title.localeCompare(b.title));
+      setChildren(childPages);
+    });
+  }, [page.id]);
+
+  const renderIcon = (icon: string | undefined) => {
+    if (!icon) return <span className="child-emoji">📄</span>;
+    if (icon.startsWith('http')) {
+      return <img src={icon} alt="" className="child-emoji custom-icon" />;
+    }
+    return <span className="child-emoji">{icon}</span>;
+  };
 
   return (
     <div className="page">
@@ -39,7 +47,7 @@ export default function PageView({ page }: { page: PageData }) {
                 className="child-item"
                 onClick={() => navigate(`/${child.id}`)}
               >
-                <span className="child-emoji">{child.emoji || '📄'}</span>
+                {renderIcon(child.emoji)}
                 <span className="child-title">{child.title}</span>
                 {child.description && <span className="child-description">{child.description}</span>}
               </div>

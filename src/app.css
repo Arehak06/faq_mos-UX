@@ -839,6 +839,14 @@ body {
   text-align: center;
 }
 
+.child-emoji.custom-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+
 .child-title {
   font-weight: 500;
   flex: 1;
