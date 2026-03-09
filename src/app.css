@@ -1639,3 +1639,16 @@ body {
   color: var(--tg-hint);
   padding: 20px;
 }
+/* Стили для цитат (blockquote) */
+blockquote {
+  margin: 1em 0;
+  padding-left: 1em;
+  border-left: 4px solid var(--tg-accent);
+  color: var(--tg-hint);
+  font-style: italic;
+}
+
+/* Дополнительно: если цитата внутри карточки, добавим небольшой отступ */
+.tg-card blockquote {
+  margin: 0.5em 0;
+}
