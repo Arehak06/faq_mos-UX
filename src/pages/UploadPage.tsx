@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { uploadImage, fetchImages, ImageRecord } from '../services/uploadService';
+import { uploadImage, fetchImages, deleteImage, ImageRecord } from '../services/uploadService';
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null);
@@ -37,7 +37,6 @@ export default function UploadPage() {
     setUploadedUrl(null);
     setError(null);
     setCopySuccess(false);
-    // Автозаполнение имени из имени файла
     if (!displayName) {
       setDisplayName(selected.name.replace(/\.[^/.]+$/, ''));
     }
@@ -53,8 +52,7 @@ export default function UploadPage() {
     try {
       const result = await uploadImage(file, displayName || undefined);
       setUploadedUrl(result.url);
-      // Обновляем список после загрузки
-      await loadImages();
+      await loadImages(); // обновляем список
     } catch (err) {
       setError((err as Error).message || 'Ошибка загрузки');
     } finally {
@@ -66,6 +64,16 @@ export default function UploadPage() {
     navigator.clipboard.writeText(url);
     setCopySuccess(true);
     setTimeout(() => setCopySuccess(false), 2000);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Удалить изображение? Это действие нельзя отменить.')) return;
+    try {
+      await deleteImage(id);
+      await loadImages(); // обновляем список
+    } catch (err) {
+      alert((err as Error).message);
+    }
   };
 
   const resetForm = () => {
@@ -89,60 +97,60 @@ export default function UploadPage() {
 
       <div className="admin-card">
         <div className="admin-card-title">Загрузить новое изображение</div>
-        <input
-          type="file"
-          ref={fileInputRef}
-          accept="image/*"
-          onChange={handleFileChange}
-          disabled={uploading}
-        />
-        {file && (
-          <>
-            <label className="editor-field" style={{ marginTop: '12px' }}>
-              <span>Понятное имя (для поиска)</span>
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Например: логотип метро"
-              />
-            </label>
-          </>
-        )}
-        {preview && (
-          <div style={{ marginTop: '12px' }}>
-            <img src={preview} alt="Preview" className="upload-preview" />
-          </div>
-        )}
-        {file && !uploadedUrl && (
-          <button
-            className="tg-button"
-            onClick={handleUpload}
+        <div className="upload-area">
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={handleFileChange}
             disabled={uploading}
-            style={{ marginTop: '12px' }}
-          >
-            {uploading ? '⏳ Загрузка...' : '📤 Загрузить'}
-          </button>
-        )}
-        {error && (
-          <div className="alert-block" style={{ backgroundColor: '#ffebee', color: '#b71c1c', marginTop: '12px' }}>
-            ⚠️ {error}
-          </div>
-        )}
-        {uploadedUrl && (
-          <div style={{ marginTop: '12px' }}>
-            <p>✅ Файл загружен</p>
-            <div className="upload-url-container">
-              <input type="text" value={uploadedUrl} readOnly className="upload-url-input" />
-              <button className="tg-button" onClick={() => handleCopy(uploadedUrl)} style={{ flex: '0 0 auto', marginLeft: '8px' }}>
-                {copySuccess ? '✓' : '📋'}
+            className="file-input"
+          />
+          {file && (
+            <div className="upload-details">
+              <label className="editor-field">
+                <span>Понятное имя (для поиска)</span>
+                <input
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Например: логотип метро"
+                />
+              </label>
+            </div>
+          )}
+          {preview && (
+            <div className="preview-container">
+              <img src={preview} alt="Preview" className="upload-preview" />
+            </div>
+          )}
+          {file && !uploadedUrl && (
+            <button
+              className="tg-button upload-button"
+              onClick={handleUpload}
+              disabled={uploading}
+            >
+              {uploading ? '⏳ Загрузка...' : '📤 Загрузить'}
+            </button>
+          )}
+          {error && (
+            <div className="error-message">⚠️ {error}</div>
+          )}
+          {uploadedUrl && (
+            <div className="success-container">
+              <p>✅ Файл загружен</p>
+              <div className="url-row">
+                <input type="text" value={uploadedUrl} readOnly className="url-input" />
+                <button className="copy-button" onClick={() => handleCopy(uploadedUrl)}>
+                  {copySuccess ? '✓' : '📋'}
+                </button>
+              </div>
+              <button className="tg-button reset-button" onClick={resetForm}>
+                Загрузить ещё
               </button>
             </div>
-            <button className="tg-button" onClick={resetForm} style={{ marginTop: '8px', background: '#9e9e9e' }}>
-              Загрузить ещё
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="admin-card">
@@ -152,39 +160,47 @@ export default function UploadPage() {
           placeholder="Поиск по имени или файлу..."
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
-          style={{ width: '100%', padding: '8px', marginBottom: '12px', borderRadius: '8px', border: '1px solid var(--tg-border)' }}
+          className="search-input"
         />
         {loadingImages ? (
           <p>Загрузка...</p>
         ) : filteredImages.length === 0 ? (
           <p>Нет загруженных изображений</p>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th>Имя</th>
-                <th>Файл</th>
-                <th>Дата</th>
-                <th>Размер</th>
-                <th>Ссылка</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredImages.map(img => (
-                <tr key={img.id} style={{ borderBottom: '1px solid var(--tg-border)' }}>
-                  <td style={{ padding: '8px' }}>{img.displayName}</td>
-                  <td style={{ padding: '8px' }}>{img.filename}</td>
-                  <td style={{ padding: '8px' }}>{new Date(img.uploadedAt).toLocaleDateString()}</td>
-                  <td style={{ padding: '8px' }}>{img.size ? Math.round(img.size / 1024) + ' KB' : '-'}</td>
-                  <td style={{ padding: '8px' }}>
-                    <button className="tg-button" onClick={() => handleCopy(img.url)} style={{ padding: '4px 8px', fontSize: '12px' }}>
-                      Копировать
-                    </button>
-                  </td>
+          <div className="images-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Имя</th>
+                  <th>Файл</th>
+                  <th>Дата</th>
+                  <th>Размер</th>
+                  <th>Ссылка</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredImages.map(img => (
+                  <tr key={img.id}>
+                    <td>{img.displayName}</td>
+                    <td>{img.filename}</td>
+                    <td>{new Date(img.uploadedAt).toLocaleDateString()}</td>
+                    <td>{img.size ? Math.round(img.size / 1024) + ' KB' : '-'}</td>
+                    <td>
+                      <button className="copy-link-button" onClick={() => handleCopy(img.url)}>
+                        Копировать
+                      </button>
+                    </td>
+                    <td>
+                      <button className="delete-button" onClick={() => handleDelete(img.id)}>
+                        🗑
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

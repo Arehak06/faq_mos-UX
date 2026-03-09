@@ -60,3 +60,21 @@ export async function fetchImages(): Promise<ImageRecord[]> {
   if (!res.ok) throw new Error('Не удалось загрузить список изображений');
   return res.json();
 }
+
+export async function deleteImage(id: string): Promise<void> {
+  const userId = getTelegramUserId();
+  if (!userId) throw new Error('Не авторизован');
+
+  const res = await fetch(API_URL, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Telegram-User-Id': userId.toString(),
+    },
+    body: JSON.stringify({ id }),
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({}));
+    throw new Error(error.error || 'Ошибка удаления');
+  }
+}
