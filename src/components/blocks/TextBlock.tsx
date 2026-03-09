@@ -4,26 +4,32 @@ import remarkGfm from 'remark-gfm';
 import { TextBlock as TextBlockType } from '../../types/blocks';
 import { TgCard } from '../common/TgCard';
 
-// Кастомный компонент для цитат с поддержкой alert-синтаксиса
-function CustomBlockquote({ children, ...props }: React.BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode }) {
-  // Пытаемся извлечь тип заметки из содержимого
-  const childrenArray = React.Children.toArray(children);
-  let alertType: 'note' | 'warning' | 'tip' | 'important' | null = null;
-  let contentWithoutPrefix = children;
-
-  // Ищем в первом дочернем элементе (может быть строкой или другим компонентом)
-  const firstChild = childrenArray[0];
-  if (typeof firstChild === 'string') {
-    const match = firstChild.match(/^\[!(NOTE|WARNING|TIP|IMPORTANT)\]\s*(.*)/i);
-    if (match) {
-      alertType = match[1].toLowerCase() as 'note' | 'warning' | 'tip' | 'important';
-      const rest = match[2] + childrenArray.slice(1).map(c => typeof c === 'string' ? c : '').join('');
-      contentWithoutPrefix = rest;
+// Вспомогательная функция для извлечения текста из React-узлов
+function extractTextFromChildren(children: ReactNode): string {
+  let text = '';
+  React.Children.forEach(children, (child) => {
+    if (typeof child === 'string') {
+      text += child;
+    } else if (React.isValidElement(child)) {
+      const element = child as React.ReactElement<{ children?: ReactNode }>;
+      if (element.props && element.props.children) {
+        text += extractTextFromChildren(element.props.children);
+      }
     }
-  }
+  });
+  return text;
+}
 
-  if (alertType) {
-    // Цвета и иконки для разных типов
+// Кастомный компонент для цитат
+function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode }) {
+  const { children, ...rest } = props;
+  const fullText = extractTextFromChildren(children);
+  const match = fullText.match(/^\s*\[!(NOTE|WARNING|TIP|IMPORTANT)\]\s*(.*)/i);
+
+  if (match) {
+    const alertType = match[1].toLowerCase() as 'note' | 'warning' | 'tip' | 'important';
+    const content = match[2]; // текст после префикса
+
     const styles = {
       note: { backgroundColor: '#e3f2fd', color: '#0d47a1', icon: 'ℹ️' },
       warning: { backgroundColor: '#fff9c4', color: '#f57f17', icon: '⚠️' },
@@ -47,12 +53,12 @@ function CustomBlockquote({ children, ...props }: React.BlockquoteHTMLAttributes
         }}
       >
         <span style={{ fontSize: '24px', flexShrink: 0 }}>{style.icon}</span>
-        <div style={{ flex: 1 }}>{contentWithoutPrefix}</div>
+        <div style={{ flex: 1 }}>{content}</div>
       </div>
     );
   }
 
-  // Обычная цитата – используем стандартный <blockquote> с нашими стилями
+  // Обычная цитата
   return (
     <blockquote
       style={{
