@@ -4,32 +4,33 @@ import remarkGfm from 'remark-gfm';
 import { TextBlock as TextBlockType } from '../../types/blocks';
 import { TgCard } from '../common/TgCard';
 
-// Вспомогательная функция для извлечения текста из React-узлов
-function extractTextFromChildren(children: ReactNode): string {
-  let text = '';
-  React.Children.forEach(children, (child) => {
-    if (typeof child === 'string') {
-      text += child;
-    } else if (React.isValidElement(child)) {
-      const element = child as React.ReactElement<{ children?: ReactNode }>;
-      if (element.props && element.props.children) {
-        text += extractTextFromChildren(element.props.children);
-      }
-    }
-  });
-  return text;
-}
-
 // Кастомный компонент для цитат
 function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement> & { children?: ReactNode }) {
   const { children, ...rest } = props;
-  const fullText = extractTextFromChildren(children);
-  const match = fullText.match(/^\s*\[!(NOTE|WARNING|TIP|IMPORTANT)\]\s*(.*)/i);
+  const childrenArray = React.Children.toArray(children);
 
-  if (match) {
-    const alertType = match[1].toLowerCase() as 'note' | 'warning' | 'tip' | 'important';
-    const content = match[2]; // текст после префикса
+  // Проверяем, есть ли строковый элемент, начинающийся с префикса [!NOTE] и т.д.
+  let alertType: 'note' | 'warning' | 'tip' | 'important' | null = null;
+  let contentChildren: ReactNode[] = [];
 
+  for (let i = 0; i < childrenArray.length; i++) {
+    const child = childrenArray[i];
+    if (i === 0 && typeof child === 'string') {
+      const match = child.match(/^\s*\[!(NOTE|WARNING|TIP|IMPORTANT)\]\s*/i);
+      if (match) {
+        alertType = match[1].toLowerCase() as 'note' | 'warning' | 'tip' | 'important';
+        // Остаток строки после префикса (если есть) добавляем как обычный текст
+        const afterPrefix = child.slice(match[0].length);
+        if (afterPrefix) {
+          contentChildren.push(afterPrefix);
+        }
+        continue; // пропускаем этот элемент, он заменён на иконку
+      }
+    }
+    contentChildren.push(child);
+  }
+
+  if (alertType) {
     const styles = {
       note: { backgroundColor: '#e3f2fd', color: '#0d47a1', icon: 'ℹ️' },
       warning: { backgroundColor: '#fff9c4', color: '#f57f17', icon: '⚠️' },
@@ -37,20 +38,6 @@ function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement
       important: { backgroundColor: '#ffebee', color: '#b71c1c', icon: '🔴' },
     };
     const style = styles[alertType];
-
-    // Рендерим содержимое заметки как Markdown (чтобы поддерживалось форматирование)
-    const MarkdownContent = () => (
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          a: ({ node, ...props }) => <a target="_blank" rel="noopener noreferrer" {...props} />,
-          // Чтобы не создавать вложенные цитаты, можно запретить blockquote внутри заметки,
-          // но пока оставим как есть – редкий случай.
-        }}
-      >
-        {content}
-      </ReactMarkdown>
-    );
 
     return (
       <div
@@ -61,15 +48,13 @@ function CustomBlockquote(props: React.BlockquoteHTMLAttributes<HTMLQuoteElement
           borderRadius: '12px',
           marginBottom: '12px',
           display: 'flex',
-          alignItems: 'center', // выравнивание по центру вертикали
+          alignItems: 'flex-start',
           gap: '12px',
           border: 'none',
         }}
       >
         <span style={{ fontSize: '24px', flexShrink: 0 }}>{style.icon}</span>
-        <div style={{ flex: 1 }}>
-          <MarkdownContent />
-        </div>
+        <div style={{ flex: 1 }}>{contentChildren}</div>
       </div>
     );
   }
